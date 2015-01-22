@@ -11,6 +11,7 @@ GameObject:
   - 33: {fileID: 3302244}
   - 23: {fileID: 2302244}
   - 95: {fileID: 9502244}
+  - 64: {fileID: 6476166}
   m_Layer: 0
   m_Name: tile_terr_forest
   m_TagString: Untagged
@@ -58,6 +59,19 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 102244}
+  m_Mesh: {fileID: 4300000, guid: d821d6cc0f2261b4e9115636835429b9, type: 3}
+--- !u!64 &6476166
+MeshCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 102244}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_SmoothSphereCollisions: 0
+  m_Convex: 0
   m_Mesh: {fileID: 4300000, guid: d821d6cc0f2261b4e9115636835429b9, type: 3}
 --- !u!95 &9502244
 Animator:
