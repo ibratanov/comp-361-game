@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-enum ActionType {
+public enum ActionType {
 	READY_FOR_ORDERS,
 	GATHERING_WOOD,
 	CLEARING_TOMBSTONE,
@@ -11,7 +11,7 @@ enum ActionType {
 	EXPANDING_REGION
 }
 
-enum UnitType {
+public enum UnitType {
 	PEASANT,
 	INFANTRY,
 	SOLDIER,

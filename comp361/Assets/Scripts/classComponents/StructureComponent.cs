@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-enum StructureType
+public enum StructureType
 {
 	NONE,
 	TOMBSTONE,

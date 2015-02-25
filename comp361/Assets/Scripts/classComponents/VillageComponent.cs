@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-enum VillageType {
+public enum VillageType {
 	HOVEL,
 	TOWN,
 	FORT

@@ -1,15 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-enum LandType { 
+public enum LandType { 
 	GRASS,
 	MEADOW,
 	FOREST,
-	VILLAGE,
 	SEA
 }
 
-enum OccupantType {
+public enum OccupantType {
 	NONE,
 	UNIT,
 	VILLAGE,
@@ -17,6 +16,7 @@ enum OccupantType {
 }
 
 public class TileComponent : MonoBehaviour {
+	public GameObject _terrainGameObject;
 
 	readonly static int MEADOW_REVENUE = 2;
 	readonly static int FOREST_REVENUE = 0;
@@ -36,7 +36,11 @@ public class TileComponent : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+		_landType = LandType.GRASS;
+		_occupantType = OccupantType.NONE;
+		_occupyingUnit = null;
+		_occupyingStructure = null;
+		_village = null;
 	}
 	
 	// Update is called once per frame
@@ -44,63 +48,74 @@ public class TileComponent : MonoBehaviour {
 	
 	}
 
-	bool hasRoad() {
+	public void setGameObject(GameObject gameObject){
+		if(_terrainGameObject){
+			Destroy(_terrainGameObject);
+		}
+		_terrainGameObject = gameObject;
+	}
+
+	public GameObject getGameObject(){
+		return _terrainGameObject;
+	}
+
+	public bool hasRoad() {
 		return _hasRoad;
 	}
 
-	int getInitialPlayerIndex() {
+	public int getInitialPlayerIndex() {
 		return _initialPlayerIndex;
 	}
 
-	void setInitialPlayerIndex(int initialPlayerIndex) {
+	public void setInitialPlayerIndex(int initialPlayerIndex) {
 		_initialPlayerIndex = initialPlayerIndex;
 	}
 
-	LandType getLandType() {
+	public LandType getLandType() {
 		return _landType;
 	}
 
-	void setLandType(LandType landType) {
+	public void setLandType(LandType landType) {
 		_landType = landType;
 	}
 
-	OccupantType getOccupantType() {
+	public OccupantType getOccupantType() {
 		return _occupantType;
 	}
 
-	void setOccupantType(OccupantType occupantType) {
+	public void setOccupantType(OccupantType occupantType) {
 		_occupantType = occupantType;
 	}
 
-	StructureComponent getOccupyingStructure() {
+	public StructureComponent getOccupyingStructure() {
 		return _occupyingStructure;
 	}
 
-	void setOccupyingStructure(StructureComponent occupyingStructure) {
+	public void setOccupyingStructure(StructureComponent occupyingStructure) {
 		_occupyingStructure = occupyingStructure;
 	}
 
-	UnitComponent getOccupyingUnit() {
+	public UnitComponent getOccupyingUnit() {
 		return _occupyingUnit;
 	}
 
-	void setOccupyingUnit(UnitComponent occupyingUnit) {
+	public void setOccupyingUnit(UnitComponent occupyingUnit) {
 		_occupyingUnit = occupyingUnit;
 	}
 
-	VillageComponent getVillage() {
+	public VillageComponent getVillage() {
 		return _village;
 	}
 
-	void setVillage(VillageComponent village) {
+	public void setVillage(VillageComponent village) {
 		_village = village;
 	}
 
-	TileComponent[] getNeighbours() {
+	public TileComponent[] getNeighbours() {
 		return _neighbours;
 	}
 
-	int getRevenue() {
+	public int getRevenue() {
 		switch (_landType) {
 			case LandType.MEADOW:
 				return MEADOW_REVENUE;
