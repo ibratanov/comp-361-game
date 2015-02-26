@@ -25,32 +25,32 @@ public class PlayerComponent : MonoBehaviour {
 	 *  GETTERS/SETTERS  *
 	 ********************/
 
-	int getLosses() {
+	public int getLosses() {
 		return _losses;
 	}
 
-	int getWins() {
+	public int getWins() {
 		return _wins;
 	}
 
-	string getUserName() {
+	public string getUserName() {
 		return _userName;
 	}
 
-	PlayerComponent Player(string userName, string password) {
+	public PlayerComponent Player(string userName, string password) {
 		/* TODO */
 		return null;
 	}
 
-	PlayerStatus getStatus() {
+	public PlayerStatus getStatus() {
 		return _status;
 	}
 
-	void setStatus(PlayerStatus status) {
+	public void setStatus(PlayerStatus status) {
 		_status = status;
 	}
 
-	VillageComponent[] getVillages() {
+	public VillageComponent[] getVillages() {
 		return _villages;
 	}
 
@@ -58,27 +58,27 @@ public class PlayerComponent : MonoBehaviour {
 	 *      METHODS      *
 	 ********************/
 
-	void add(VillageComponent village) {
+	public void add(VillageComponent village) {
 		/* TODO */
 	}
 
-	void beginTurn() {
+	public void beginTurn() {
 		/* TODO */
 	}
 
-	void incrementLosses() {
+	public void incrementLosses() {
 		/* TODO */
 	}
 
-	void incrementWins() {
+	public void incrementWins() {
 		/* TODO */
 	}
 
-	void login(string userName, string password) {
+	public void login(string userName, string password) {
 		/* TODO */
 	}
 
-	void remove(VillageComponent village) {
+	public void remove(VillageComponent village) {
 		/* TODO */
 	}
 

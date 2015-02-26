@@ -20,7 +20,7 @@ public class GameComponent : MonoBehaviour {
 		_currentPlayer = currentPlayer;
 	}
 
-	PlayerComponent[] getRemainingPlayers() {
+	public PlayerComponent[] getRemainingPlayers() {
 		return _remainingPlayers;
 	}
 
@@ -32,15 +32,15 @@ public class GameComponent : MonoBehaviour {
 	 *      METHODS      *
 	 ********************/
 
-	void endGame() {
+	public void endGame() {
 		/* TODO */
 	}
 
-	void newGame(PlayerComponent[] participants) {
+	public void newGame(PlayerComponent[] participants) {
 		/* TODO */
 	}
 
-	void removePlayer(PlayerComponent player) {
+	public void removePlayer(PlayerComponent player) {
 		/* TODO */
 	}
 
