@@ -36,43 +36,43 @@ public class UnitComponent : MonoBehaviour {
 	/*********************
 	 *  GETTERS/SETTERS  *
 	 ********************/
-	int getUpkeep() {
+	public int getUpkeep() {
 		return _upkeep;
 	}
 
-	int getRoundsCultivating() {
+	public int getRoundsCultivating() {
 		return _roundsCultivating;
 	}
 
-	ActionType getCurrentAction() {
+	public ActionType getCurrentAction() {
 		return _currentAction;
 	}
 
-	void setCurrentAction(ActionType currentAction) {
+	public void setCurrentAction(ActionType currentAction) {
 		_currentAction = currentAction;
 	}
 
-	TileComponent getLocation() {
+	public TileComponent getLocation() {
 		return _location;
 	}
 
-	void setLocation(TileComponent location) {
+	public void setLocation(TileComponent location) {
 		_location = location;
 	}
 
-	UnitType getUnitType() {
+	public UnitType getUnitType() {
 		return _unitType;
 	}
 
-	void setUnitType(UnitType unitType) {
+	public void setUnitType(UnitType unitType) {
 		_unitType = unitType;
 	}
 
-	VillageComponent getVillage() {
+	public VillageComponent getVillage() {
 		return _village;
 	}
 
-	void setVillage(VillageComponent village) {
+	public void setVillage(VillageComponent village) {
 		_village = village;
 	}
 
@@ -81,42 +81,42 @@ public class UnitComponent : MonoBehaviour {
 	 *      METHODS      *
 	 ********************/
 
-	bool isContested(TileComponent destination) {
-		/* TODO */
-		return true;
-	}
-
-	bool upgradeUnit(UnitType newLevel) {
-		/* TODO */
-		return true;
-	}
-
-	int calculateCost(UnitType u1, UnitType u2) {
+	public static int calculateCost(UnitType u1, UnitType u2) {
 		/* TODO */
 		return 0;
 	}
 
-	void associate(TileComponent tile) {
+	public bool isContested(TileComponent destination) {
+		/* TODO */
+		return true;
+	}
+
+	public bool upgradeUnit(UnitType newLevel) {
+		/* TODO */
+		return true;
+	}
+
+	public void associate(TileComponent tile) {
 		/* TODO */
 	}
 
-	void buildRoad() {
+	public void buildRoad() {
 		/* TODO */
 	}
 
-	void Create(UnitType unitType) {
+	public void Create(UnitType unitType) {
 		/* TODO */
 	}
 
-	void cultivate() {
+	public void cultivate() {
 		/* TODO */
 	}
 
-	void die() {
+	public void die() {
 		/* TODO */
 	}
 
-	void moveUnit(TileComponent destination) {
+	public void moveUnit(TileComponent destination) {
 		/* TODO */
 	}
 
@@ -124,7 +124,7 @@ public class UnitComponent : MonoBehaviour {
 		/* TODO */
 	}
 
-	void takeOverTile(TileComponent destination) {
+	public void takeOverTile(TileComponent destination) {
 		/* TODO */
 	}
 

@@ -10,34 +10,46 @@ public enum StructureType
 
 public class StructureComponent : MonoBehaviour {
 
+	/*********************
+	 *     ATTRIBUTES    *
+	 ********************/
+
 	StructureType _structureType;
 	TileComponent _location;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	/*********************
+	 *  GETTERS/SETTERS  *
+	 ********************/
 
-	StructureType getStructureType() {
+	public StructureType getStructureType() {
 		return _structureType;
 	}
 
-	void setStructureType(StructureType structureType) {
+	public void setStructureType(StructureType structureType) {
 		_structureType = structureType;
 	}
 
-	TileComponent getLocation()
+	public TileComponent getLocation()
 	{
 		return _location;
 	}
 
-	void setLocation(TileComponent location)
+	public void setLocation(TileComponent location)
 	{
 		_location = location;
+	}
+
+	/*********************
+	 *      METHODS      *
+	 ********************/
+
+	// Use this for initialization
+	void Start() {
+
+	}
+
+	// Update is called once per frame
+	void Update() {
+
 	}
 }

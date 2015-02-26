@@ -22,6 +22,10 @@ public class TileComponent : MonoBehaviour {
 	readonly static int FOREST_REVENUE = 0;
 	readonly static int LANDTYPE_REVENUE = 1;
 
+	/*********************
+	 *     ATTRIBUTES    *
+	 ********************/
+
 	bool _hasRoad;
 	int _initialPlayerIndex;
 
@@ -33,35 +37,9 @@ public class TileComponent : MonoBehaviour {
 	UnitComponent _occupyingUnit;
 	VillageComponent _village;
 
-
-	// Use this for initialization
-	void Start () {
-		_landType = LandType.GRASS;
-		_occupantType = OccupantType.NONE;
-		_occupyingUnit = null;
-		_occupyingStructure = null;
-		_village = null;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-	public void setGameObject(GameObject gameObject){
-		if(_terrainGameObject){
-			Destroy(_terrainGameObject);
-		}
-		_terrainGameObject = gameObject;
-	}
-
-	public GameObject getGameObject(){
-		return _terrainGameObject;
-	}
-
-	public bool hasRoad() {
-		return _hasRoad;
-	}
+	/*********************
+	 *  GETTERS/SETTERS  *
+	 ********************/
 
 	public int getInitialPlayerIndex() {
 		return _initialPlayerIndex;
@@ -115,6 +93,14 @@ public class TileComponent : MonoBehaviour {
 		return _neighbours;
 	}
 
+	/*********************
+	 *      METHODS      *
+	 ********************/
+
+	public bool hasRoad() {
+		return _hasRoad;
+	}
+
 	public int getRevenue() {
 		switch (_landType) {
 			case LandType.MEADOW:
@@ -126,13 +112,52 @@ public class TileComponent : MonoBehaviour {
 		}
 	}
 
+	public GameObject getGameObject() {
+		return _terrainGameObject;
+	}
+
+	public void setGameObject(GameObject gameObject){
+		if(_terrainGameObject){
+			Destroy(_terrainGameObject);
+		}
+		_terrainGameObject = gameObject;
+	}
+
+	public TileComponent Create(int initialOwner) {
+		/* TODO */
+		return null;
+	}
+
+	public TileComponent[] breadthFS() {
+		/* TODO */
+		return null;
+	}
+
+	public void connectRegions() {
+		/* TODO */
+	}
+
+	public void createRoad() {
+		/* TODO */
+	}
+
+	public void randomizeTile() {
+		/* TODO */
+	}
 
 
-//+ Create(int initialOwner): Tile
 
-//+ createRoad(): void
+	// Use this for initialization
+	void Start() {
+		_landType = LandType.GRASS;
+		_occupantType = OccupantType.NONE;
+		_occupyingUnit = null;
+		_occupyingStructure = null;
+		_village = null;
+	}
 
-//+ randomizeTile(): void
-//+ breadthFS(): CollectionOfTiles
-//+ connectRegions(): void
+	// Update is called once per frame
+	void Update() {
+
+	}
 }

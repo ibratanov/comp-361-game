@@ -25,11 +25,11 @@ public class VillageComponent : MonoBehaviour {
 	 *  GETTERS/SETTERS  *
 	 ********************/
 
-	int getGoldStock() {
+	public int getGoldStock() {
 		return _goldStock;
 	}
 
-	int getWoodStock() {
+	public int getWoodStock() {
 		return _woodStock;
 	}
 
@@ -38,27 +38,27 @@ public class VillageComponent : MonoBehaviour {
 		return 0;
 	}
 
-	PlayerComponent getPlayer() {
+	public PlayerComponent getPlayer() {
 		return _player;
 	}
 
-	void setPlayer(PlayerComponent player) {
+	public void setPlayer(PlayerComponent player) {
 		_player = player;
 	}
 
-	TileComponent[] getControlledRegion() {
+	public TileComponent[] getControlledRegion() {
 		return _controlledRegion;
 	}
 
-	UnitComponent[] getSupportingUnits() {
+	public UnitComponent[] getSupportingUnits() {
 		return _supportingUnits;
 	}
 
-	VillageType getVillageType() {
+	public VillageType getVillageType() {
 		return _villageType;
 	}
 
-	void setVillageType(VillageType villageType) {
+	public void setVillageType(VillageType villageType) {
 		_villageType = villageType;
 	}
 
@@ -66,34 +66,34 @@ public class VillageComponent : MonoBehaviour {
 	 *      METHODS      *
 	 ********************/
 
-	bool payWages() {
-		/* TODO */
-		return true;
-	}
-
-	int calculateCost(VillageType villageType, VillageType newLevel) {
+	public static int calculateCost(VillageType villageType, VillageType newLevel) {
 		/* TODO */
 		return 0;
 	}
 
-	UnitComponent hireVillager(UnitType unitType) {
+	public bool payWages() {
+		/* TODO */
+		return true;
+	}
+
+	public UnitComponent hireVillager(UnitType unitType) {
 		/* TODO */
 		return null;
 	}
 
-	void addGold(int amount) {
+	public void addGold(int amount) {
 		_goldStock += amount;
 	}
 
-	void addWood(int amount) {
+	public void addWood(int amount) {
 		_woodStock += amount;
 	}
 
-	void associate(TileComponent tile) {
+	public void associate(TileComponent tile) {
 		/* TODO */
 	}
 
-	void associate(UnitComponent unit) {
+	public void associate(UnitComponent unit) {
 		/* TODO */
 	}
 
@@ -101,29 +101,29 @@ public class VillageComponent : MonoBehaviour {
 		/* TODO */
 	}
 
-	void mergeWith(VillageComponent village) {
+	public void mergeWith(VillageComponent village) {
 		/* TODO */
 	}
 
-	void produceMeadows() {
+	public void produceMeadows() {
 		/* TODO */
 	}
 
-	void produceRoads() {
+	public void produceRoads() {
 		/* TODO */
 	}
 
-	void removeGold(int amount) {
+	public void removeGold(int amount) {
 		/* TODO */
 		_goldStock -= amount;
 	}
 
-	void removeWood(int amount) {
+	public void removeWood(int amount) {
 		/* TODO */
 		_woodStock -= amount;
 	}
 
-	void replaceTombstonesByForest() {
+	public void replaceTombstonesByForest() {
 		/* TODO */
 	}
 
@@ -131,7 +131,7 @@ public class VillageComponent : MonoBehaviour {
 		/* TODO */
 	}
 
-	void updateGoldStock() {
+	public void updateGoldStock() {
 		/* TODO */
 	}
 
