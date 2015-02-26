@@ -20,6 +20,8 @@ public enum UnitType {
 
 public class UnitComponent : MonoBehaviour {
 
+	readonly static int COST_PER_UNIT_UPGRADE = 10;
+
 	/*********************
 	 *     ATTRIBUTES    *
 	 ********************/
@@ -82,8 +84,17 @@ public class UnitComponent : MonoBehaviour {
 	 ********************/
 
 	public static int calculateCost(UnitType u1, UnitType u2) {
-		/* TODO */
-		return 0;
+			if (u1 > u2) {
+				throw new System.Exception("The first parameter cannot be smaller than the second.");
+			}
+
+			int cost = 0;
+
+			for (UnitType u = u1; u != u2; ++u) {
+				cost += COST_PER_UNIT_UPGRADE;
+			}
+
+			return cost;
 	}
 
 	public bool isContested(TileComponent destination) {
@@ -92,8 +103,17 @@ public class UnitComponent : MonoBehaviour {
 	}
 
 	public bool upgradeUnit(UnitType newLevel) {
-		/* TODO */
-		return true;
+		if (newLevel >= _unitType) {
+			int cost = calculateCost(_unitType, newLevel);
+
+			if (_village.getGoldStock() >= cost) {
+				_unitType = newLevel;
+				_village.removeGold(cost);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public void associate(TileComponent tile) {
