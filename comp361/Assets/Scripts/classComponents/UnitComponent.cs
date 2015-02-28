@@ -19,6 +19,7 @@ public enum UnitType {
 }
 
 public class UnitComponent : MonoBehaviour {
+	public GameObject _villagerGameObject;
 
 	readonly static int COST_PER_UNIT_UPGRADE = 10;
 
@@ -148,11 +149,22 @@ public class UnitComponent : MonoBehaviour {
 		/* TODO */
 	}
 
+	public GameObject getGameObject() {
+		return _villagerGameObject;
+	}
+	
+	public void setGameObject(AssetManager assets, UnitType unitType){
+		_villagerGameObject = assets.getUnitGameObject(unitType);
+	}
 
+	/*********************
+	 *   UNITY METHODS   *
+	 ********************/
 
 	// Use this for initialization
 	void Start() {
-
+		_roundsCultivating = 0;
+		_currentAction = ActionType.READY_FOR_ORDERS;
 	}
 
 	// Update is called once per frame

@@ -5,6 +5,8 @@ public class MapGenerator : MonoBehaviour {
 	public AssetManager _assets;
 	public GameObject _gameTile;
 
+	public int _numberOfPlayers;
+
 	public Vector3 _origin;
 	public int _rows = 17;
 	public int _columns = 18;
@@ -55,6 +57,7 @@ public class MapGenerator : MonoBehaviour {
 				//Create a new tile and add it to the landTiles array
 				GameObject gameTile = (GameObject)Instantiate(_gameTile, currentPosition, Quaternion.identity); //TODO: Network this
 				_landTiles[i,j] = gameTile.GetComponent<TileComponent>();
+				_landTiles[i,j].setGameObject(_assets, LandType.GRASS);
 				//Keep things organized with a parental hierarchy
 				gameTile.transform.parent = this.transform;
 

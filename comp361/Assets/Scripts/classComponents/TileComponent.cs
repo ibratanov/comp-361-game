@@ -142,8 +142,10 @@ public class TileComponent : MonoBehaviour {
 		/* TODO */
 	}
 
-
-
+	/*********************
+	 *   UNITY METHODS   *
+	 ********************/
+	
 	// Use this for initialization
 	void Start() {
 		_landType = LandType.GRASS;
