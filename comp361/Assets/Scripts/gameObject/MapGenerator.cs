@@ -3,7 +3,7 @@ using System.Collections;
 
 public class MapGenerator : MonoBehaviour {
 	public AssetManager _assets;
-	public TileComponent _tileComponent;
+	public GameObject _gameTile;
 
 	public Vector3 _origin;
 	public int _rows = 17;
@@ -45,19 +45,18 @@ public class MapGenerator : MonoBehaviour {
 	private void GenerateSquareGrid( int rows, int columns, Vector3 startLocation, Vector3 tileHeight, Vector3 tileDiagonal ) 
 	{
 		int gridId = 0;
-		Vector3 currentPos = startLocation;
+		Vector3 currentPosition = startLocation;
 		for (int i = 0; i < columns; ++i)
 		{
 			bool phase = false;
-			currentPos = startLocation + tileHeight * i;
+			currentPosition = startLocation + tileHeight * i;
 			for (int j = 0; j < rows; ++j)
 			{
-				//Add a new tile
-				TileComponent tile = new TileComponent();
-				GameObject tileObject = (GameObject)Instantiate(_assets.getTerrainGameObject(LandType.GRASS), currentPos, Quaternion.identity); //TODO: Network this
-				tileObject.transform.parent = this.transform; //Keep things organized
-				tile.setGameObject(tileObject);
-				_landTiles[i,j] = tile; //For future access
+				//Create a new tile and add it to the landTiles array
+				GameObject gameTile = (GameObject)Instantiate(_gameTile, currentPosition, Quaternion.identity); //TODO: Network this
+				_landTiles[i,j] = gameTile.GetComponent<TileComponent>();
+				//Keep things organized with a parental hierarchy
+				gameTile.transform.parent = this.transform;
 
 				//Update position for next tile
 				Vector3 diag = tileDiagonal;
@@ -65,7 +64,7 @@ public class MapGenerator : MonoBehaviour {
 					diag.z *= -1; //We're drawing horizontally so it zigzags
 				}
 				phase = !phase;
-				currentPos += diag;
+				currentPosition += diag;
 			}
 		}
 	}
@@ -90,27 +89,27 @@ public class MapGenerator : MonoBehaviour {
 		//Change into forest tiles
 		for (int i = 0; i < forestCount; ++i )
 		{
+			//Choose a random tile
 			int indexX = Random.Range(0, _landTiles.GetLength(0)-1);
 			int indexY = Random.Range(0, _landTiles.GetLength(1)-1);
 			TileComponent tile = (TileComponent)_landTiles[indexX, indexY];
+			//Change its properties
 			tile.setLandType(LandType.FOREST);
-			GameObject tileObject = tile.getGameObject();
-			tileObject = (GameObject)Instantiate(_assets.getTerrainGameObject(LandType.FOREST), tileObject.transform.position, Quaternion.identity);
-			tileObject.transform.parent = this.transform; //Keep things organized
-			tile.setGameObject(tileObject);
+			//Update the visual component of this tile
+			tile.setGameObject(_assets, LandType.FOREST);
 		}
 		
 		//Change into meadow tiles
 		for (int i = 0; i < meadowCount; ++i)
 		{
+			//Choose a random tile
 			int indexX = Random.Range(0, _landTiles.GetLength(0)-1);
 			int indexY = Random.Range(0, _landTiles.GetLength(1)-1);
 			TileComponent tile = (TileComponent)_landTiles[indexX, indexY];
+			//Change its properties
 			tile.setLandType(LandType.MEADOW);
-			GameObject tileObject = tile.getGameObject();
-			tileObject = (GameObject)Instantiate(_assets.getTerrainGameObject(LandType.MEADOW), tileObject.transform.position, Quaternion.identity);
-			tileObject.transform.parent = this.transform; //Keep things organized
-			tile.setGameObject(tileObject);
+			//Update the visual component of this tile
+			tile.setGameObject(_assets, LandType.MEADOW);
 		}
 	}
 }
