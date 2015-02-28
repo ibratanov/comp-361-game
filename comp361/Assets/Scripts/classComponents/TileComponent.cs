@@ -116,11 +116,8 @@ public class TileComponent : MonoBehaviour {
 		return _terrainGameObject;
 	}
 
-	public void setGameObject(GameObject gameObject){
-		if(_terrainGameObject){
-			Destroy(_terrainGameObject);
-		}
-		_terrainGameObject = gameObject;
+	public void setGameObject(AssetManager assets, LandType landType){
+		_terrainGameObject = assets.getTerrainGameObject(landType);
 	}
 
 	public TileComponent Create(int initialOwner) {
@@ -154,6 +151,8 @@ public class TileComponent : MonoBehaviour {
 		_occupyingUnit = null;
 		_occupyingStructure = null;
 		_village = null;
+		_terrainGameObject = (GameObject)Instantiate(_terrainGameObject, this.transform.position, Quaternion.identity);
+		_terrainGameObject.transform.parent = this.transform;
 	}
 
 	// Update is called once per frame
