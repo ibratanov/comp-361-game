@@ -5,7 +5,7 @@ public class MapGenerator : MonoBehaviour {
 	public AssetManager _assets;
 	public GameObject _gameTile;
 
-	public int _numberOfPlayers;
+	public GameObject _playerManager;
 
 	public Vector3 _origin;
 	public int _rows = 17;
