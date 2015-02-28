@@ -159,4 +159,26 @@ public class TileComponent : MonoBehaviour {
 	void Update() {
 
 	}
+
+	void OnMouseDown() {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC ("ToggleColours", RPCMode.All);
+		}
+		else{
+			ToggleColours ();
+		}
+	}
+	
+	[RPC]
+	void ToggleColours(){
+
+		if( _terrainGameObject.renderer.materials[2].GetColor("_Color") == Color.red){
+			_terrainGameObject.renderer.materials[2].SetColor("_Color", Color.white);
+		}
+		else{
+			_terrainGameObject.renderer.materials[2].SetColor("_Color", Color.red);
+		}
+		
+		Debug.Log("changing colors");
+	}
 }
