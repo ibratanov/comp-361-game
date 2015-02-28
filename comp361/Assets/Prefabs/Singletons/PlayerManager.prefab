@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 495782}
   - 114: {fileID: 11495782}
   m_Layer: 0
-  m_Name: AssetManager
+  m_Name: PlayerManager
   m_TagString: Untagged
   m_Icon: {fileID: -2065832391, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -36,26 +36,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 195782}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aef7589a6256b1c45a1d767ffbb7d729, type: 3}
+  m_Script: {fileID: 11500000, guid: 3c1f1e33a0e5ae44b92cb991d0bfa4ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _terrains:
-  - {fileID: 159312, guid: f7f41b7a4ff1983428772aa5ad139fc3, type: 2}
-  - {fileID: 199272, guid: 0ceeeec2904a9c04391bc6cb28f04f8c, type: 2}
-  - {fileID: 102244, guid: 264094a6e708093419c1737d75dcc591, type: 2}
-  - {fileID: 163666, guid: c4279e92aef292542b712f32a511ee31, type: 2}
-  _villagerUnits:
-  - {fileID: 133368, guid: 182437a0d761e3e42a1ad5b9ff32c25b, type: 2}
-  - {fileID: 162040, guid: 1a57e517b0b12464e8e2650135682d51, type: 2}
-  - {fileID: 102866, guid: cb2e3c00eee4c024ea2e80b2f288a3f7, type: 2}
-  - {fileID: 142864, guid: 5d6a761a8863f8f4da8b4fe974f1bf91, type: 2}
-  _villages:
-  - {fileID: 194586, guid: fbcc519b6e9225e49b2f3411aff1e9a3, type: 2}
-  - {fileID: 125140, guid: a7ffb34434bf8e04b9d2b4381a230089, type: 2}
-  - {fileID: 156234, guid: 37819ce1e01cef24db7b46c1cd8779d8, type: 2}
-  _structures:
-  - {fileID: 169860, guid: c72c6832cfc869b4aae43094e36caaaf, type: 2}
-  - {fileID: 141584, guid: 6827576947f9b3741bee0709f5aa9a22, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
