@@ -19,7 +19,7 @@ public class MapGenerator : MonoBehaviour {
 	void Start () {
 		_landTiles = new TileComponent[_columns,_rows];
 		//_waterTiles = new GameObject[_rows,_columns];
-		GenerateMap();
+		//GenerateMap();
 	}
 	
 	// Update is called once per frame
@@ -28,10 +28,10 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 	public void GenerateMap(){
-		if(Network.isServer){
+		//if(Network.isServer){
 			GenerateSquareGrid( _rows, _columns, _origin, _tileHeight, _tileDiagonal);
 			AddTerrain(_forestRatio, _meadowRatio);
-		}
+		//}
 	}
 
 	/// <summary>
