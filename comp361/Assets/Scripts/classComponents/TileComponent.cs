@@ -120,9 +120,8 @@ public class TileComponent : MonoBehaviour {
 		_terrainGameObject = assets.getTerrainGameObject(landType);
 	}
 
-	public TileComponent Create(int initialOwner) {
+	public TileComponent(int initialOwner) {
 		/* TODO */
-		return null;
 	}
 
 	public TileComponent[] breadthFS() {

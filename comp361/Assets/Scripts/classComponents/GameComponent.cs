@@ -40,34 +40,33 @@ public class GameComponent : MonoBehaviour {
         var firstPlayer = participants[0];
         setRemainingPlayers(participants);
         setCurrentPlayer(firstPlayer);
-        Random r = new Random();
         for (int i = 0; i < 300; i++)
         {            
-            TileComponent t = new TileComponent(r.Next(0, participants.Length + 1));
-            _mapTiles.Add(t);
+            TileComponent t = new TileComponent(Random.Range(0, participants.Length + 1));
+            _mapTiles[i] = t;
         }
         for (int i = 0; i < 60; i++)
         {
-            TileComponent forestTile = _mapTiles[r.Next(0, 300)];
-            forestTile.SetLandType(LandType.FOREST);
+            TileComponent forestTile = _mapTiles[Random.Range(0, 300)];
+            forestTile.setLandType(LandType.FOREST);
         }
         for (int i = 0; i < 60; i++)
         {
-            TileComponent meadowTile = _mapTiles[r.Next(0, 300)];
-            forestTile.setLandType(LandType.MEADOW);
+            TileComponent meadowTile = _mapTiles[Random.Range(0, 300)];
+            meadowTile.setLandType(LandType.MEADOW);
         }
         foreach (var tile in _mapTiles)
         {
-            int playerIndex = getInitialPlayerIndex();
+            int playerIndex = tile.getInitialPlayerIndex();
 
             if (playerIndex < participants.Length)
             {
-                var region = mapTiles.breadthFS();
+                var region = tile.breadthFS();
                 if (region.Length < 3)
                 {
                     foreach (var rTile in region)
                     {
-                        rTile.setInitializingValue(participants.Length);
+                        rTile.setInitialPlayerIndex(participants.Length);
                     }
                 }
                 else
@@ -83,8 +82,8 @@ public class GameComponent : MonoBehaviour {
                            newHovel.associate(rTile);
                            newHovel.addGold(7);
                            var newPeasant = newHovel.hireVillager(UnitType.PEASANT);
-                           int villagerTile = region[1];
-                           newPeasant.associate(rTile);
+                           var villagerTile = region[1];
+                           newPeasant.associate(villagerTile);
                        }
                     }
                 }
