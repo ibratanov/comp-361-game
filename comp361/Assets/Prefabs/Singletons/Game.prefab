@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _assets: {fileID: 11495782, guid: 83d94e482f11beb47bddc447bbfd84c6, type: 2}
-  _tileComponent: {fileID: 11443194, guid: 9642acf35114e1748aac1a9634f9e9f5, type: 2}
+  _gameTile: {fileID: 137900, guid: c29b761be60e9bc4394ea81d1c88d087, type: 2}
   _origin: {x: 0, y: 0, z: 0}
   _rows: 17
   _columns: 18
