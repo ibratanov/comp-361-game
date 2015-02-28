@@ -77,7 +77,7 @@ public class VillageComponent : MonoBehaviour {
 	}
 
 	public UnitComponent hireVillager(UnitType unitType) {
-		/* TODO */
+        /* TODO */
 		return null;
 	}
 
@@ -134,6 +134,11 @@ public class VillageComponent : MonoBehaviour {
 	public void updateGoldStock() {
 		/* TODO */
 	}
+
+    public VillageComponent(VillageType vt)
+    {
+        /* TODO */
+    }
 
 
 
