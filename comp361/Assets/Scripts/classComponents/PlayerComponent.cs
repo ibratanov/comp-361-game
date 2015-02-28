@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-enum PlayerStatus {
+public enum PlayerStatus {
 	OFFLINE,
 	ONLINE
 }
