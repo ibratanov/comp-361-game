@@ -35,7 +35,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &178290
 GameObject:
   m_ObjectHideFlags: 1
@@ -174,7 +174,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 115502, guid: 8a671a0bf278c694da06388bb2e03c38, type: 2}
         m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
@@ -458,7 +458,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 114776, guid: dd75c465a366a5440be9d6daa9bf662f, type: 2}
         m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:

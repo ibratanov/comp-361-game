@@ -25,6 +25,13 @@ public class PlayerComponent : MonoBehaviour {
 	 *  GETTERS/SETTERS  *
 	 ********************/
 
+	public PlayerComponent(string username, string password){
+		_losses = 0;
+		_wins = 0;
+		_userName = username;
+		_password = password;
+	}
+
 	public int getLosses() {
 		return _losses;
 	}
