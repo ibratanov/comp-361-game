@@ -18,9 +18,9 @@ public enum OccupantType {
 public class TileComponent : MonoBehaviour {
 	public GameObject _terrainGameObject;
 
-	readonly static int MEADOW_REVENUE = 2;
-	readonly static int FOREST_REVENUE = 0;
-	readonly static int LANDTYPE_REVENUE = 1;
+	readonly static uint MEADOW_REVENUE = 2;
+	readonly static uint FOREST_REVENUE = 0;
+	readonly static uint LANDTYPE_REVENUE = 1;
 
 	/*********************
 	 *     ATTRIBUTES    *
@@ -101,7 +101,7 @@ public class TileComponent : MonoBehaviour {
 		return _hasRoad;
 	}
 
-	public int getRevenue() {
+	public uint getRevenue() {
 		switch (_landType) {
 			case LandType.MEADOW:
 				return MEADOW_REVENUE;

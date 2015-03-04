@@ -13,8 +13,8 @@ public class VillageComponent : MonoBehaviour {
 	 *     ATTRIBUTES    *
 	 ********************/
 
-	int _goldStock;
-	int _woodStock;
+	uint _goldStock;
+	uint _woodStock;
 	PlayerComponent _player;
 	TileComponent[] _controlledRegion;
 	UnitComponent[] _supportingUnits;
@@ -25,17 +25,22 @@ public class VillageComponent : MonoBehaviour {
 	 *  GETTERS/SETTERS  *
 	 ********************/
 
-	public int getGoldStock() {
+	public uint getGoldStock() {
 		return _goldStock;
 	}
 
-	public int getWoodStock() {
+	public uint getWoodStock() {
 		return _woodStock;
 	}
 
-	int getWages() {
-		/* TODO */
-		return 0;
+	uint getWages() {
+		uint wages = 0;
+
+		foreach (UnitComponent unit in _supportingUnits) {
+			wages += unit.getUpkeep();
+		}
+
+		return wages;
 	}
 
 	public PlayerComponent getPlayer() {
@@ -72,8 +77,16 @@ public class VillageComponent : MonoBehaviour {
 	}
 
 	public bool payWages() {
-		/* TODO */
-		return true;
+		uint wages = getWages();
+
+		if (wages <= getGoldStock()) {
+			removeGold(wages);
+			return true;
+		}
+
+		killVillagers();
+		resetGold();
+		return false;
 	}
 
 	public UnitComponent hireVillager(UnitType unitType) {
@@ -81,11 +94,11 @@ public class VillageComponent : MonoBehaviour {
 		return null;
 	}
 
-	public void addGold(int amount) {
+	public void addGold(uint amount) {
 		_goldStock += amount;
 	}
 
-	public void addWood(int amount) {
+	public void addWood(uint amount) {
 		_woodStock += amount;
 	}
 
@@ -98,7 +111,10 @@ public class VillageComponent : MonoBehaviour {
 	}
 
 	void killVillagers() {
-		/* TODO */
+		foreach (UnitComponent unit in _supportingUnits) {
+			unit.die();
+		}
+		_supportingUnits = null;
 	}
 
 	public void mergeWith(VillageComponent village) {
@@ -106,33 +122,54 @@ public class VillageComponent : MonoBehaviour {
 	}
 
 	public void produceMeadows() {
-		/* TODO */
+		foreach (UnitComponent unit in _supportingUnits) {
+			ActionType currentAction = unit.getCurrentAction();
+
+			if (currentAction == ActionType.CULTIVATING_MEADOW) {
+				unit.cultivate();
+			}
+		}
 	}
 
 	public void produceRoads() {
-		/* TODO */
+		foreach (UnitComponent unit in _supportingUnits) {
+			ActionType currentAction = unit.getCurrentAction();
+
+			if (currentAction == ActionType.BUILDING_ROAD) {
+				unit.buildRoad();
+			}
+		}
 	}
 
-	public void removeGold(int amount) {
-		/* TODO */
+	public void removeGold(uint amount) {
 		_goldStock -= amount;
 	}
 
-	public void removeWood(int amount) {
-		/* TODO */
+	public void removeWood(uint amount) {
 		_woodStock -= amount;
 	}
 
 	public void replaceTombstonesByForest() {
-		/* TODO */
+		foreach (TileComponent tile in _controlledRegion) {
+			StructureComponent occupyingStructure = tile.getOccupyingStructure();
+			StructureType structureType = occupyingStructure.getStructureType();
+
+			if (structureType == StructureType.TOMBSTONE) {
+				occupyingStructure.setStructureType(StructureType.NONE);
+				tile.setLandType(LandType.FOREST);
+			}
+		}
 	}
 
 	void resetGold() {
-		/* TODO */
+		_goldStock = 0;
 	}
 
 	public void updateGoldStock() {
-		/* TODO */
+		foreach (TileComponent tile in _controlledRegion) {
+			uint revenue = tile.getRevenue();
+			addGold(revenue);
+		}
 	}
 
     public VillageComponent(VillageType vt)

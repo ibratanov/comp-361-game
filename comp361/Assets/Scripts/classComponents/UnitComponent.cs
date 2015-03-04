@@ -21,7 +21,7 @@ public enum UnitType {
 public class UnitComponent : MonoBehaviour {
 	public GameObject _villagerGameObject;
 
-	readonly static int COST_PER_UNIT_UPGRADE = 10;
+	readonly static uint COST_PER_UNIT_UPGRADE = 10;
 
 	/*********************
 	 *     ATTRIBUTES    *
@@ -30,7 +30,7 @@ public class UnitComponent : MonoBehaviour {
 	static UnitType[] _upgradeCosts;
 
 	int _roundsCultivating;
-	int _upkeep;
+	uint _upkeep;
 	ActionType _currentAction;
 	TileComponent _location;
 	UnitType _unitType;
@@ -39,7 +39,7 @@ public class UnitComponent : MonoBehaviour {
 	/*********************
 	 *  GETTERS/SETTERS  *
 	 ********************/
-	public int getUpkeep() {
+	public uint getUpkeep() {
 		return _upkeep;
 	}
 
@@ -84,12 +84,12 @@ public class UnitComponent : MonoBehaviour {
 	 *      METHODS      *
 	 ********************/
 
-	public static int calculateCost(UnitType u1, UnitType u2) {
+	public static uint calculateCost(UnitType u1, UnitType u2) {
 			if (u1 > u2) {
 				throw new System.Exception("The first parameter cannot be smaller than the second.");
 			}
 
-			int cost = 0;
+			uint cost = 0;
 
 			for (UnitType u = u1; u != u2; ++u) {
 				cost += COST_PER_UNIT_UPGRADE;
@@ -105,7 +105,7 @@ public class UnitComponent : MonoBehaviour {
 
 	public bool upgradeUnit(UnitType newLevel) {
 		if (newLevel >= _unitType) {
-			int cost = calculateCost(_unitType, newLevel);
+			uint cost = calculateCost(_unitType, newLevel);
 
 			if (_village.getGoldStock() >= cost) {
 				_unitType = newLevel;
@@ -140,7 +140,8 @@ public class UnitComponent : MonoBehaviour {
 	}
 
 	public void die() {
-		/* TODO */
+		StructureComponent tombstone = new StructureComponent(StructureType.TOMBSTONE, _location);
+		_location.setOccupyingStructure(tombstone);
 	}
 
 	public void moveUnit(TileComponent destination) {
