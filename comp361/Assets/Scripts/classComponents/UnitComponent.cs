@@ -130,7 +130,13 @@ public class UnitComponent : MonoBehaviour {
 	}
 
 	public void cultivate() {
-		/* TODO */
+		if (_roundsCultivating >= 2) {
+			_location.setLandType(LandType.MEADOW);
+			_currentAction = ActionType.READY_FOR_ORDERS;
+			_roundsCultivating = 0;
+		} else {
+			++_roundsCultivating;
+		}
 	}
 
 	public void die() {
@@ -138,10 +144,6 @@ public class UnitComponent : MonoBehaviour {
 	}
 
 	public void moveUnit(TileComponent destination) {
-		/* TODO */
-	}
-
-	void resetRoundsCultivating() {
 		/* TODO */
 	}
 
