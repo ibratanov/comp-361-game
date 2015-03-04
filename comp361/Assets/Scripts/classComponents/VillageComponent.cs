@@ -152,7 +152,10 @@ public class VillageComponent : MonoBehaviour {
 	}
 
 	public void updateGoldStock() {
-		/* TODO */
+		foreach (TileComponent tile in _controlledRegion) {
+			int revenue = tile.getRevenue();
+			addGold(revenue);
+		}
 	}
 
     public VillageComponent(VillageType vt)
