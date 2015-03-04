@@ -106,7 +106,13 @@ public class VillageComponent : MonoBehaviour {
 	}
 
 	public void produceMeadows() {
-		/* TODO */
+		foreach (UnitComponent unit in _supportingUnits) {
+			ActionType currentAction = unit.getCurrentAction();
+
+			if (currentAction == ActionType.CULTIVATING_MEADOW) {
+				unit.cultivate();
+			}
+		}
 	}
 
 	public void produceRoads() {
