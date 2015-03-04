@@ -18,6 +18,15 @@ public class StructureComponent : MonoBehaviour {
 	TileComponent _location;
 
 	/*********************
+	 *    CONSTRUCTOR    *
+	 ********************/
+
+	public StructureComponent (StructureType structureType, TileComponent location) {
+		_structureType = structureType;
+		_location = location;
+	}
+
+	/*********************
 	 *  GETTERS/SETTERS  *
 	 ********************/
 
