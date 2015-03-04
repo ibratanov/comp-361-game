@@ -116,7 +116,13 @@ public class VillageComponent : MonoBehaviour {
 	}
 
 	public void produceRoads() {
-		/* TODO */
+		foreach (UnitComponent unit in _supportingUnits) {
+			ActionType currentAction = unit.getCurrentAction();
+
+			if (currentAction == ActionType.BUILDING_ROAD) {
+				unit.buildRoad();
+			}
+		}
 	}
 
 	public void removeGold(int amount) {
