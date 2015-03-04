@@ -134,7 +134,7 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	public void createRoad() {
-		/* TODO */
+        _hasRoad = true;
 	}
 
 	public void randomizeTile() {

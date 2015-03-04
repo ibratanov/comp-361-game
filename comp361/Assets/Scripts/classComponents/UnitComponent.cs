@@ -122,7 +122,19 @@ public class UnitComponent : MonoBehaviour {
 	}
 
 	public void buildRoad() {
-		/* TODO */
+        var ut = getUnitType();
+        if (ut == UnitType.PEASANT)
+        {
+            var t = getLocation();
+            var b = t.hasRoad();
+            if (b == false)
+            {
+                if (t.getLandType() == LandType.MEADOW || t.getLandType() == LandType.GRASS)
+                {
+                    t.createRoad();
+                }
+            }
+        }
 	}
 
 	public void Create(UnitType unitType) {
