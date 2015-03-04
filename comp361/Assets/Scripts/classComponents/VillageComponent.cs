@@ -130,7 +130,15 @@ public class VillageComponent : MonoBehaviour {
 	}
 
 	public void replaceTombstonesByForest() {
-		/* TODO */
+		foreach (TileComponent tile in _controlledRegion) {
+			StructureComponent occupyingStructure = tile.getOccupyingStructure();
+			StructureType structureType = occupyingStructure.getStructureType();
+
+			if (structureType == StructureType.TOMBSTONE) {
+				occupyingStructure.setStructureType(StructureType.NONE);
+				tile.setLandType(LandType.FOREST);
+			}
+		}
 	}
 
 	void resetGold() {
