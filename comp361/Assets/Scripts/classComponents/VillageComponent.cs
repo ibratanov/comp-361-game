@@ -19,6 +19,10 @@ public class VillageComponent : MonoBehaviour {
 	TileComponent[] _controlledRegion;
 	UnitComponent[] _supportingUnits;
 	VillageType _villageType;
+
+	/*
+	 * TODO: Decide - may be unnecessary
+	 */
 	VillageType[] _upgradeCosts;
 
 	/*********************
@@ -72,8 +76,37 @@ public class VillageComponent : MonoBehaviour {
 	 ********************/
 
 	public static int calculateCost(VillageType villageType, VillageType newLevel) {
-		/* TODO */
-		return 0;
+		VillageType current = villageType;
+		int cost = 0;
+
+		switch (villageType)
+		{
+			case VillageType.HOVEL:
+				if (newLevel.Equals(VillageType.TOWN)) {
+					cost = 8;
+				} else if (newLevel.Equals(VillageType.FORT)) {
+					cost = 16;
+				}
+				break;
+			case VillageType.TOWN:
+				if (newLevel.Equals(VillageType.FORT)) {
+					cost = 8;
+				}
+				break;
+		}
+
+		return cost;
+	}
+
+	public bool upgradeVillage(VillageType newLevel) {
+		if (newLevel > _villageType) {
+			int cost = calculateCost(_villageType, newLevel);
+
+			if (_woodStock >= cost) {
+				setVillageType(newLevel);
+				removeWood(cost);
+			}
+		}
 	}
 
 	public bool payWages() {
@@ -174,7 +207,7 @@ public class VillageComponent : MonoBehaviour {
 
     public VillageComponent(VillageType vt)
     {
-        /* TODO */
+		/* TODO */
     }
 
 
