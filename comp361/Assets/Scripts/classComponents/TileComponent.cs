@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 using System.Collections;
 
 public enum LandType { 
@@ -90,6 +91,7 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	public TileComponent[] getNeighbours() {
+        
 		return _neighbours;
 	}
 
@@ -131,8 +133,29 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	public TileComponent[] breadthFS() {
-		/* TODO */
-		return null;
+		List<TileComponent> regionTiles = new List<TileComponent>();
+        Stack<TileComponent> s = new Stack<TileComponent>();
+        foreach (var neighbour in this.getNeighbours())
+        {
+            if (neighbour._initialPlayerIndex == this._initialPlayerIndex)
+            {
+                s.Push(neighbour);
+                regionTiles.Add(neighbour);
+            }            
+        }
+        while (s.Count > 0)
+        {
+            var t = s.Pop();
+            foreach (var n in t.getNeighbours())
+            {
+                if (n._initialPlayerIndex == t._initialPlayerIndex)
+                {
+                    s.Push(n);
+                    regionTiles.Add(n);
+                }
+            }
+        }
+		return regionTiles.ToArray();
 	}
 
 	public void connectRegions() {

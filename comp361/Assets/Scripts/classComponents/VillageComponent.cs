@@ -125,8 +125,10 @@ public class VillageComponent : MonoBehaviour {
 	}
 
 	public UnitComponent hireVillager(UnitType unitType) {
-        /* TODO */
-		return null;
+        UnitComponent u = new UnitComponent(unitType);
+        u.setVillage(this);
+        return null;
+        /*TODO*/
 	}
 
 	public void addGold(int amount) {

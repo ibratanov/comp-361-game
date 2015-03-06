@@ -70,6 +70,14 @@ public class MapGenerator : MonoBehaviour {
 				currentPosition += diag;
 			}
 		}
+        // call getNeighbors on each tile
+        for (int i = 0; i < columns; ++i)
+        {
+            for (int j = 0; j < rows; ++j)
+            {
+                _landTiles[i, j].getNeighbours();
+            }
+        }
 	}
 	
 	/// <summary>
@@ -115,4 +123,9 @@ public class MapGenerator : MonoBehaviour {
 			tile.setGameObject(_assets, LandType.MEADOW);
 		}
 	}
+
+    public TileComponent[,] getLandTiles()
+    {
+        return _landTiles;
+    }
 }
