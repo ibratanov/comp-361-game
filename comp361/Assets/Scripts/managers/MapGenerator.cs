@@ -72,9 +72,9 @@ public class MapGenerator : MonoBehaviour {
 			for (int j = 0; j < rows; ++j)
 			{
 				//Create a new tile and add it to the landTiles array
-				GameObject gameTile = (GameObject)Instantiate(_gameTile, currentPosition, Quaternion.identity); //TODO: Network this
+				GameObject gameTile = (GameObject)Network.Instantiate(_gameTile, currentPosition, Quaternion.identity, 0);
 				_landTiles[i,j] = gameTile.GetComponent<TileComponent>();
-				_landTiles[i,j].setGameObject(_assets, LandType.GRASS);
+				_landTiles[i,j].setGameObject(LandType.GRASS);
 				//Keep things organized with a parental hierarchy
 				gameTile.transform.parent = this.transform;
 
@@ -92,7 +92,7 @@ public class MapGenerator : MonoBehaviour {
         {
             for (int j = 0; j < rows; ++j)
             {
-                getNeighbours(i, j);
+                //getNeighbours(i, j);
             }
         }
 	}
@@ -124,7 +124,7 @@ public class MapGenerator : MonoBehaviour {
 			//Change its properties
 			tile.setLandType(LandType.FOREST);
 			//Update the visual component of this tile
-			tile.setGameObject(_assets, LandType.FOREST);
+			tile.setGameObject(LandType.FOREST);
 		}
 		
 		//Change into meadow tiles
@@ -137,7 +137,7 @@ public class MapGenerator : MonoBehaviour {
 			//Change its properties
 			tile.setLandType(LandType.MEADOW);
 			//Update the visual component of this tile
-			tile.setGameObject(_assets, LandType.MEADOW);
+			tile.setGameObject(LandType.MEADOW);
 		}
 	}
 

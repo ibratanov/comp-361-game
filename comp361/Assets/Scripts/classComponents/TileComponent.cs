@@ -18,6 +18,7 @@ public enum OccupantType {
 
 public class TileComponent : MonoBehaviour {
 	public GameObject _terrainGameObject;
+	private AssetManager _assets;
 
 	readonly static int MEADOW_REVENUE = 2;
 	readonly static int FOREST_REVENUE = 0;
@@ -123,8 +124,14 @@ public class TileComponent : MonoBehaviour {
 		return _terrainGameObject;
 	}
 
-	public void setGameObject(AssetManager assets, LandType landType){
-		_terrainGameObject = assets.getTerrainGameObject(landType);
+	public void setGameObject(LandType landType){
+		_terrainGameObject = _assets.getTerrainGameObject(landType);
+		networkView.RPC("RPCsetGameObject", RPCMode.All, (int)landType);
+	}
+	
+	[RPC]
+	public void RPCsetGameObject(int assetIndex){
+		_terrainGameObject = _assets.getTerrainGameObject(assetIndex);
 	}
 
 	public TileComponent(int initialOwner) {
@@ -188,6 +195,10 @@ public class TileComponent : MonoBehaviour {
 		_village = null;
 		_terrainGameObject = (GameObject)Instantiate(_terrainGameObject, this.transform.position, Quaternion.identity);
 		_terrainGameObject.transform.parent = this.transform;
+	}
+
+	void Awake(){
+		_assets = GameObject.FindObjectOfType<AssetManager>();
 	}
 
 	// Update is called once per frame

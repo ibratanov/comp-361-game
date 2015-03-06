@@ -12,6 +12,7 @@ GameObject:
   - 33: {fileID: 3337900}
   - 23: {fileID: 2337900}
   - 64: {fileID: 6437900}
+  - 148: {fileID: 14882100}
   m_Layer: 0
   m_Name: GameTile
   m_TagString: Untagged
@@ -85,6 +86,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _terrainGameObject: {fileID: 159312, guid: f7f41b7a4ff1983428772aa5ad139fc3, type: 2}
+--- !u!148 &14882100
+NetworkView:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 137900}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 437900}
+  m_ViewID:
+    m_ID: 0
+    m_Type: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
