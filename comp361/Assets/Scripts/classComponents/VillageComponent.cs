@@ -13,8 +13,8 @@ public class VillageComponent : MonoBehaviour {
 	 *     ATTRIBUTES    *
 	 ********************/
 
-	uint _goldStock;
-	uint _woodStock;
+	int _goldStock;
+	int _woodStock;
 	PlayerComponent _player;
 	TileComponent[] _controlledRegion;
 	UnitComponent[] _supportingUnits;
@@ -29,16 +29,16 @@ public class VillageComponent : MonoBehaviour {
 	 *  GETTERS/SETTERS  *
 	 ********************/
 
-	public uint getGoldStock() {
+	public int getGoldStock() {
 		return _goldStock;
 	}
 
-	public uint getWoodStock() {
+	public int getWoodStock() {
 		return _woodStock;
 	}
 
-	uint getWages() {
-		uint wages = 0;
+	int getWages() {
+		int wages = 0;
 
 		foreach (UnitComponent unit in _supportingUnits) {
 			wages += unit.getUpkeep();
@@ -105,12 +105,14 @@ public class VillageComponent : MonoBehaviour {
 			if (_woodStock >= cost) {
 				setVillageType(newLevel);
 				removeWood(cost);
+				return true;
 			}
 		}
+		return false;
 	}
 
 	public bool payWages() {
-		uint wages = getWages();
+		int wages = getWages();
 
 		if (wages <= getGoldStock()) {
 			removeGold(wages);
@@ -127,11 +129,11 @@ public class VillageComponent : MonoBehaviour {
 		return null;
 	}
 
-	public void addGold(uint amount) {
+	public void addGold(int amount) {
 		_goldStock += amount;
 	}
 
-	public void addWood(uint amount) {
+	public void addWood(int amount) {
 		_woodStock += amount;
 	}
 
@@ -174,11 +176,11 @@ public class VillageComponent : MonoBehaviour {
 		}
 	}
 
-	public void removeGold(uint amount) {
+	public void removeGold(int amount) {
 		_goldStock -= amount;
 	}
 
-	public void removeWood(uint amount) {
+	public void removeWood(int amount) {
 		_woodStock -= amount;
 	}
 
@@ -200,7 +202,7 @@ public class VillageComponent : MonoBehaviour {
 
 	public void updateGoldStock() {
 		foreach (TileComponent tile in _controlledRegion) {
-			uint revenue = tile.getRevenue();
+			int revenue = tile.getRevenue();
 			addGold(revenue);
 		}
 	}
