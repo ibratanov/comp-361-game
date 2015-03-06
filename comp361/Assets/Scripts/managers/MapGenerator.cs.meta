@@ -2,7 +2,10 @@ fileFormatVersion: 2
 guid: f93fb16c77504e14a92512ba0097f3ed
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - _assets: {fileID: 11495782, guid: 83d94e482f11beb47bddc447bbfd84c6, type: 2}
+  - _gameTile: {fileID: 137900, guid: c29b761be60e9bc4394ea81d1c88d087, type: 2}
+  - _playerManager: {fileID: 195782, guid: 6912356fdc0da9241ae914f8a1ec8c05, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

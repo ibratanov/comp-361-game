@@ -2,7 +2,6 @@
 using System.Collections;
 
 public class GameComponent : MonoBehaviour {
-    public MapGenerator m;
 
 	/*********************
 	 *     ATTRIBUTES    *
@@ -42,10 +41,11 @@ public class GameComponent : MonoBehaviour {
         setRemainingPlayers(participants);
         setCurrentPlayer(firstPlayer);
 
-        MapGenerator m = MapGenerator.GetInstance();
+        MapGenerator m = this.GetComponent<MapGenerator>();
         m.GenerateMap();
 
         _mapTiles = m.getLandTiles();
+
 
         foreach (var tile in _mapTiles)
         {

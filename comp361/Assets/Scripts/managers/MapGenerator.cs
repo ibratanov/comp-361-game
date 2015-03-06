@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class MapGenerator : MonoBehaviour {
 
-    public static MapGenerator _instance;
+    //public static MapGenerator _instance;
 
 	public AssetManager _assets;
 	public GameObject _gameTile;
@@ -32,19 +32,19 @@ public class MapGenerator : MonoBehaviour {
 	
 	}
 
-    private MapGenerator()
-    {
+    //private MapGenerator()
+    //{
 
-    }
+    //}
 
-    public static MapGenerator GetInstance()
-    {
-        if (_instance == null)
-        {
-            return new MapGenerator();
-        }
-        else return _instance;
-    }
+    //public static MapGenerator GetInstance()
+    //{
+    //    if (_instance == null)
+    //    {
+    //        return new MapGenerator();
+    //    }
+    //    else return _instance;
+    //}
 
 	public void GenerateMap(){
 		//if(Network.isServer){
@@ -150,60 +150,49 @@ public class MapGenerator : MonoBehaviour {
     {
         List<TileComponent> n = new List<TileComponent>();
 
+        if (i + 1 < _columns)
+        {
+            n.Add(_landTiles[i + 1, j]);
+        }
+        if (i - 1 >= 0)
+        {
+            n.Add(_landTiles[i - 1, j]);
+        }
+
+        if (j - 1 >= 0)
+        {
+            n.Add(_landTiles[i, j - 1]);
+        }
+
+        if (j + 1 < _rows)
+        {
+            n.Add(_landTiles[i, j + 1]);
+        }
+
         if (j % 2 == 0)
         {
-            if (j + 1 < _rows)
+            if (i + 1 < _columns && j + 1 < _rows )
             {
-                n.Add(_landTiles[i, j + 1]);
+                n.Add(_landTiles[i + 1, j + 1]);
             }
-            if (i + 1 < _columns)
-            {
-                n.Add(_landTiles[i + 1, j]);
-                if (j + 1 < _rows)
-                {                   
-                    n.Add(_landTiles[i + 1, j + 1]);                 
-                }
-                if (j - 1 >= 0)
-                {
-                    n.Add(_landTiles[i + 1, j - 1]);
-                }
-            }
-            if (i - 1 >= 0)
-            {
-                n.Add(_landTiles[i - 1, j]);
 
-            }
-            if (j - 1 < _rows)
+            if (i + 1 < _columns && j - 1 >= 0)
             {
-                n.Add(_landTiles[i, j - 1]);
+                n.Add(_landTiles[i + 1, j - 1]);
             }
         }
         else
         {
-            if (i + 1 < _columns)
+            if (i - 1 >= 0 && j - 1 >= 0)
             {
-                n.Add(_landTiles[i + 1, j]);
+                n.Add(_landTiles[i - 1, j - 1]);
             }
-            if (j - 1 >= 0)
+
+            if (i - 1 >= 0 && j + 1 < _rows)
             {
-                n.Add(_landTiles[i, j - 1]);
-                if (i - 1 >= 0)
-                {
-                    n.Add(_landTiles[i - 1, j - 1]);
-                }
+                n.Add(_landTiles[i - 1, j + 1]);
             }
-            if (j + 1 < _rows)
-            {
-                n.Add(_landTiles[i, j + 1]);
-                if (i - 1 >= 0)
-                {
-                    n.Add(_landTiles[i - 1, j + 1]);
-                }
-            }
-            if (i - 1 >= 0)
-            {
-                n.Add(_landTiles[i - 1, j]);
-            }
+
         }
 
         _landTiles[i,j].setNeighbours(n.ToArray());
