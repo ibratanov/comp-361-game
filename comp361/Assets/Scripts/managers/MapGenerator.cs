@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class MapGenerator : MonoBehaviour {
+
+    public static MapGenerator _instance;
+
 	public AssetManager _assets;
 	public GameObject _gameTile;
 
 	public GameObject _playerManager;
 
 	public Vector3 _origin;
-	public int _rows = 17;
-	public int _columns = 18;
+	public static int _rows = 17;
+	public static int _columns = 18;
 	public float _forestRatio = 0.2f;
 	public float _meadowRatio = 0.1f;
 	public Vector3 _tileHeight = new Vector3(0, 0, 1.732f);
@@ -28,6 +31,20 @@ public class MapGenerator : MonoBehaviour {
 	void Update () {
 	
 	}
+
+    private MapGenerator()
+    {
+
+    }
+
+    public static MapGenerator GetInstance()
+    {
+        if (_instance == null)
+        {
+            return new MapGenerator();
+        }
+        else return _instance;
+    }
 
 	public void GenerateMap(){
 		//if(Network.isServer){
@@ -75,7 +92,7 @@ public class MapGenerator : MonoBehaviour {
         {
             for (int j = 0; j < rows; ++j)
             {
-                _landTiles[i, j].getNeighbours();
+                getNeighbours(i, j);
             }
         }
 	}
@@ -127,5 +144,68 @@ public class MapGenerator : MonoBehaviour {
     public TileComponent[,] getLandTiles()
     {
         return _landTiles;
+    }
+
+    public void getNeighbours(int i, int j)
+    {
+        List<TileComponent> n = new List<TileComponent>();
+
+        if (j % 2 == 0)
+        {
+            if (j + 1 < _rows)
+            {
+                n.Add(_landTiles[i, j + 1]);
+            }
+            if (i + 1 < _columns)
+            {
+                n.Add(_landTiles[i + 1, j]);
+                if (j + 1 < _rows)
+                {                   
+                    n.Add(_landTiles[i + 1, j + 1]);                 
+                }
+                if (j - 1 >= 0)
+                {
+                    n.Add(_landTiles[i + 1, j - 1]);
+                }
+            }
+            if (i - 1 >= 0)
+            {
+                n.Add(_landTiles[i - 1, j]);
+
+            }
+            if (j - 1 < _rows)
+            {
+                n.Add(_landTiles[i, j - 1]);
+            }
+        }
+        else
+        {
+            if (i + 1 < _columns)
+            {
+                n.Add(_landTiles[i + 1, j]);
+            }
+            if (j - 1 >= 0)
+            {
+                n.Add(_landTiles[i, j - 1]);
+                if (i - 1 >= 0)
+                {
+                    n.Add(_landTiles[i - 1, j - 1]);
+                }
+            }
+            if (j + 1 < _rows)
+            {
+                n.Add(_landTiles[i, j + 1]);
+                if (i - 1 >= 0)
+                {
+                    n.Add(_landTiles[i - 1, j + 1]);
+                }
+            }
+            if (i - 1 >= 0)
+            {
+                n.Add(_landTiles[i - 1, j]);
+            }
+        }
+
+        _landTiles[i,j].setNeighbours(n.ToArray());
     }
 }
