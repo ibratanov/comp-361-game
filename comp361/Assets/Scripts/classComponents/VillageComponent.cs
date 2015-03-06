@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public enum VillageType {
 	HOVEL,
@@ -16,7 +16,7 @@ public class VillageComponent : MonoBehaviour {
 	int _goldStock;
 	int _woodStock;
 	PlayerComponent _player;
-	TileComponent[] _controlledRegion;
+	List<TileComponent> _controlledRegion;
 	UnitComponent[] _supportingUnits;
 	VillageType _villageType;
 
@@ -55,7 +55,7 @@ public class VillageComponent : MonoBehaviour {
 		_player = player;
 	}
 
-	public TileComponent[] getControlledRegion() {
+	public List<TileComponent> getControlledRegion() {
 		return _controlledRegion;
 	}
 
@@ -138,7 +138,7 @@ public class VillageComponent : MonoBehaviour {
 	}
 
 	public void associate(TileComponent tile) {
-		/* TODO */
+        _controlledRegion.Add(tile);
 	}
 
 	public void associate(UnitComponent unit) {

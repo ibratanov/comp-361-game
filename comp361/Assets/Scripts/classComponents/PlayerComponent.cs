@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public enum PlayerStatus {
 	OFFLINE,
@@ -19,7 +19,7 @@ public class PlayerComponent : MonoBehaviour {
 
 	GameComponent _myGame;
 	PlayerStatus _status;
-	VillageComponent[] _villages;
+	List<VillageComponent> _villages;
 
 	/*********************
 	 *  GETTERS/SETTERS  *
@@ -57,7 +57,7 @@ public class PlayerComponent : MonoBehaviour {
 		_status = status;
 	}
 
-	public VillageComponent[] getVillages() {
+	public List<VillageComponent> getVillages() {
 		return _villages;
 	}
 
@@ -66,7 +66,7 @@ public class PlayerComponent : MonoBehaviour {
 	 ********************/
 
 	public void add(VillageComponent village) {
-		/* TODO */
+        _villages.Add(village);
 	}
 
 	public void beginTurn() {

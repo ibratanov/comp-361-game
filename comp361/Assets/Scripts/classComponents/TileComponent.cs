@@ -121,7 +121,13 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	public TileComponent(int initialOwner) {
-		/* TODO */
+        _initialPlayerIndex = initialOwner;
+        _hasRoad = false;
+
+        _landType = LandType.GRASS;
+        _occupantType = OccupantType.NONE;
+        _occupyingStructure = new StructureComponent(StructureType.NONE, this);
+        _neighbours = new TileComponent[6];
 	}
 
 	public TileComponent[] breadthFS() {
