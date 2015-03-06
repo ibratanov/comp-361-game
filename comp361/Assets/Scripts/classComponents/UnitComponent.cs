@@ -137,8 +137,8 @@ public class UnitComponent : MonoBehaviour {
         }
 	}
 
-	public void Create(UnitType unitType) {
-		/* TODO */
+	public UnitComponent(UnitType unitType) {
+        /* TODO */
 	}
 
 	public void cultivate() {
