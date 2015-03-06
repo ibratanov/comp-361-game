@@ -90,10 +90,15 @@ public class TileComponent : MonoBehaviour {
 		_village = village;
 	}
 
-	public TileComponent[] getNeighbours() {
-        
-		return _neighbours;
-	}
+    public TileComponent[] getNeighbours()
+    {
+        return _neighbours;
+    }
+
+    public void setNeighbours(TileComponent[] neighbours)
+    {
+        _neighbours = neighbours;
+    }
 
 	/*********************
 	 *      METHODS      *

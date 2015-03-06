@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class GameComponent : MonoBehaviour {
+    public MapGenerator m;
 
 	/*********************
 	 *     ATTRIBUTES    *
@@ -41,27 +42,11 @@ public class GameComponent : MonoBehaviour {
         setRemainingPlayers(participants);
         setCurrentPlayer(firstPlayer);
 
-        MapGenerator m = new MapGenerator();
+        MapGenerator m = MapGenerator.GetInstance();
         m.GenerateMap();
 
         _mapTiles = m.getLandTiles();
 
-        // this is all taken care of by the TileManager
-        //for (int i = 0; i < 300; i++)
-        //{            
-        //    TileComponent t = new TileComponent(Random.Range(0, participants.Length + 1));
-        //    _mapTiles[i] = t;
-        //}
-        //for (int i = 0; i < 60; i++)
-        //{
-        //    TileComponent forestTile = _mapTiles[Random.Range(0, 300)];
-        //    forestTile.setLandType(LandType.FOREST);
-        //}
-        //for (int i = 0; i < 60; i++)
-        //{
-        //    TileComponent meadowTile = _mapTiles[Random.Range(0, 300)];
-        //    meadowTile.setLandType(LandType.MEADOW);
-        //}
         foreach (var tile in _mapTiles)
         {
             int playerIndex = tile.getInitialPlayerIndex();

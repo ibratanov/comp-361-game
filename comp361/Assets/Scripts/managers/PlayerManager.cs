@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour {
-	ArrayList _players = new ArrayList();
+	List<PlayerComponent> _players = new List<PlayerComponent>();
 
 	//Temporary variables for use in New Profile menu
 	public Text _inputUsername;
@@ -18,6 +18,11 @@ public class PlayerManager : MonoBehaviour {
 	void Update () {
 	
 	}
+
+    public PlayerComponent[] GetPlayers()
+    {
+        return _players.ToArray();
+    }
 
 	public void AddPlayer(PlayerComponent playerProfile){
 		_players.Add(playerProfile);
