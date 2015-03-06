@@ -10,7 +10,7 @@ public class GameComponent : MonoBehaviour {
 	PlayerComponent _currentPlayer;
 	PlayerComponent[] _participants;
 	PlayerComponent[] _remainingPlayers;
-	TileComponent[] _mapTiles;
+	TileComponent[,] _mapTiles;
 
 	/*********************
 	 *  GETTERS/SETTERS  *
@@ -40,21 +40,28 @@ public class GameComponent : MonoBehaviour {
         var firstPlayer = participants[0];
         setRemainingPlayers(participants);
         setCurrentPlayer(firstPlayer);
-        for (int i = 0; i < 300; i++)
-        {            
-            TileComponent t = new TileComponent(Random.Range(0, participants.Length + 1));
-            _mapTiles[i] = t;
-        }
-        for (int i = 0; i < 60; i++)
-        {
-            TileComponent forestTile = _mapTiles[Random.Range(0, 300)];
-            forestTile.setLandType(LandType.FOREST);
-        }
-        for (int i = 0; i < 60; i++)
-        {
-            TileComponent meadowTile = _mapTiles[Random.Range(0, 300)];
-            meadowTile.setLandType(LandType.MEADOW);
-        }
+
+        MapGenerator m = new MapGenerator();
+        m.GenerateMap();
+
+        _mapTiles = m.getLandTiles();
+
+        // this is all taken care of by the TileManager
+        //for (int i = 0; i < 300; i++)
+        //{            
+        //    TileComponent t = new TileComponent(Random.Range(0, participants.Length + 1));
+        //    _mapTiles[i] = t;
+        //}
+        //for (int i = 0; i < 60; i++)
+        //{
+        //    TileComponent forestTile = _mapTiles[Random.Range(0, 300)];
+        //    forestTile.setLandType(LandType.FOREST);
+        //}
+        //for (int i = 0; i < 60; i++)
+        //{
+        //    TileComponent meadowTile = _mapTiles[Random.Range(0, 300)];
+        //    meadowTile.setLandType(LandType.MEADOW);
+        //}
         foreach (var tile in _mapTiles)
         {
             int playerIndex = tile.getInitialPlayerIndex();
