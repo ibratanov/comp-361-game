@@ -46,6 +46,10 @@ public class GameComponent : MonoBehaviour {
 
         _mapTiles = m.getLandTiles();
 
+        foreach (var tile in _mapTiles)
+        {
+            tile.setInitialPlayerIndex(Random.Range(0, participants.Length + 1));
+        }
 
         foreach (var tile in _mapTiles)
         {

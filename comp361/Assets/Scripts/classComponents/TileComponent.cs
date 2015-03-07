@@ -167,7 +167,7 @@ public class TileComponent : MonoBehaviour {
         Stack<TileComponent> s = new Stack<TileComponent>();
         foreach (var neighbour in this.getNeighbours())
         {
-            if (neighbour._initialPlayerIndex == this._initialPlayerIndex)
+            if (neighbour.getInitialPlayerIndex() == this.getInitialPlayerIndex())
             {
                 s.Push(neighbour);
                 regionTiles.Add(neighbour);
@@ -178,7 +178,7 @@ public class TileComponent : MonoBehaviour {
             var t = s.Pop();
             foreach (var n in t.getNeighbours())
             {
-                if (n._initialPlayerIndex == t._initialPlayerIndex)
+                if (n.getInitialPlayerIndex() == t.getInitialPlayerIndex())
                 {
                     s.Push(n);
                     regionTiles.Add(n);
