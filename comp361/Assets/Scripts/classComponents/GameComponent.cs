@@ -82,17 +82,20 @@ public class GameComponent : MonoBehaviour {
 					}
 					if (!regionContainsVillage)
 					{
-						/*TODO: Add this back in once the functions are properly finished
+						TileComponent tileWithVillage = region[0];
+						var newHovel = new VillageComponent(VillageType.HOVEL);
+
+						tileWithVillage.setOccupantType(OccupantType.VILLAGE);
+						tileWithVillage.setVillage(newHovel, true);
+
 					   	var player = participants[playerIndex];
-	                   	var newHovel = new VillageComponent(VillageType.HOVEL);
 	                   	player.add(newHovel);
-						TileComponent regionTile = region[0];
-						newHovel.associate(regionTile);
+
+						newHovel.associate(tileWithVillage);
 						newHovel.addGold(7);
-	                   	UnitComponent newPeasant = newHovel.hireVillager(UnitType.PEASANT);
-	                   	TileComponent villagerTile = region[1];
-	                   	newPeasant.associate(villagerTile);
-*/
+//	                   	UnitComponent newPeasant = newHovel.hireVillager(UnitType.PEASANT);
+//	                   	TileComponent villagerTile = region[1];
+//	                   	newPeasant.associate(villagerTile);
 					}
 				}
 			}
@@ -101,18 +104,6 @@ public class GameComponent : MonoBehaviour {
 
 	public void removePlayer(PlayerComponent player) {
 		/* TODO */
-	}
-
-
-
-	// Use this for initialization
-	void Start () {
-
-	}
-
-	// Update is called once per frame
-	void Update () {
-		
 	}
 
 	/// <summary>

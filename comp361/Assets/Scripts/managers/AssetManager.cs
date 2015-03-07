@@ -11,31 +11,15 @@ public class AssetManager : MonoBehaviour {
 		return _terrains[(int)lType];
 	}
 
-	public GameObject getTerrainGameObject(int assetIndex){
-		return _terrains[assetIndex];
-	}
-
 	public GameObject getUnitGameObject(UnitType uType){
 		return _villagerUnits[(int)uType];
-	}
-
-	public GameObject getUnitGameObject(int assetIndex){
-		return _terrains[assetIndex];
 	}
 
 	public GameObject getVillageGameObject(VillageType vType){
 		return _villages[(int)vType];
 	}
 
-	public GameObject getVillageGameObject(int assetIndex){
-		return _terrains[assetIndex];
-	}
-
 	public GameObject getStructureGameObject(StructureType sType){
 		return _structures[(int)sType];
-	}
-
-	public GameObject getStructureGameObject(int assetIndex){
-		return _terrains[assetIndex];
 	}
 }

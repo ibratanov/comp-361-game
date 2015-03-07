@@ -19,7 +19,7 @@ public class PlayerComponent : MonoBehaviour {
 
 	GameComponent _myGame;
 	PlayerStatus _status;
-	List<VillageComponent> _villages;
+	List<VillageComponent> _villages = new List<VillageComponent>();
 
 	/*********************
 	 *  GETTERS/SETTERS  *
