@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour {
+
 	List<PlayerComponent> _players = new List<PlayerComponent>();
 
 	//Temporary variables for use in New Profile menu

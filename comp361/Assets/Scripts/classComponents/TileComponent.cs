@@ -24,6 +24,8 @@ public class TileComponent : MonoBehaviour {
 	readonly static int FOREST_REVENUE = 0;
 	readonly static int LANDTYPE_REVENUE = 1;
 
+	private Color[] _playerColours = {Color.red, Color.green, Color.blue, Color.yellow, Color.white};
+
 	/*********************
 	 *     ATTRIBUTES    *
 	 ********************/
@@ -61,12 +63,14 @@ public class TileComponent : MonoBehaviour {
 		}
 		else{
 			_landType = landType;
+			_terrainGameObject = _assets.getTerrainGameObject(landType);
 		}
 	}
 
 	[RPC]
 	public void RPCsetLandType(int landTypeIndex) {
 		_landType = (LandType)landTypeIndex;
+		_terrainGameObject = _assets.getTerrainGameObject((LandType)landTypeIndex);
 	}
 
 	public OccupantType getOccupantType() {
@@ -138,20 +142,6 @@ public class TileComponent : MonoBehaviour {
 		return _terrainGameObject;
 	}
 
-	public void setGameObject(LandType landType){
-		if(Network.isServer || Network.isClient){
-			networkView.RPC("RPCsetGameObject", RPCMode.All, (int)landType);
-		}
-		else{
-			_terrainGameObject = _assets.getTerrainGameObject(landType);
-		}
-	}
-	
-	[RPC]
-	public void RPCsetGameObject(int assetIndex){
-		_terrainGameObject = _assets.getTerrainGameObject(assetIndex);
-	}
-
 	public TileComponent(int initialOwner) {
         _initialPlayerIndex = initialOwner;
         _hasRoad = false;
@@ -164,27 +154,22 @@ public class TileComponent : MonoBehaviour {
 
 	public TileComponent[] breadthFS() {
 		List<TileComponent> regionTiles = new List<TileComponent>();
-        Stack<TileComponent> s = new Stack<TileComponent>();
-        foreach (var neighbour in this.getNeighbours())
-        {
-            if (neighbour.getInitialPlayerIndex() == this.getInitialPlayerIndex())
-            {
-                s.Push(neighbour);
-                regionTiles.Add(neighbour);
-            }            
-        }
-        while (s.Count > 0)
-        {
-            var t = s.Pop();
-            foreach (var n in t.getNeighbours())
-            {
-                if (n.getInitialPlayerIndex() == t.getInitialPlayerIndex())
-                {
-                    s.Push(n);
-                    regionTiles.Add(n);
-                }
-            }
-        }
+		Queue<TileComponent> q = new Queue<TileComponent>();
+		TileComponent t = this.GetComponent<TileComponent>();
+		
+		q.Enqueue(t);
+		regionTiles.Add(t);
+		while(q.Count > 0){
+			t = q.Dequeue();
+			foreach (var neighbour in t.getNeighbours())
+			{
+				if (neighbour.getInitialPlayerIndex() == this.getInitialPlayerIndex() && !regionTiles.Contains(neighbour))
+				{
+					q.Enqueue(neighbour);
+					regionTiles.Add(neighbour);
+				}            
+			}
+		}
 		return regionTiles.ToArray();
 	}
 
@@ -229,8 +214,12 @@ public class TileComponent : MonoBehaviour {
 			networkView.RPC ("ToggleColours", RPCMode.All);
 		}
 		else{
-			ToggleColours ();
+			HighlightRegion ();
 		}
+	}
+
+	void OnMouseUp(){
+		UnhighlightRegion();
 	}
 	
 	[RPC]
@@ -244,5 +233,33 @@ public class TileComponent : MonoBehaviour {
 		}
 		
 		Debug.Log("changing colors");
+	}
+
+	public void Select(){
+		Debug.Log("player:" + _initialPlayerIndex);
+		if(_initialPlayerIndex == 0){
+			_terrainGameObject.renderer.materials[2].SetColor("_Color", Color.red);
+		}
+		else{
+			_terrainGameObject.renderer.materials[2].SetColor("_Color", Color.green);
+		}
+	}
+
+	public void Deselect(){
+		_terrainGameObject.renderer.materials[2].SetColor("_Color", Color.white);
+	}
+
+	public void HighlightRegion(){
+		TileComponent[] region = this.breadthFS();
+		foreach(TileComponent tile in region){
+			tile.Select();
+		}
+	}
+
+	public void UnhighlightRegion(){
+		TileComponent[] region = this.breadthFS();
+		foreach(TileComponent tile in region){
+			tile.Deselect();
+		}
 	}
 }
