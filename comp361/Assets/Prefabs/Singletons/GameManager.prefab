@@ -40,7 +40,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03c7b98cd1ba1d4489cf9591aa94a380, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m: {fileID: 0}
+  _playerManager: {fileID: 11495782, guid: 6912356fdc0da9241ae914f8a1ec8c05, type: 2}
 --- !u!114 &11419806
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -54,8 +54,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _assets: {fileID: 11495782, guid: 83d94e482f11beb47bddc447bbfd84c6, type: 2}
   _gameTile: {fileID: 137900, guid: c29b761be60e9bc4394ea81d1c88d087, type: 2}
-  _playerManager: {fileID: 0}
   _origin: {x: 0, y: 0, z: 0}
+  _rows: 17
+  _columns: 18
   _forestRatio: .200000003
   _meadowRatio: .100000001
   _tileHeight: {x: 0, y: 0, z: 1.73199999}

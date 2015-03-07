@@ -108,13 +108,25 @@ public class GameComponent : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		_playerManager.AddPlayer(new PlayerComponent("Rita", "rita"));
-		_playerManager.AddPlayer(new PlayerComponent("Rita2", "rita2"));
-		newGame(_playerManager.GetPlayers());
+
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 	
+	}
+
+	/// <summary>
+	/// Easy function to be called by menu button.
+	/// </summary>
+	public void BeginGame(){
+		PlayerComponent[] players = _playerManager.GetPlayers();
+		newGame(players);
+	}
+
+	public void TestMapGeneration(){
+		_playerManager.AddPlayer(new PlayerComponent("Rita", "rita"));
+		_playerManager.AddPlayer(new PlayerComponent("Rita2", "rita2"));
+		newGame(_playerManager.GetPlayers());
 	}
 }
