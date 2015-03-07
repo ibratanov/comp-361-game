@@ -11,8 +11,8 @@ public class MapGenerator : MonoBehaviour {
 	public GameObject _playerManager;
 
 	public Vector3 _origin;
-	public static int _rows = 17;
-	public static int _columns = 18;
+	public int _rows = 17;
+	public int _columns = 18;
 	public float _forestRatio = 0.2f;
 	public float _meadowRatio = 0.1f;
 	public Vector3 _tileHeight = new Vector3(0, 0, 1.732f);
@@ -22,7 +22,7 @@ public class MapGenerator : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		_landTiles = new TileComponent[_columns,_rows];
+		
 		//_waterTiles = new GameObject[_rows,_columns];
 		//GenerateMap();
 	}
@@ -48,6 +48,7 @@ public class MapGenerator : MonoBehaviour {
 
 	public void GenerateMap(){
 		//if(Network.isServer){
+        _landTiles = new TileComponent[_columns, _rows];
 			GenerateSquareGrid( _rows, _columns, _origin, _tileHeight, _tileDiagonal);
 			AddTerrain(_forestRatio, _meadowRatio);
 		//}
@@ -71,9 +72,18 @@ public class MapGenerator : MonoBehaviour {
 			currentPosition = startLocation + tileHeight * i;
 			for (int j = 0; j < rows; ++j)
 			{
+                GameObject gameTile;
 				//Create a new tile and add it to the landTiles array
-				GameObject gameTile = (GameObject)Network.Instantiate(_gameTile, currentPosition, Quaternion.identity, 0);
-				_landTiles[i,j] = gameTile.GetComponent<TileComponent>();
+                if (Network.isClient || Network.isServer) {
+                    gameTile = (GameObject)Network.Instantiate(_gameTile, currentPosition, Quaternion.identity, 0);
+                }
+                else
+                {
+                    gameTile = (GameObject)Instantiate(_gameTile, currentPosition, Quaternion.identity);
+                }
+                //gameTile.AddComponent("TileComponent");
+                TileComponent t = gameTile.GetComponent<TileComponent>();
+				_landTiles[i,j] = t;
 				_landTiles[i,j].setGameObject(LandType.GRASS);
 				//Keep things organized with a parental hierarchy
 				gameTile.transform.parent = this.transform;
@@ -92,7 +102,7 @@ public class MapGenerator : MonoBehaviour {
         {
             for (int j = 0; j < rows; ++j)
             {
-                //getNeighbours(i, j);
+                getNeighbours(i, j);
             }
         }
 	}
@@ -194,7 +204,6 @@ public class MapGenerator : MonoBehaviour {
             }
 
         }
-
         _landTiles[i,j].setNeighbours(n.ToArray());
     }
 }

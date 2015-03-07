@@ -108,6 +108,10 @@ public class TileComponent : MonoBehaviour {
 
     public void setNeighbours(TileComponent[] neighbours)
     {
+        if (neighbours == null)
+        {Debug.Log("success");
+        }
+        
         _neighbours = neighbours;
     }
 
