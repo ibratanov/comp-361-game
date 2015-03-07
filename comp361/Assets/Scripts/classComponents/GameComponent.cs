@@ -57,7 +57,6 @@ public class GameComponent : MonoBehaviour {
 		foreach (var tile in _mapTiles)
 		{
 			int playerIndex = tile.getInitialPlayerIndex();
-			Debug.Log("PlayerIndex is:" + playerIndex);
 			//tile.getGameObject().GetComponent<Renderer>().materials[2].color = Color.white;
 			
 			if (playerIndex < participants.Length)
@@ -113,7 +112,7 @@ public class GameComponent : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-	
+		
 	}
 
 	/// <summary>

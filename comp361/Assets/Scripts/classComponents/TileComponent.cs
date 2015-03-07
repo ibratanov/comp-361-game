@@ -17,6 +17,14 @@ public enum OccupantType {
 }
 
 public class TileComponent : MonoBehaviour {
+	readonly static Color[] PLAYER_COLOURS = {	new Color(1.0f,0.25f,0.25f), 
+												new Color(0.25f,1.0f,0.25f), 
+												new Color(0.25f,0.25f,1.0f), 
+												new Color(0.25f,1.0f,1.0f), 
+												new Color(1.0f,0.25f,1.0f), 
+												new Color(1.0f,1.0f,0.25f), 
+												Color.white};
+
 	public GameObject _terrainGameObject;
 	private AssetManager _assets;
 
@@ -24,7 +32,7 @@ public class TileComponent : MonoBehaviour {
 	readonly static int FOREST_REVENUE = 0;
 	readonly static int LANDTYPE_REVENUE = 1;
 
-	private Color[] _playerColours = {Color.red, Color.green, Color.blue, Color.yellow, Color.white};
+	private Color[] _playerColours;
 
 	/*********************
 	 *     ATTRIBUTES    *
@@ -112,10 +120,6 @@ public class TileComponent : MonoBehaviour {
 
     public void setNeighbours(TileComponent[] neighbours)
     {
-        if (neighbours == null)
-        {Debug.Log("success");
-        }
-        
         _neighbours = neighbours;
     }
 
@@ -214,7 +218,7 @@ public class TileComponent : MonoBehaviour {
 			networkView.RPC ("ToggleColours", RPCMode.All);
 		}
 		else{
-			HighlightRegion ();
+			HighlightRegion();
 		}
 	}
 
@@ -231,18 +235,10 @@ public class TileComponent : MonoBehaviour {
 		else{
 			_terrainGameObject.renderer.materials[2].SetColor("_Color", Color.red);
 		}
-		
-		Debug.Log("changing colors");
 	}
 
 	public void Select(){
-		Debug.Log("player:" + _initialPlayerIndex);
-		if(_initialPlayerIndex == 0){
-			_terrainGameObject.renderer.materials[2].SetColor("_Color", Color.red);
-		}
-		else{
-			_terrainGameObject.renderer.materials[2].SetColor("_Color", Color.green);
-		}
+		_terrainGameObject.renderer.materials[2].SetColor("_Color", PLAYER_COLOURS[_initialPlayerIndex]);
 	}
 
 	public void Deselect(){
@@ -259,6 +255,20 @@ public class TileComponent : MonoBehaviour {
 	public void UnhighlightRegion(){
 		TileComponent[] region = this.breadthFS();
 		foreach(TileComponent tile in region){
+			tile.Deselect();
+		}
+	}
+
+	public void HighlightNeighbours(){
+		TileComponent[] neighbours = this.getNeighbours();
+		foreach(TileComponent tile in neighbours){
+			tile.Select();
+		}
+	}
+	
+	public void UnhighlightNeighbours(){
+		TileComponent[] neighbours = this.getNeighbours();
+		foreach(TileComponent tile in neighbours){
 			tile.Deselect();
 		}
 	}
