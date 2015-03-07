@@ -26,6 +26,7 @@ public class TileComponent : MonoBehaviour {
 												Color.white};
 
 	public GameObject _terrainGameObject;
+	public GameObject _villageGameObject;
 	private AssetManager _assets;
 
 	readonly static int MEADOW_REVENUE = 2;
@@ -61,10 +62,6 @@ public class TileComponent : MonoBehaviour {
 		_initialPlayerIndex = initialPlayerIndex;
 	}
 
-	public LandType getLandType() {
-		return _landType;
-	}
-
 	public void setLandType(LandType landType) {
 		if(Network.isServer || Network.isClient){
 			networkView.RPC("RPCsetLandType", RPCMode.All, (int)landType);
@@ -81,12 +78,39 @@ public class TileComponent : MonoBehaviour {
 		_terrainGameObject = _assets.getTerrainGameObject((LandType)landTypeIndex);
 	}
 
+	public LandType getLandType() {
+		return _landType;
+	}
+
+	public void setVillage(VillageComponent village, bool isOccupying) {
+		_village = village;
+		if(isOccupying){
+			_landType = LandType.GRASS;
+			_terrainGameObject = _assets.getVillageGameObject(village.getVillageType());
+		}
+	}
+
+	public VillageComponent getVillage() {
+		return _village;
+	}
+
 	public OccupantType getOccupantType() {
 		return _occupantType;
 	}
 
 	public void setOccupantType(OccupantType occupantType) {
 		_occupantType = occupantType;
+		//Remove any links to previous occupants
+		if(occupantType == OccupantType.VILLAGE){
+			_occupyingStructure = null;
+			_occupyingUnit = null;
+		}
+		else if(occupantType == OccupantType.STRUCTURE){
+			_occupyingUnit = null;
+		}
+		else if(occupantType == OccupantType.UNIT){
+			_occupyingStructure = null;
+		}
 	}
 
 	public StructureComponent getOccupyingStructure() {
@@ -103,14 +127,6 @@ public class TileComponent : MonoBehaviour {
 
 	public void setOccupyingUnit(UnitComponent occupyingUnit) {
 		_occupyingUnit = occupyingUnit;
-	}
-
-	public VillageComponent getVillage() {
-		return _village;
-	}
-
-	public void setVillage(VillageComponent village) {
-		_village = village;
 	}
 
     public TileComponent[] getNeighbours()

@@ -16,7 +16,7 @@ public class VillageComponent : MonoBehaviour {
 	int _goldStock;
 	int _woodStock;
 	PlayerComponent _player;
-	List<TileComponent> _controlledRegion;
+	List<TileComponent> _controlledRegion = new List<TileComponent>();
 	UnitComponent[] _supportingUnits;
 	VillageType _villageType;
 
@@ -209,9 +209,9 @@ public class VillageComponent : MonoBehaviour {
 		}
 	}
 
-    public VillageComponent(VillageType vt)
+    public VillageComponent(VillageType villageType)
     {
-		/* TODO */
+		_villageType = villageType;
     }
 
 
