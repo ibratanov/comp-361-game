@@ -8,7 +8,7 @@ public class MapGenerator : MonoBehaviour {
 	public AssetManager _assets;
 	public GameObject _gameTile;
 
-	public GameObject _playerManager;
+	//public GameObject _playerManager;
 
 	public Vector3 _origin;
 	public int _rows = 17;
@@ -20,38 +20,10 @@ public class MapGenerator : MonoBehaviour {
 	private TileComponent[,] _landTiles;
 	private TileComponent[,] _waterTiles;
 
-	// Use this for initialization
-	void Start () {
-		
-		//_waterTiles = new GameObject[_rows,_columns];
-		//GenerateMap();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-    //private MapGenerator()
-    //{
-
-    //}
-
-    //public static MapGenerator GetInstance()
-    //{
-    //    if (_instance == null)
-    //    {
-    //        return new MapGenerator();
-    //    }
-    //    else return _instance;
-    //}
-
 	public void GenerateMap(){
-		//if(Network.isServer){
         _landTiles = new TileComponent[_columns, _rows];
-			GenerateSquareGrid( _rows, _columns, _origin, _tileHeight, _tileDiagonal);
-			AddTerrain(_forestRatio, _meadowRatio);
-		//}
+		GenerateSquareGrid( _rows, _columns, _origin, _tileHeight, _tileDiagonal);
+		AddTerrain(_forestRatio, _meadowRatio);
 	}
 
 	/// <summary>
@@ -64,6 +36,7 @@ public class MapGenerator : MonoBehaviour {
 	/// <param name="tileDiagonal">The diagonal length of an individual tile.</param>
 	private void GenerateSquareGrid( int rows, int columns, Vector3 startLocation, Vector3 tileHeight, Vector3 tileDiagonal ) 
 	{
+		int nPlayers = this.GetComponent<GameComponent>()._playerManager.GetPlayers().Length;
 		int gridId = 0;
 		Vector3 currentPosition = startLocation;
 		for (int i = 0; i < columns; ++i)
@@ -81,12 +54,10 @@ public class MapGenerator : MonoBehaviour {
                 {
                     gameTile = (GameObject)Instantiate(_gameTile, currentPosition, Quaternion.identity);
                 }
-                //gameTile.AddComponent("TileComponent");
-                TileComponent t = gameTile.GetComponent<TileComponent>();
-				_landTiles[i,j] = t;
-				_landTiles[i,j].setGameObject(LandType.GRASS);
-				//Keep things organized with a parental hierarchy
-				gameTile.transform.parent = this.transform;
+				_landTiles[i,j] = gameTile.GetComponent<TileComponent>();
+				//_landTiles[i,j].setGameObject(LandType.GRASS);
+				_landTiles[i,j].setInitialPlayerIndex(Random.Range(0, nPlayers));
+				gameTile.transform.parent = this.transform; //Keep things organized with a parental hierarchy
 
 				//Update position for next tile
 				Vector3 diag = tileDiagonal;
@@ -102,7 +73,7 @@ public class MapGenerator : MonoBehaviour {
         {
             for (int j = 0; j < rows; ++j)
             {
-                getNeighbours(i, j);
+                generateNeighbours(i, j);
             }
         }
 	}
@@ -134,7 +105,7 @@ public class MapGenerator : MonoBehaviour {
 			//Change its properties
 			tile.setLandType(LandType.FOREST);
 			//Update the visual component of this tile
-			tile.setGameObject(LandType.FOREST);
+			//tile.setGameObject(LandType.FOREST);
 		}
 		
 		//Change into meadow tiles
@@ -147,63 +118,63 @@ public class MapGenerator : MonoBehaviour {
 			//Change its properties
 			tile.setLandType(LandType.MEADOW);
 			//Update the visual component of this tile
-			tile.setGameObject(LandType.MEADOW);
+			//tile.setGameObject(LandType.MEADOW);
 		}
 	}
 
-    public TileComponent[,] getLandTiles()
+	public void generateNeighbours(int i, int j)
     {
-        return _landTiles;
+		List<TileComponent> n = new List<TileComponent>();
+		
+		if (i + 1 < _columns)
+		{
+			n.Add(_landTiles[i + 1, j]);
+		}
+		if (i - 1 >= 0)
+		{
+			n.Add(_landTiles[i - 1, j]);
+		}
+		
+		if (j - 1 >= 0)
+		{
+			n.Add(_landTiles[i, j - 1]);
+		}
+		
+		if (j + 1 < _rows)
+		{
+			n.Add(_landTiles[i, j + 1]);
+		}
+		
+		if (j % 2 == 0)
+		{
+			if (i + 1 < _columns && j + 1 < _rows )
+			{
+				n.Add(_landTiles[i + 1, j + 1]);
+			}
+			
+			if (i + 1 < _columns && j - 1 >= 0)
+			{
+				n.Add(_landTiles[i + 1, j - 1]);
+			}
+		}
+		else
+		{
+			if (i - 1 >= 0 && j - 1 >= 0)
+			{
+				n.Add(_landTiles[i - 1, j - 1]);
+			}
+			
+			if (i - 1 >= 0 && j + 1 < _rows)
+			{
+				n.Add(_landTiles[i - 1, j + 1]);
+			}
+			
+		}
+		_landTiles[i,j].setNeighbours(n.ToArray());
     }
 
-    public void getNeighbours(int i, int j)
-    {
-        List<TileComponent> n = new List<TileComponent>();
-
-        if (i + 1 < _columns)
-        {
-            n.Add(_landTiles[i + 1, j]);
-        }
-        if (i - 1 >= 0)
-        {
-            n.Add(_landTiles[i - 1, j]);
-        }
-
-        if (j - 1 >= 0)
-        {
-            n.Add(_landTiles[i, j - 1]);
-        }
-
-        if (j + 1 < _rows)
-        {
-            n.Add(_landTiles[i, j + 1]);
-        }
-
-        if (j % 2 == 0)
-        {
-            if (i + 1 < _columns && j + 1 < _rows )
-            {
-                n.Add(_landTiles[i + 1, j + 1]);
-            }
-
-            if (i + 1 < _columns && j - 1 >= 0)
-            {
-                n.Add(_landTiles[i + 1, j - 1]);
-            }
-        }
-        else
-        {
-            if (i - 1 >= 0 && j - 1 >= 0)
-            {
-                n.Add(_landTiles[i - 1, j - 1]);
-            }
-
-            if (i - 1 >= 0 && j + 1 < _rows)
-            {
-                n.Add(_landTiles[i - 1, j + 1]);
-            }
-
-        }
-        _landTiles[i,j].setNeighbours(n.ToArray());
-    }
+	public TileComponent[,] getLandTiles()
+	{
+		return _landTiles;
+	}
 }

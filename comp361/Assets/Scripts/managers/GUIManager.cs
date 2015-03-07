@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class GUIManager : MonoBehaviour {
-	public GameObject game;
+	public GameObject _gameManager;
 
 	// Use this for initialization
 	void Start () {
@@ -16,7 +16,7 @@ public class GUIManager : MonoBehaviour {
 
 	void OnGUI(){
 		if(GUI.Button(new Rect(300,100,250,100), "GenerateMap")){
-			MapGenerator mg = game.GetComponent<MapGenerator>();
+			MapGenerator mg = _gameManager.GetComponent<MapGenerator>();
 			mg.GenerateMap();
 		}
 	}
