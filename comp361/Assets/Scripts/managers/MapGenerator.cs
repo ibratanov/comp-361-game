@@ -145,7 +145,7 @@ public class MapGenerator : MonoBehaviour {
 			n.Add(_landTiles[i, j + 1]);
 		}
 		
-		if (j % 2 == 0)
+		if (j % 2 != 0)
 		{
 			if (i + 1 < _columns && j + 1 < _rows )
 			{
