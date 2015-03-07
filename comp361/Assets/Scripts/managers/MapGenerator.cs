@@ -22,7 +22,7 @@ public class MapGenerator : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		_landTiles = new TileComponent[_columns,_rows];
+		
 		//_waterTiles = new GameObject[_rows,_columns];
 		//GenerateMap();
 	}
@@ -48,6 +48,7 @@ public class MapGenerator : MonoBehaviour {
 
 	public void GenerateMap(){
 		//if(Network.isServer){
+        _landTiles = new TileComponent[_columns, _rows];
 			GenerateSquareGrid( _rows, _columns, _origin, _tileHeight, _tileDiagonal);
 			AddTerrain(_forestRatio, _meadowRatio);
 		//}
@@ -80,15 +81,6 @@ public class MapGenerator : MonoBehaviour {
                 {
                     gameTile = (GameObject)Instantiate(_gameTile, currentPosition, Quaternion.identity);
                 }
-                if (gameTile.GetComponent<TileComponent>())
-                {
-                    Debug.Log("Working!");
-                }
-                else{
-                Debug.Log("sadface");
-                }
-
-                print(gameTile.GetComponent<TileComponent>());
                 //gameTile.AddComponent("TileComponent");
                 TileComponent t = gameTile.GetComponent<TileComponent>();
 				_landTiles[i,j] = t;
@@ -110,7 +102,7 @@ public class MapGenerator : MonoBehaviour {
         {
             for (int j = 0; j < rows; ++j)
             {
-                //getNeighbours(i, j);
+                getNeighbours(i, j);
             }
         }
 	}
@@ -212,7 +204,6 @@ public class MapGenerator : MonoBehaviour {
             }
 
         }
-
         _landTiles[i,j].setNeighbours(n.ToArray());
     }
 }
