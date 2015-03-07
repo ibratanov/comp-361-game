@@ -56,7 +56,17 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	public void setLandType(LandType landType) {
-		_landType = landType;
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCsetLandType", RPCMode.All, (int)landType);
+		}
+		else{
+			_landType = landType;
+		}
+	}
+
+	[RPC]
+	public void RPCsetLandType(int landTypeIndex) {
+		_landType = (LandType)landTypeIndex;
 	}
 
 	public OccupantType getOccupantType() {
@@ -125,8 +135,12 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	public void setGameObject(LandType landType){
-		_terrainGameObject = _assets.getTerrainGameObject(landType);
-		networkView.RPC("RPCsetGameObject", RPCMode.All, (int)landType);
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCsetGameObject", RPCMode.All, (int)landType);
+		}
+		else{
+			_terrainGameObject = _assets.getTerrainGameObject(landType);
+		}
 	}
 	
 	[RPC]
