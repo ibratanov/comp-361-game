@@ -28,6 +28,7 @@ public class TileComponent : MonoBehaviour {
 	public GameObject _terrainGameObject;
 	public GameObject _villageGameObject;
 	private AssetManager _assets;
+	private GUIManager _menus;
 
 	readonly static int MEADOW_REVENUE = 2;
 	readonly static int FOREST_REVENUE = 0;
@@ -222,6 +223,7 @@ public class TileComponent : MonoBehaviour {
 
 	void Awake(){
 		_assets = GameObject.FindObjectOfType<AssetManager>();
+		_menus = GameObject.FindObjectOfType<GUIManager>();
 	}
 
 	// Update is called once per frame

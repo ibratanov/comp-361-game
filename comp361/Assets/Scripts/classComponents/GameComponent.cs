@@ -35,10 +35,10 @@ public class GameComponent : MonoBehaviour {
 	 *      METHODS      *
 	 ********************/
 
-	public void endGame() {
-		/* TODO */
-	}
-
+	/// <summary>
+	/// Creates a new game by generating a map and assigning players to tiles.
+	/// </summary>
+	/// <param name="participants">Participants.</param>
 	public void newGame(PlayerComponent[] participants) {
 		var firstPlayer = participants[0];
 		setRemainingPlayers(participants);
@@ -103,14 +103,14 @@ public class GameComponent : MonoBehaviour {
 		}
 	}
 
-	public void removePlayer(PlayerComponent player) {
-		/* TODO */
-	}
-
+	/// <summary>
+	/// Allows menu buttons to declare which map to generate on BeginGame()
+	/// </summary>
+	/// <param name="mapName">Map name.</param>
 	public void SetMap(string mapName){
 		_currentMap = mapName;
 	}
-
+	
 	/// <summary>
 	/// Generate a map based on the current selection.
 	/// </summary>
@@ -124,10 +124,21 @@ public class GameComponent : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Debugging map with predefined players.
+	/// </summary>
 	public void TestMapGeneration(){
 		_playerManager.AddPlayer(new PlayerComponent("Rita", "rita"));
 		_playerManager.AddPlayer(new PlayerComponent("Rita2", "rita2"));
 		_playerManager.AddPlayer(new PlayerComponent("Rita3", "rita3"));
 		newGame(_playerManager.GetPlayers());
+	}
+
+	public void endGame() {
+		/* TODO */
+	}
+
+	public void removePlayer(PlayerComponent player) {
+		/* TODO */
 	}
 }
