@@ -53,13 +53,16 @@ public class PlayerManager : MonoBehaviour {
 	/// Generates a new PlayerComponent and adds it to the PlayerManager.
 	/// </summary>
 	public void SaveNewPlayer(){
-		if(_inputUsername.text.Length > 0 && _inputPassword.text.Length > 0){
+		if(_inputUsername && _inputUsername.text.Length > 0 && _inputPassword && _inputPassword.text.Length > 0){
 			PlayerComponent newPlayer = new PlayerComponent(_inputUsername.text, _inputPassword.text);
 			_players.Add (newPlayer);
 			Debug.Log ("New player added:" + newPlayer.getUserName());
 			//Clear the temporary information
 			_inputUsername = null;
 			_inputPassword = null;
+		}
+		else{
+			//TODO: Create error message for user
 		}
 	}
 

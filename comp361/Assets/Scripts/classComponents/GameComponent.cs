@@ -8,6 +8,7 @@ public class GameComponent : MonoBehaviour {
 	 *     ATTRIBUTES    *
 	 ********************/
 	public PlayerManager _playerManager;
+	public string _currentMap;
 
 	PlayerComponent _currentPlayer;
 	PlayerComponent[] _participants;
@@ -106,17 +107,27 @@ public class GameComponent : MonoBehaviour {
 		/* TODO */
 	}
 
+	public void SetMap(string mapName){
+		_currentMap = mapName;
+	}
+
 	/// <summary>
-	/// Easy function to be called by menu button.
+	/// Generate a map based on the current selection.
 	/// </summary>
 	public void BeginGame(){
-		PlayerComponent[] players = _playerManager.GetPlayers();
-		newGame(players);
+		if( _currentMap.Equals("Preset1") ){
+			PlayerComponent[] players = _playerManager.GetPlayers();
+			newGame(players);
+		}
+		else if( _currentMap.Equals("TestMap") ){
+			TestMapGeneration();
+		}
 	}
 
 	public void TestMapGeneration(){
 		_playerManager.AddPlayer(new PlayerComponent("Rita", "rita"));
 		_playerManager.AddPlayer(new PlayerComponent("Rita2", "rita2"));
+		_playerManager.AddPlayer(new PlayerComponent("Rita3", "rita3"));
 		newGame(_playerManager.GetPlayers());
 	}
 }
