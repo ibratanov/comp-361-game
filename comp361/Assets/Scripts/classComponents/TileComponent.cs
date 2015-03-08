@@ -17,13 +17,14 @@ public enum OccupantType {
 }
 
 public class TileComponent : MonoBehaviour {
-	readonly static Color[] PLAYER_COLOURS = {	new Color(1.0f,0.25f,0.25f), 
+	readonly static Color[] PLAYER_COLOURS = {	Color.white,
+												new Color(1.0f,0.25f,0.25f), 
 												new Color(0.25f,1.0f,0.25f), 
 												new Color(0.25f,0.25f,1.0f), 
 												new Color(0.25f,1.0f,1.0f), 
 												new Color(1.0f,0.25f,1.0f), 
 												new Color(1.0f,1.0f,0.25f), 
-												Color.white};
+											};
 
 	public GameObject _terrainGameObject;
 	public GameObject _villageGameObject;
@@ -34,7 +35,7 @@ public class TileComponent : MonoBehaviour {
 	readonly static int FOREST_REVENUE = 0;
 	readonly static int LANDTYPE_REVENUE = 1;
 
-	private Color[] _playerColours;
+	private bool _selectionTriggered = true;
 
 	/*********************
 	 *     ATTRIBUTES    *
@@ -229,6 +230,12 @@ public class TileComponent : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
 
+		//Calling Select() from any other method seems to break the prefab's connection to its materials, breaking all the colours.
+		// Therefore, call the "Draw()" function to update the selection.
+		if(_selectionTriggered){
+			Select();
+			_selectionTriggered = false;
+		}
 	}
 
 	void OnMouseDown() {
@@ -253,6 +260,10 @@ public class TileComponent : MonoBehaviour {
 		else{
 			_terrainGameObject.renderer.materials[2].SetColor("_Color", Color.red);
 		}
+	}
+
+	public void UpdateDraw(){
+		_selectionTriggered = true;
 	}
 
 	public void Select(){

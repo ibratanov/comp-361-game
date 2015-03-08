@@ -51,8 +51,8 @@ public class GameComponent : MonoBehaviour {
 		
 		foreach (var tile in _mapTiles)
 		{
-			int randIndex = Random.Range(0, participants.Length*7);
-			tile.setInitialPlayerIndex(randIndex%participants.Length); //TODO: Verify there is no off-by-one error
+			int randIndex = Random.Range(0, participants.Length+1);
+			tile.setInitialPlayerIndex(randIndex);
 		}
 		
 		foreach (var tile in _mapTiles)
@@ -60,14 +60,14 @@ public class GameComponent : MonoBehaviour {
 			int playerIndex = tile.getInitialPlayerIndex();
 			//tile.getGameObject().GetComponent<Renderer>().materials[2].color = Color.white;
 			
-			if (playerIndex < participants.Length)
+			if (playerIndex > 0)
 			{
 				var region = tile.breadthFS();
 				if (region.Length < 3)
 				{
 					foreach (var rTile in region)
 					{
-						rTile.setInitialPlayerIndex(participants.Length);
+						rTile.setInitialPlayerIndex(0);
 					}
 				}
 				else
@@ -89,7 +89,7 @@ public class GameComponent : MonoBehaviour {
 						tileWithVillage.setOccupantType(OccupantType.VILLAGE);
 						tileWithVillage.setVillage(newHovel, true);
 
-					   	var player = participants[playerIndex];
+					   	var player = participants[playerIndex-1];
 	                   	player.add(newHovel);
 
 						newHovel.associate(tileWithVillage);
@@ -100,6 +100,7 @@ public class GameComponent : MonoBehaviour {
 					}
 				}
 			}
+			tile.UpdateDraw();
 		}
 	}
 
