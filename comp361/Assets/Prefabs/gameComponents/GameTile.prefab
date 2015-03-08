@@ -86,6 +86,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _terrainGameObject: {fileID: 159312, guid: f7f41b7a4ff1983428772aa5ad139fc3, type: 2}
+  _villageGameObject: {fileID: 194586, guid: fbcc519b6e9225e49b2f3411aff1e9a3, type: 2}
 --- !u!148 &14882100
 NetworkView:
   m_ObjectHideFlags: 1
