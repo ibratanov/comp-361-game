@@ -39,7 +39,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fcff8d5c0befaa46aed3fb9300c4fb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  game: {fileID: 0}
+  _menus:
+  - {fileID: 114776, guid: dd75c465a366a5440be9d6daa9bf662f, type: 2}
+  - {fileID: 166394, guid: 868d667f9d229e646971e41c893c9ef0, type: 2}
+  - {fileID: 178288, guid: f19aea19d5ef2e44ca8dee8e77794847, type: 2}
+  - {fileID: 115502, guid: 8a671a0bf278c694da06388bb2e03c38, type: 2}
+  - {fileID: 178346, guid: 885fde01cc4a1e9439d1ade851d77214, type: 2}
+  - {fileID: 198312, guid: 137c1f28474007243b9f72aa2844747d, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
