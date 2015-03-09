@@ -17,7 +17,7 @@ public class VillageComponent : MonoBehaviour {
 	int _woodStock;
 	PlayerComponent _player;
 	List<TileComponent> _controlledRegion = new List<TileComponent>();
-	UnitComponent[] _supportingUnits;
+	List<UnitComponent> _supportingUnits;
 	VillageType _villageType;
 
 	/*
@@ -59,7 +59,7 @@ public class VillageComponent : MonoBehaviour {
 		return _controlledRegion;
 	}
 
-	public UnitComponent[] getSupportingUnits() {
+	public List<UnitComponent> getSupportingUnits() {
 		return _supportingUnits;
 	}
 
@@ -146,17 +146,33 @@ public class VillageComponent : MonoBehaviour {
 	}
 
 	public void associate(TileComponent tile) {
-        _controlledRegion.Add(tile);
+		VillageComponent formerVillage = tile.getVillage();
+
+		if (formerVillage) {
+			List<TileComponent> formerRegion = formerVillage.getControlledRegion();
+			formerRegion.Remove(tile);
+		}
+
+		_controlledRegion.Add(tile);
+		tile.setVillage(this);
 	}
 
-	public void associate(UnitComponent[] units) {
+	public void associate(List<UnitComponent> units) {
 		foreach (UnitComponent unit in units) {
 			associate(unit);
 		}
 	}
 
 	public void associate(UnitComponent unit) {
-		/* TODO */
+		VillageComponent formerVillage = unit.getVillage();
+
+		if (formerVillage) {
+			List<UnitComponent> units = formerVillage.getSupportingUnits();
+			units.Remove(unit);
+		}
+
+		_supportingUnits.Add(unit);
+		unit.setVillage(this);
 	}
 
 	void killVillagers() {
