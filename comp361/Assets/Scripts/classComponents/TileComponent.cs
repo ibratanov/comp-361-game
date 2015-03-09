@@ -35,7 +35,7 @@ public class TileComponent : MonoBehaviour {
 	readonly static int FOREST_REVENUE = 0;
 	readonly static int LANDTYPE_REVENUE = 1;
 
-	private bool _selectionTriggered = true;
+	private bool _drawUpdated = true; //True when an update to the visuals need to be made. Use UpdateDraw() to turn on.
 
 	/*********************
 	 *     ATTRIBUTES    *
@@ -232,9 +232,9 @@ public class TileComponent : MonoBehaviour {
 
 		//Calling Select() from any other method seems to break the prefab's connection to its materials, breaking all the colours.
 		// Therefore, call the "Draw()" function to update the selection.
-		if(_selectionTriggered){
+		if(_drawUpdated){
 			Select();
-			_selectionTriggered = false;
+			_drawUpdated = false;
 		}
 	}
 
@@ -243,12 +243,12 @@ public class TileComponent : MonoBehaviour {
 			networkView.RPC ("ToggleColours", RPCMode.All);
 		}
 		else{
-			HighlightRegion();
+			UnhighlightRegion();
 		}
 	}
 
 	void OnMouseUp(){
-		UnhighlightRegion();
+		HighlightRegion();
 	}
 	
 	[RPC]
@@ -262,16 +262,28 @@ public class TileComponent : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Trigger a draw update on the next call to Update()
+	/// </summary>
 	public void UpdateDraw(){
-		_selectionTriggered = true;
+		_drawUpdated = true;
 	}
 
-	public void Select(){
+	public void ColourTile(){
 		_terrainGameObject.renderer.materials[2].SetColor("_Color", PLAYER_COLOURS[_initialPlayerIndex]);
 	}
 
+	public void Select(){
+		Color colour = PLAYER_COLOURS[_initialPlayerIndex];
+		Color newColour = new Color(0,0,0);
+		newColour.r = Mathf.Min(colour.r + 0.5f, 1.0f);
+		newColour.g = Mathf.Min(colour.g + 0.5f, 1.0f);
+		newColour.b = Mathf.Min(colour.b + 0.5f, 1.0f);
+		_terrainGameObject.renderer.materials[2].SetColor("_Color", newColour);
+	}
+
 	public void Deselect(){
-		_terrainGameObject.renderer.materials[2].SetColor("_Color", Color.white);
+		ColourTile();
 	}
 
 	public void HighlightRegion(){
