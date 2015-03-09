@@ -118,7 +118,13 @@ public class UnitComponent : MonoBehaviour {
 	}
 
 	public void associate(TileComponent tile) {
-		/* TODO */
+		_location.setOccupantType(OccupantType.NONE);
+		_location.setOccupyingUnit(null);
+
+		tile.setOccupantType(OccupantType.UNIT);
+		tile.setOccupyingUnit(this);
+
+		setLocation(tile);
 	}
 
 	public void buildRoad() {

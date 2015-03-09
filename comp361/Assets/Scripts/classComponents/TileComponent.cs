@@ -84,6 +84,10 @@ public class TileComponent : MonoBehaviour {
 		return _landType;
 	}
 
+	public void setVillage(VillageComponent village) {
+		_village = village;
+	}
+
 	public void setVillage(VillageComponent village, bool isOccupying) {
 		_village = village;
 		if(isOccupying){
