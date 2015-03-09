@@ -139,8 +139,20 @@ public class VillageComponent : MonoBehaviour {
 		_woodStock += amount;
 	}
 
+	public void associate(List<TileComponent> tiles) {
+		foreach (TileComponent tile in tiles) {
+			associate(tile);
+		}
+	}
+
 	public void associate(TileComponent tile) {
         _controlledRegion.Add(tile);
+	}
+
+	public void associate(UnitComponent[] units) {
+		foreach (UnitComponent unit in units) {
+			associate(unit);
+		}
 	}
 
 	public void associate(UnitComponent unit) {
@@ -155,7 +167,11 @@ public class VillageComponent : MonoBehaviour {
 	}
 
 	public void mergeWith(VillageComponent village) {
-		/* TODO */
+		addWood(village.getWoodStock());
+		addGold(village.getGoldStock());
+		associate(village.getControlledRegion());
+		associate(village.getSupportingUnits());
+		village.getPlayer().remove(village);
 	}
 
 	public void produceMeadows() {
