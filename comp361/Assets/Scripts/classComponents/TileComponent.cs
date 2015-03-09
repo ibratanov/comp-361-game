@@ -230,36 +230,30 @@ public class TileComponent : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
 
-		//Calling Select() from any other method seems to break the prefab's connection to its materials, breaking all the colours.
+		//Calling Select() from any other method seems to break the prefab's connection to its materials, wrecking all the colours.
 		// Therefore, call the "Draw()" function to update the selection.
 		if(_drawUpdated){
-			Select();
+			Highlight();
 			_drawUpdated = false;
 		}
 	}
 
+	/***********************
+	 *   SELECTION EVENTS  *
+	 **********************/
+
+	
 	void OnMouseDown() {
 		if(Network.isServer || Network.isClient){
 			networkView.RPC ("ToggleColours", RPCMode.All);
 		}
 		else{
-			UnhighlightRegion();
+			Deselect();
 		}
 	}
 
 	void OnMouseUp(){
-		HighlightRegion();
-	}
-	
-	[RPC]
-	void ToggleColours(){
-
-		if( _terrainGameObject.renderer.materials[2].GetColor("_Color") == Color.red){
-			_terrainGameObject.renderer.materials[2].SetColor("_Color", Color.white);
-		}
-		else{
-			_terrainGameObject.renderer.materials[2].SetColor("_Color", Color.red);
-		}
+		Select();
 	}
 
 	/// <summary>
@@ -269,11 +263,28 @@ public class TileComponent : MonoBehaviour {
 		_drawUpdated = true;
 	}
 
-	public void ColourTile(){
-		_terrainGameObject.renderer.materials[2].SetColor("_Color", PLAYER_COLOURS[_initialPlayerIndex]);
+	public void Select(){
+		HighlightRegion();
+		if(_occupantType == OccupantType.UNIT){
+			Debug.Log("Unit");
+			_menus.DisplayUnitActions();
+		}
+		else if(_occupantType == OccupantType.VILLAGE){
+			Debug.Log("Village");
+			_menus.DisplayVillageActions();
+		}
+		Debug.Log("None");
 	}
 
-	public void Select(){
+	public void Deselect(){
+		UnhighlightRegion();
+	}
+
+	/*****************************
+	 *   Colours and Highlights  *
+	 ****************************/
+
+	public void Highlight(){
 		Color colour = PLAYER_COLOURS[_initialPlayerIndex];
 		Color newColour = new Color(0,0,0);
 		newColour.r = Mathf.Min(colour.r + 0.5f, 1.0f);
@@ -281,36 +292,36 @@ public class TileComponent : MonoBehaviour {
 		newColour.b = Mathf.Min(colour.b + 0.5f, 1.0f);
 		_terrainGameObject.renderer.materials[2].SetColor("_Color", newColour);
 	}
-
-	public void Deselect(){
-		ColourTile();
-	}
-
-	public void HighlightRegion(){
-		TileComponent[] region = this.breadthFS();
-		foreach(TileComponent tile in region){
-			tile.Select();
-		}
-	}
-
-	public void UnhighlightRegion(){
-		TileComponent[] region = this.breadthFS();
-		foreach(TileComponent tile in region){
-			tile.Deselect();
-		}
+	
+	public void Unhighlight(){
+		_terrainGameObject.renderer.materials[2].SetColor("_Color", PLAYER_COLOURS[_initialPlayerIndex]);
 	}
 
 	public void HighlightNeighbours(){
 		TileComponent[] neighbours = this.getNeighbours();
 		foreach(TileComponent tile in neighbours){
-			tile.Select();
+			tile.Highlight();
 		}
 	}
 	
 	public void UnhighlightNeighbours(){
 		TileComponent[] neighbours = this.getNeighbours();
 		foreach(TileComponent tile in neighbours){
-			tile.Deselect();
+			tile.Unhighlight();
+		}
+	}
+	
+	public void HighlightRegion(){
+		TileComponent[] region = this.breadthFS();
+		foreach(TileComponent tile in region){
+			tile.Highlight();
+		}
+	}
+
+	public void UnhighlightRegion(){
+		TileComponent[] region = this.breadthFS();
+		foreach(TileComponent tile in region){
+			tile.Unhighlight();
 		}
 	}
 }
