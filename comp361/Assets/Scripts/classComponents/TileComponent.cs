@@ -86,11 +86,8 @@ public class TileComponent : MonoBehaviour {
 
 	public void setVillage(VillageComponent village) {
 		_village = village;
-	}
 
-	public void setVillage(VillageComponent village, bool isOccupying) {
-		_village = village;
-		if(isOccupying){
+		if (_occupantType == OccupantType.VILLAGE) {
 			_landType = LandType.GRASS;
 			_terrainGameObject = _assets.getVillageGameObject(village.getVillageType());
 		}

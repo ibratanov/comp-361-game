@@ -87,7 +87,7 @@ public class GameComponent : MonoBehaviour {
 						var newHovel = new VillageComponent(VillageType.HOVEL);
 
 						tileWithVillage.setOccupantType(OccupantType.VILLAGE);
-						tileWithVillage.setVillage(newHovel, true);
+						tileWithVillage.setVillage(newHovel);
 
 					   	var player = participants[playerIndex-1];
 	                   	player.add(newHovel);
