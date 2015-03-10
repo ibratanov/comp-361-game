@@ -59,8 +59,9 @@ public class UnitComponent : MonoBehaviour {
 		return _location;
 	}
 
-	public void setLocation(TileComponent location) {
+	public bool setLocation(TileComponent location) {
 		_location = location;
+		return true;
 	}
 
 	public UnitType getUnitType() {
@@ -195,7 +196,33 @@ public class UnitComponent : MonoBehaviour {
 	}
 
 	public void moveUnit(TileComponent destination) {
-		/* TODO */
+		if (_currentAction == ActionType.READY_FOR_ORDERS) {
+			List<TileComponent> neighbours = destination.getNeighbours();
+
+			bool isReachable = false;
+
+			foreach (TileComponent tile in neighbours) {
+				if (tile == _location) {
+					isReachable = true;
+					break;
+				}
+			}
+
+			if (isReachable) {
+				bool isRelocated = setLocation(destination);
+
+				if (isRelocated) {
+					LandType landType = destination.getLandType();
+					bool isPaved = destination.hasRoad();
+
+					if (landType == LandType.MEADOW && _unitType >= UnitType.SOLDIER && !isPaved) {
+						destination.setLandType(LandType.GRASS);
+					}
+
+					destination.connectRegions();
+				}
+			}
+		}
 	}
 
 	public void takeOverTile(TileComponent destination) {
