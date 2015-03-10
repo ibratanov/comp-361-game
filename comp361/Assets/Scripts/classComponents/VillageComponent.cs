@@ -13,8 +13,8 @@ public class VillageComponent : MonoBehaviour {
 	 *     ATTRIBUTES    *
 	 ********************/
 
-	int _goldStock;
-	int _woodStock;
+	uint _goldStock;
+	uint _woodStock;
 	PlayerComponent _player;
 	List<TileComponent> _controlledRegion = new List<TileComponent>();
 	List<UnitComponent> _supportingUnits;
@@ -26,19 +26,32 @@ public class VillageComponent : MonoBehaviour {
 	VillageType[] _upgradeCosts;
 
 	/*********************
+	 *    CONSTRUCTOR    *
+	 ********************/
+
+	public VillageComponent(uint gold, uint wood, PlayerComponent player, List<TileComponent> region, List<UnitComponent> units, VillageType villageType) {
+		_goldStock = gold;
+		_woodStock = wood;
+		_player = player;
+		_controlledRegion = region;
+		_supportingUnits = units;
+		_villageType = villageType;
+	}
+
+	/*********************
 	 *  GETTERS/SETTERS  *
 	 ********************/
 
-	public int getGoldStock() {
+	public uint getGoldStock() {
 		return _goldStock;
 	}
 
-	public int getWoodStock() {
+	public uint getWoodStock() {
 		return _woodStock;
 	}
 
-	int getWages() {
-		int wages = 0;
+	uint getWages() {
+		uint wages = 0;
 
 		foreach (UnitComponent unit in _supportingUnits) {
 			wages += unit.getUpkeep();
@@ -75,9 +88,9 @@ public class VillageComponent : MonoBehaviour {
 	 *      METHODS      *
 	 ********************/
 
-	public static int calculateCost(VillageType villageType, VillageType newLevel) {
+	public static uint calculateCost(VillageType villageType, VillageType newLevel) {
 		VillageType current = villageType;
-		int cost = 0;
+		uint cost = 0;
 
 		switch (villageType)
 		{
@@ -100,7 +113,7 @@ public class VillageComponent : MonoBehaviour {
 
 	public bool upgradeVillage(VillageType newLevel) {
 		if (newLevel > _villageType) {
-			int cost = calculateCost(_villageType, newLevel);
+			uint cost = calculateCost(_villageType, newLevel);
 
 			if (_woodStock >= cost) {
 				setVillageType(newLevel);
@@ -112,7 +125,7 @@ public class VillageComponent : MonoBehaviour {
 	}
 
 	public bool payWages() {
-		int wages = getWages();
+		uint wages = getWages();
 
 		if (wages <= getGoldStock()) {
 			removeGold(wages);
@@ -131,11 +144,11 @@ public class VillageComponent : MonoBehaviour {
         /*TODO*/
 	}
 
-	public void addGold(int amount) {
+	public void addGold(uint amount) {
 		_goldStock += amount;
 	}
 
-	public void addWood(int amount) {
+	public void addWood(uint amount) {
 		_woodStock += amount;
 	}
 
@@ -210,11 +223,11 @@ public class VillageComponent : MonoBehaviour {
 		}
 	}
 
-	public void removeGold(int amount) {
+	public void removeGold(uint amount) {
 		_goldStock -= amount;
 	}
 
-	public void removeWood(int amount) {
+	public void removeWood(uint amount) {
 		_woodStock -= amount;
 	}
 
@@ -236,7 +249,7 @@ public class VillageComponent : MonoBehaviour {
 
 	public void updateGoldStock() {
 		foreach (TileComponent tile in _controlledRegion) {
-			int revenue = tile.getRevenue();
+			uint revenue = tile.getRevenue();
 			addGold(revenue);
 		}
 	}

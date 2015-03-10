@@ -21,7 +21,7 @@ public enum UnitType {
 public class UnitComponent : MonoBehaviour {
 	public GameObject _villagerGameObject;
 
-	readonly static int COST_PER_UNIT_UPGRADE = 10;
+	readonly static uint COST_PER_UNIT_UPGRADE = 10;
 
 	/*********************
 	 *     ATTRIBUTES    *
@@ -29,8 +29,8 @@ public class UnitComponent : MonoBehaviour {
 
 	static UnitType[] _upgradeCosts;
 
-	int _roundsCultivating;
-	int _upkeep;
+	uint _roundsCultivating;
+	uint _upkeep;
 	ActionType _currentAction;
 	TileComponent _location;
 	UnitType _unitType;
@@ -39,11 +39,11 @@ public class UnitComponent : MonoBehaviour {
 	/*********************
 	 *  GETTERS/SETTERS  *
 	 ********************/
-	public int getUpkeep() {
+	public uint getUpkeep() {
 		return _upkeep;
 	}
 
-	public int getRoundsCultivating() {
+	public uint getRoundsCultivating() {
 		return _roundsCultivating;
 	}
 
@@ -85,12 +85,12 @@ public class UnitComponent : MonoBehaviour {
 	 *      METHODS      *
 	 ********************/
 
-	public static int calculateCost(UnitType u1, UnitType u2) {
+	public static uint calculateCost(UnitType u1, UnitType u2) {
 			if (u1 > u2) {
 				throw new System.Exception("The first parameter cannot be smaller than the second.");
 			}
 
-			int cost = 0;
+			uint cost = 0;
 
 			for (UnitType u = u1; u != u2; ++u) {
 				cost += COST_PER_UNIT_UPGRADE;
@@ -138,7 +138,7 @@ public class UnitComponent : MonoBehaviour {
 
 	public bool upgradeUnit(UnitType newLevel) {
 		if (newLevel >= _unitType) {
-			int cost = calculateCost(_unitType, newLevel);
+			uint cost = calculateCost(_unitType, newLevel);
 
 			if (_village.getGoldStock() >= cost) {
 				_unitType = newLevel;
@@ -226,7 +226,83 @@ public class UnitComponent : MonoBehaviour {
 	}
 
 	public void takeOverTile(TileComponent destination) {
-		/* TODO */
+		VillageComponent enemyVillage = destination.getVillage();
+		PlayerComponent enemyPlayer = enemyVillage.getPlayer();
+		OccupantType destinationOccupantType = destination.getOccupantType();
+
+		if (destinationOccupantType == OccupantType.VILLAGE) {
+			_village.addGold(enemyVillage.getGoldStock());
+			_village.addWood(enemyVillage.getWoodStock());
+			enemyPlayer.remove(enemyVillage);
+		}
+
+		_village.associate(destination);
+		associate(destination);
+
+		List<TileComponent> neighbours = destination.getNeighbours();
+
+		bool isVillageDestroyed = false;
+
+		foreach (TileComponent neighbour in neighbours) {
+			List<TileComponent> region = neighbour.breadthFS();
+
+			bool containsVillage = TileComponent.containsVillage(region);
+
+			if (region.Count >= 3 && !containsVillage) {
+				// TODO: PUT PROPER STATS FOR NEW VILLAGE
+				VillageComponent newHovel = new VillageComponent(0, 0, null, null, null, VillageType.HOVEL);
+
+				enemyPlayer.add(newHovel);
+
+				foreach (TileComponent tile in region) {
+					newHovel.associate(tile);
+
+					if (tile.getOccupantType() == OccupantType.UNIT) {
+						newHovel.associate(tile.getOccupyingUnit());
+					}
+				}
+			} else {
+				foreach (TileComponent tile in region) {
+					OccupantType tileOccupantType = tile.getOccupantType();
+
+					if (tileOccupantType == OccupantType.UNIT) {
+						UnitComponent occupyingUnit = tile.getOccupyingUnit();
+						occupyingUnit.die();
+
+						StructureComponent tomb = new StructureComponent(StructureType.TOMBSTONE, tile);
+						tile.setOccupyingStructure(tomb);
+					} else if (tileOccupantType == OccupantType.VILLAGE) {
+						VillageComponent village = tile.getVillage();
+						enemyPlayer.remove(village);
+						// TODO: KILL VILLAGE
+						village = null;
+
+						tile.setOccupyingStructure(null);
+
+						isVillageDestroyed = true;
+					}
+				}
+			}
+		}
+
+		if (isVillageDestroyed) {
+			List<VillageComponent> enemyVillages = enemyPlayer.getVillages();
+
+			GameComponent game = enemyPlayer.getGame();
+			PlayerComponent[] players = game.getRemainingPlayers();
+
+			if (enemyVillages.Count == 0) {
+				enemyPlayer.incrementLosses();
+				game.removePlayer(enemyPlayer);
+
+				players = game.getRemainingPlayers();
+			}
+
+			if (players.Length == 1) {
+				players[0].incrementWins();
+				game.endGame();
+			}
+		}
 	}
 
 	public GameObject getGameObject() {
