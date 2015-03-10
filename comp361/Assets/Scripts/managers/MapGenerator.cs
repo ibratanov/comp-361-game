@@ -170,7 +170,7 @@ public class MapGenerator : MonoBehaviour {
 			}
 			
 		}
-		_landTiles[i,j].setNeighbours(n.ToArray());
+		_landTiles[i,j].setNeighbours(n);
     }
 
 	public TileComponent[,] getLandTiles()
