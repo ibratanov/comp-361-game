@@ -48,7 +48,7 @@ public class TileComponent : MonoBehaviour {
 	LandType _landType;
 	OccupantType _occupantType;
 	StructureComponent _occupyingStructure;
-	TileComponent[] _neighbours;
+	List<TileComponent> _neighbours;
 	UnitComponent _occupyingUnit;
 	VillageComponent _village;
 
@@ -135,12 +135,12 @@ public class TileComponent : MonoBehaviour {
 		_occupyingUnit = occupyingUnit;
 	}
 
-    public TileComponent[] getNeighbours()
+    public List<TileComponent> getNeighbours()
     {
         return _neighbours;
     }
 
-    public void setNeighbours(TileComponent[] neighbours)
+    public void setNeighbours(List<TileComponent> neighbours)
     {
         _neighbours = neighbours;
     }
@@ -175,7 +175,7 @@ public class TileComponent : MonoBehaviour {
         _landType = LandType.GRASS;
         _occupantType = OccupantType.NONE;
         _occupyingStructure = new StructureComponent(StructureType.NONE, this);
-        _neighbours = new TileComponent[6];
+        _neighbours = new List<TileComponent>(6);
 	}
 
 	public TileComponent[] breadthFS() {
@@ -302,14 +302,14 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	public void HighlightNeighbours(){
-		TileComponent[] neighbours = this.getNeighbours();
+		List<TileComponent> neighbours = this.getNeighbours();
 		foreach(TileComponent tile in neighbours){
 			tile.Highlight();
 		}
 	}
 	
 	public void UnhighlightNeighbours(){
-		TileComponent[] neighbours = this.getNeighbours();
+		List<TileComponent> neighbours = this.getNeighbours();
 		foreach(TileComponent tile in neighbours){
 			tile.Unhighlight();
 		}
