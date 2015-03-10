@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public enum ActionType {
 	READY_FOR_ORDERS,
@@ -99,8 +99,40 @@ public class UnitComponent : MonoBehaviour {
 	}
 
 	public bool isContested(TileComponent destination) {
-		/* TODO */
-		return true;
+		List<TileComponent> neighbours = _location.getNeighbours();
+		neighbours.Add(destination);
+
+		foreach (TileComponent tile in neighbours) {
+			UnitComponent enemyUnit = tile.getOccupyingUnit();
+
+			if (enemyUnit) {
+				VillageComponent enemyVillage = enemyUnit.getVillage();
+
+				if (enemyVillage != _village) {
+					UnitType enemyUnitType = enemyUnit.getUnitType();
+
+					if (_unitType <= enemyUnitType) {
+						return true;
+					}
+				}
+			} else {
+				StructureComponent enemyStructure = tile.getOccupyingStructure();
+
+				if (enemyStructure) {
+					StructureType enemyStructureType = enemyStructure.getStructureType();
+
+					if (enemyStructureType == StructureType.WATCHTOWER) {
+						VillageComponent enemyVillage = tile.getVillage();
+
+						if (_unitType <= UnitType.INFANTRY || _village != enemyVillage) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	public bool upgradeUnit(UnitType newLevel) {
