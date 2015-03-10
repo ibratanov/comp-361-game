@@ -49,6 +49,10 @@ public class PlayerComponent : MonoBehaviour {
 		return null;
 	}
 
+	public GameComponent getGame() {
+		return _myGame;
+	}
+
 	public PlayerStatus getStatus() {
 		return _status;
 	}

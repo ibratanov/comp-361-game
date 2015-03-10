@@ -63,7 +63,7 @@ public class GameComponent : MonoBehaviour {
 			if (playerIndex > 0)
 			{
 				var region = tile.breadthFS();
-				if (region.Length < 3)
+				if (region.Count < 3)
 				{
 					foreach (var rTile in region)
 					{

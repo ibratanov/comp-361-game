@@ -31,9 +31,9 @@ public class TileComponent : MonoBehaviour {
 	private AssetManager _assets;
 	private GUIManager _menus;
 
-	readonly static int MEADOW_REVENUE = 2;
-	readonly static int FOREST_REVENUE = 0;
-	readonly static int LANDTYPE_REVENUE = 1;
+	readonly static uint MEADOW_REVENUE = 2;
+	readonly static uint FOREST_REVENUE = 0;
+	readonly static uint LANDTYPE_REVENUE = 1;
 
 	private bool _drawUpdated = true; //True when an update to the visuals need to be made. Use UpdateDraw() to turn on.
 
@@ -149,11 +149,25 @@ public class TileComponent : MonoBehaviour {
 	 *      METHODS      *
 	 ********************/
 
+	public static bool containsVillage(List<TileComponent> region) {
+		bool containsVillage = false;
+
+		foreach (TileComponent tile in region) {
+			OccupantType occupantType = tile.getOccupantType();
+			if (occupantType == OccupantType.VILLAGE) {
+				containsVillage = true;
+				break;
+			}
+		}
+
+		return containsVillage;
+	}
+
 	public bool hasRoad() {
 		return _hasRoad;
 	}
 
-	public int getRevenue() {
+	public uint getRevenue() {
 		switch (_landType) {
 			case LandType.MEADOW:
 				return MEADOW_REVENUE;
@@ -178,7 +192,7 @@ public class TileComponent : MonoBehaviour {
         _neighbours = new List<TileComponent>(6);
 	}
 
-	public TileComponent[] breadthFS() {
+	public List<TileComponent> breadthFS() {
 		List<TileComponent> regionTiles = new List<TileComponent>();
 		Queue<TileComponent> q = new Queue<TileComponent>();
 		TileComponent t = this.GetComponent<TileComponent>();
@@ -196,7 +210,7 @@ public class TileComponent : MonoBehaviour {
 				}            
 			}
 		}
-		return regionTiles.ToArray();
+		return regionTiles;
 	}
 
 	public void connectRegions() {
@@ -316,14 +330,14 @@ public class TileComponent : MonoBehaviour {
 	}
 	
 	public void HighlightRegion(){
-		TileComponent[] region = this.breadthFS();
+		List<TileComponent> region = this.breadthFS();
 		foreach(TileComponent tile in region){
 			tile.Highlight();
 		}
 	}
 
 	public void UnhighlightRegion(){
-		TileComponent[] region = this.breadthFS();
+		List<TileComponent> region = this.breadthFS();
 		foreach(TileComponent tile in region){
 			tile.Unhighlight();
 		}
