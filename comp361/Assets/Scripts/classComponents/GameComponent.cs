@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class GameComponent : MonoBehaviour {
 	private Color[] _playerColours = {Color.red, Color.green, Color.blue, Color.yellow};
@@ -12,7 +12,7 @@ public class GameComponent : MonoBehaviour {
 
 	PlayerComponent _currentPlayer;
 	PlayerComponent[] _participants;
-	PlayerComponent[] _remainingPlayers;
+	List<PlayerComponent> _remainingPlayers;
 	TileComponent[,] _mapTiles;
 
 	/*********************
@@ -23,11 +23,11 @@ public class GameComponent : MonoBehaviour {
 		_currentPlayer = currentPlayer;
 	}
 
-	public PlayerComponent[] getRemainingPlayers() {
+	public List<PlayerComponent> getRemainingPlayers() {
 		return _remainingPlayers;
 	}
 
-	void setRemainingPlayers(PlayerComponent[] remainingPlayers) {
+	void setRemainingPlayers(List<PlayerComponent> remainingPlayers) {
 		_remainingPlayers = remainingPlayers;
 	}
 
@@ -39,7 +39,7 @@ public class GameComponent : MonoBehaviour {
 	/// Creates a new game by generating a map and assigning players to tiles.
 	/// </summary>
 	/// <param name="participants">Participants.</param>
-	public void newGame(PlayerComponent[] participants) {
+	public void newGame(List<PlayerComponent> participants) {
 		var firstPlayer = participants[0];
 		setRemainingPlayers(participants);
 		setCurrentPlayer(firstPlayer);
@@ -51,7 +51,7 @@ public class GameComponent : MonoBehaviour {
 		
 		foreach (var tile in _mapTiles)
 		{
-			int randIndex = Random.Range(0, participants.Length+1);
+			int randIndex = Random.Range(0, participants.Count + 1);
 			tile.setInitialPlayerIndex(randIndex);
 		}
 		
@@ -117,7 +117,7 @@ public class GameComponent : MonoBehaviour {
 	/// </summary>
 	public void BeginGame(){
 		if( _currentMap.Equals("Preset1") ){
-			PlayerComponent[] players = _playerManager.GetPlayers();
+			List<PlayerComponent> players = _playerManager.GetPlayers();
 			newGame(players);
 		}
 		else if( _currentMap.Equals("TestMap") ){
@@ -140,6 +140,6 @@ public class GameComponent : MonoBehaviour {
 	}
 
 	public void removePlayer(PlayerComponent player) {
-		/* TODO */
+		_remainingPlayers.Remove(player);
 	}
 }
