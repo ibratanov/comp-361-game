@@ -1822,6 +1822,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 322718659}
   - 114: {fileID: 322718658}
+  - 148: {fileID: 322718660}
   m_Layer: 0
   m_Name: GUIManager
   m_TagString: Untagged
@@ -1865,6 +1866,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!148 &322718660
+NetworkView:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 322718657}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 322718659}
+  m_ViewID:
+    m_ID: 1
+    m_Type: 1
 --- !u!1 &351436156
 GameObject:
   m_ObjectHideFlags: 0
@@ -6282,6 +6295,10 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11405718, guid: 72f7e7342fea272418a7d0ba151ecddc, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 22405708, guid: 72f7e7342fea272418a7d0ba151ecddc, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -6366,6 +6383,30 @@ Prefab:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 170951690}
+    - target: {fileID: 11405718, guid: 72f7e7342fea272418a7d0ba151ecddc, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11405718, guid: 72f7e7342fea272418a7d0ba151ecddc, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11405718, guid: 72f7e7342fea272418a7d0ba151ecddc, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11405718, guid: 72f7e7342fea272418a7d0ba151ecddc, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 322718658}
+    - target: {fileID: 11405718, guid: 72f7e7342fea272418a7d0ba151ecddc, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: RPCDisplayGameMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 11405718, guid: 72f7e7342fea272418a7d0ba151ecddc, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 72f7e7342fea272418a7d0ba151ecddc, type: 2}
   m_RootGameObject: {fileID: 1517346959}
@@ -8755,6 +8796,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1827460224}
         m_MethodName: SetActive
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 322718658}
+        m_MethodName: RPCDisplayGameMenu
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
