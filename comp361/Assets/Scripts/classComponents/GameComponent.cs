@@ -14,6 +14,7 @@ public class GameComponent : MonoBehaviour {
 	PlayerComponent[] _participants;
 	List<PlayerComponent> _remainingPlayers;
 	TileComponent[,] _mapTiles;
+    GameObject[,] _tileObjects;
 
 	/*********************
 	 *  GETTERS/SETTERS  *
@@ -57,49 +58,50 @@ public class GameComponent : MonoBehaviour {
 		
 		foreach (var tile in _mapTiles)
 		{
-			int playerIndex = tile.getInitialPlayerIndex();
-			//tile.getGameObject().GetComponent<Renderer>().materials[2].color = Color.white;
-			
-			if (playerIndex > 0)
-			{
-				var region = tile.breadthFS();
-				if (region.Count < 3)
-				{
-					foreach (var rTile in region)
-					{
-						rTile.setInitialPlayerIndex(0);
-					}
-				}
-				else
-				{
-					bool regionContainsVillage = false;
-					foreach (var rTile in region)
-					{
-						var regOccupant = rTile.getOccupantType();
-						if(regOccupant == OccupantType.VILLAGE){
-							regionContainsVillage = true;
-						}
-						//rTile.getGameObject().GetComponent<Renderer>().materials[2].color = _playerColours[playerIndex];
-					}
-					if (!regionContainsVillage)
-					{
-						TileComponent tileWithVillage = region[0];
-						var newHovel = new VillageComponent(VillageType.HOVEL, _currentPlayer);
-						tileWithVillage.setOccupantType(OccupantType.VILLAGE);
-						tileWithVillage.setVillage(newHovel);
+            int playerIndex = tile.getInitialPlayerIndex();
+            //tile.getGameObject().GetComponent<Renderer>().materials[2].color = Color.white;
 
-					   	var player = participants[playerIndex-1];
-	                   	player.add(newHovel);
+            if (playerIndex > 0)
+            {
+                var region = tile.breadthFS();
+                if (region.Count < 3)
+                {
+                    foreach (var rTile in region)
+                    {
+                        rTile.setInitialPlayerIndex(0);
+                    }
+                }
+                else
+                {
+                    bool regionContainsVillage = false;
+                    foreach (var rTile in region)
+                    {
+                        var regOccupant = rTile.getOccupantType();
+                        if (regOccupant == OccupantType.VILLAGE)
+                        {
+                            regionContainsVillage = true;
+                        }
+                        //rTile.getGameObject().GetComponent<Renderer>().materials[2].color = _playerColours[playerIndex];
+                    }
+                    if (!regionContainsVillage)
+                    {
+                        TileComponent tileWithVillage = region[0];
+                        var newHovel = new VillageComponent(VillageType.HOVEL, _currentPlayer);
+                        tileWithVillage.setOccupantType(OccupantType.VILLAGE);
+                        tileWithVillage.setVillage(newHovel);
 
-						newHovel.associate(tileWithVillage);
-						newHovel.addGold(7);
+                        var player = participants[playerIndex - 1];
+                        player.add(newHovel);
+
+                        newHovel.associate(tileWithVillage);
+                        newHovel.addGold(7);
                         UnitComponent newPeasant = newHovel.hireVillager(UnitType.PEASANT);
                         TileComponent villagerTile = region[1];
                         newPeasant.associate(villagerTile);
-					}
-				}
-			}
-			tile.UpdateDraw();
+                    }
+                }
+            }
+            tile.UpdateDraw();
 		}
 	}
 

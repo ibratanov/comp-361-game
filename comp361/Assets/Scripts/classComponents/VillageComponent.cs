@@ -140,15 +140,16 @@ public class VillageComponent : MonoBehaviour {
 	public UnitComponent hireVillager(UnitType unitType) {
         UnitComponent u = new UnitComponent(unitType);
         u.setVillage(this);
-        //for (int i = 0; i < _controlledRegion.Count; i++ )
-        //{
-        //    if (_controlledRegion[i].getOccupyingUnit() == null || i == _controlledRegion.Count - 1)
-        //    {
-        //        u.setLocation(_controlledRegion[i]);
-        //        break;
-        //    }
+        for (int i = 0; i < _controlledRegion.Count; i++)
+        {
+            if (_controlledRegion[i].getOccupantType() == OccupantType.NONE)
+            {
+                print("here");
+                u.associate(_controlledRegion[i]);
+                break;
+            }
 
-        //}       
+        }       
         _supportingUnits.Add(u);
         return u;
 	}

@@ -28,6 +28,7 @@ public class TileComponent : MonoBehaviour {
 
 	public GameObject _terrainGameObject;
 	public GameObject _villageGameObject;
+    public GameObject _tileGameObject;
 	private AssetManager _assets;
 	private GUIManager _menus;
 
