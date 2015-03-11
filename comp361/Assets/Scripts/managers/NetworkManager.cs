@@ -56,7 +56,7 @@ public class NetworkManager : MonoBehaviour {
 		if(_refreshHostList){
 			RefreshHostList();
 			if(_hostList != null){
-				int buttonOffset = 10;
+				int buttonOffset = -40;
 				for(int i = 0; i < _hostList.Length; ++i){
 					GameObject sessionButton = (GameObject)Instantiate(_joinButtonPrefab, _joinButtonPrefab.GetComponent<RectTransform>().position, Quaternion.identity);
 					sessionButton.transform.SetParent( _joinAvailablePanel.transform );
