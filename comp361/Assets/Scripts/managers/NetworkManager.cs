@@ -1,18 +1,25 @@
 //From the tutorial: http://www.paladinstudios.com/2013/07/10/how-to-create-an-online-multiplayer-game-with-unity/
 
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class NetworkManager : MonoBehaviour {
 
 	//Server creation
-	private const string projectName = "Comp361_RITAGame"; //Should be unique to this project
-	private const string roomName = "testRoom"; //Can be any name (possible suggestion: player name)
-	private const int maxPlayers = 4;
-	private const int portNumber = 25602;
+	private const string _projectName = "Comp361_RITAGame"; //Should be unique to this project
+	private const string _roomName = "testRoom"; //Can be any name (possible suggestion: player name)
+	private const int _maxPlayers = 4;
+	private const int _portNumber = 25602;
 
 	//Server joining
-	private HostData[] hostList;
+	private HostData[] _hostList;
+	private bool _refreshHostList = false;
+	public GameObject _joinAvailablePanel;		//The panel which becomes the parent of the buttons.
+	public GameObject _joinButtonPrefab;		//The prefab of the button to create instances of.
+	public GameObject _currentMenu;				//The menu that this button lives on.
+	public GameObject _connectedMenu;			//The menu that the player is redirected to after a successful connection.
+	private List<GameObject> _sessionButtons = new List<GameObject>();
 
 // --- INTERFACE CREATION --- //
 	#region CREATE INTERFACE
@@ -41,14 +48,58 @@ public class NetworkManager : MonoBehaviour {
 	}
 	*/
 
+	void Start(){
+
+	}
+
+	void Update(){
+		if(_refreshHostList){
+			RefreshHostList();
+			if(_hostList != null){
+				int buttonOffset = 10;
+				for(int i = 0; i < _hostList.Length; ++i){
+					GameObject sessionButton = (GameObject)Instantiate(_joinButtonPrefab, _joinButtonPrefab.GetComponent<RectTransform>().position, Quaternion.identity);
+					sessionButton.transform.SetParent( _joinAvailablePanel.transform );
+					sessionButton.GetComponent<RectTransform>().anchoredPosition3D = _joinButtonPrefab.GetComponent<RectTransform>().anchoredPosition3D + (Vector3.up * buttonOffset * i);
+					Button b = sessionButton.GetComponent<Button>();
+					b.onClick.AddListener(() => {
+						JoinServer(_hostList[0]); 
+						_currentMenu.SetActive(false);
+						_connectedMenu.SetActive(true);
+						_refreshHostList = false;
+					});
+					Text t = sessionButton.transform.GetChild(0).GetComponent<Text>();
+					t.text = _hostList[i].gameName;
+					_sessionButtons.Add ( sessionButton );
+//					if(GUI.Button(new Rect(400,100+(110*i),300,100), _hostList[i].gameName)){
+//						JoinServer(_hostList[i]);
+//					}
+				}
+			}
+		}
+	}
+
+	public void StartRefreshingHostList(){
+		_refreshHostList = true;
+	}
+
+	public void StopRefreshingHostList(){
+		_refreshHostList = false;
+	}
+
 	#endregion CREATE INTERFACE
 
 	#region CREATE SERVER
 
 	//Create a server and register it to the Master Server
-	private void StartServer(){
-		Network.InitializeServer(maxPlayers, portNumber, !Network.HavePublicAddress());
-		MasterServer.RegisterHost(projectName, roomName, "This is a comment");
+	public void StartServer(){
+		if(!Network.isClient && !Network.isServer){
+			Network.InitializeServer(_maxPlayers, _portNumber, !Network.HavePublicAddress());
+			MasterServer.RegisterHost(_projectName, _roomName, "This is a comment");
+		}
+		else{
+			//TODO: Are there any cases where we could potentially trigger this function while still connected?
+		}
 	}
 
 	//Confirmation that the server has indeed been created.
@@ -61,8 +112,8 @@ public class NetworkManager : MonoBehaviour {
 	#region JOIN SERVER
 
 	//Get the host information that matches the gameTypeName.
-	private void RefreshHostList(){
-		MasterServer.RequestHostList(projectName);
+	public void RefreshHostList(){
+		MasterServer.RequestHostList(_projectName);
 		Debug.Log(MasterServer.PollHostList().Length);
 	}
 
@@ -76,13 +127,13 @@ public class NetworkManager : MonoBehaviour {
 		Debug.Log("msEvent: " + msEvent.ToString());
 		//Obtain data required to join the host server
 		if(msEvent == MasterServerEvent.HostListReceived){
-			hostList = MasterServer.PollHostList();
+			_hostList = MasterServer.PollHostList();
 			Debug.Log("HostListReceived");
 		}
 	}
 
 	//Join the server belonging to the given hostData
-	private void JoinServer(HostData hostData){
+	public void JoinServer(HostData hostData){
 		Network.Connect(hostData);
 		Debug.Log("trying to join " + hostData.gameName);
 	}
