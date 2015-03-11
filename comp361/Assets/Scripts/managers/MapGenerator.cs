@@ -36,7 +36,7 @@ public class MapGenerator : MonoBehaviour {
 	/// <param name="tileDiagonal">The diagonal length of an individual tile.</param>
 	private void GenerateSquareGrid( int rows, int columns, Vector3 startLocation, Vector3 tileHeight, Vector3 tileDiagonal ) 
 	{
-		int nPlayers = this.GetComponent<GameComponent>()._playerManager.GetPlayers().Length;
+		int nPlayers = this.GetComponent<GameComponent>()._playerManager.GetPlayers().Count;
 		int gridId = 0;
 		Vector3 currentPosition = startLocation;
 		for (int i = 0; i < columns; ++i)
