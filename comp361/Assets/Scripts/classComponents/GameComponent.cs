@@ -106,9 +106,18 @@ public class GameComponent : MonoBehaviour {
 
                         newHovel.associate(tileWithVillage);
                         newHovel.addGold(7);
-                        UnitComponent newPeasant = newHovel.hireVillager(UnitType.PEASANT);
-                        TileComponent villagerTile = region[1];
-                        newPeasant.associate(villagerTile);
+                        //UnitComponent newPeasant = newHovel.hireVillager(UnitType.PEASANT);
+                        //TileComponent villagerTile = region[1];
+                        //newPeasant.associate(villagerTile);
+                        // add all other tiles in the bfs to this village's controlled region
+                        foreach (var controlledTile in tileWithVillage.breadthFS())
+                        {
+                            if (!newHovel.getControlledRegion().Contains(controlledTile))
+                            {
+                                newHovel.addToControlledRegion(controlledTile);
+                            }
+                        }
+
                     }
                 }
             }

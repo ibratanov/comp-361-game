@@ -22,12 +22,20 @@ public class UnitComponent : MonoBehaviour {
 	public GameObject _villagerGameObject;
 
 	readonly static uint COST_PER_UNIT_UPGRADE = 10;
-    readonly static Dictionary<UnitType, uint> UPKEEP = new Dictionary<UnitType, uint>()
+    public readonly static Dictionary<UnitType, uint> UPKEEP = new Dictionary<UnitType, uint>()
     {
         {UnitType.PEASANT, 2},
         {UnitType.INFANTRY, 6},
         {UnitType.SOLDIER, 18},
         {UnitType.KNIGHT, 54}
+    };
+
+    public readonly static Dictionary<UnitType, uint> INITIAL_COST = new Dictionary<UnitType, uint>()
+    {
+        {UnitType.PEASANT, 10},
+        {UnitType.INFANTRY, 20},
+        {UnitType.SOLDIER, 30},
+        {UnitType.KNIGHT, 40}
     };
 
     private AssetManager _assets;
