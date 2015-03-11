@@ -61,8 +61,19 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	public void setInitialPlayerIndex(int initialPlayerIndex) {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCsetInitialPlayerIndex", RPCMode.All, initialPlayerIndex);
+		}
+		else{
+			_initialPlayerIndex = initialPlayerIndex;
+		}
+	}
+
+	[RPC]
+	private void RPCsetInitialPlayerIndex(int initialPlayerIndex){
 		_initialPlayerIndex = initialPlayerIndex;
 	}
+
 
 	public void setLandType(LandType landType) {
 		if(Network.isServer || Network.isClient){
@@ -73,7 +84,7 @@ public class TileComponent : MonoBehaviour {
 			_terrainGameObject = _assets.getTerrainGameObject(landType);
 		}
 	}
-
+	
 	[RPC]
 	public void RPCsetLandType(int landTypeIndex) {
 		_landType = (LandType)landTypeIndex;
@@ -84,14 +95,36 @@ public class TileComponent : MonoBehaviour {
 		return _landType;
 	}
 
-	public void setVillage(VillageComponent village) {
-		_village = village;
 
-		if (_occupantType == OccupantType.VILLAGE) {
-			_landType = LandType.GRASS;
-			_terrainGameObject = _assets.getVillageGameObject(village.getVillageType());
+	public void setVillage(VillageComponent village) {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCsetVillage", RPCMode.All,(int)village.getVillageType() ); //TODO: Pass the appropriate parameters
+		}
+		else{
+			_village = village;
+
+			if (_occupantType == OccupantType.VILLAGE) {
+				_landType = LandType.GRASS;
+				_terrainGameObject = _assets.getVillageGameObject(village.getVillageType());
+			}
 		}
 	}
+
+	[RPC]
+	public void RPCsetVillage(int villageTypeIndex) {
+		//TODO: Need to figure out a strategy to update the village across the network. 
+		//	Suggestion: (1)Find string/int representations of the data. 
+		//				(2)Learn about proper serialization over the network
+		//				(3)Perhaps the other player doesn't need to know the data for the Village if it doesn't affect them
+
+		//_village = village;
+		
+		if (_occupantType == OccupantType.VILLAGE) {
+			_landType = LandType.GRASS;
+			_terrainGameObject = _assets.getVillageGameObject((VillageType)villageTypeIndex);
+		}
+	}
+
 
 	public VillageComponent getVillage() {
 		return _village;
@@ -102,45 +135,116 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	public void setOccupantType(OccupantType occupantType) {
-		_occupantType = occupantType;
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCsetOccupantType", RPCMode.All, (int)occupantType);
+		}
+		else{
+			_occupantType = occupantType;
+			//Remove any links to previous occupants
+			if(occupantType == OccupantType.VILLAGE){
+				_occupyingStructure = null;
+				_occupyingUnit = null;
+			}
+			else if(occupantType == OccupantType.STRUCTURE){
+				_occupyingUnit = null;
+			}
+			else if(occupantType == OccupantType.UNIT){
+				_occupyingStructure = null;
+			}
+		}
+	}
+
+	[RPC]
+	public void RPCsetOccupantType(int occupantTypeIndex) {
+		_occupantType = (OccupantType)occupantTypeIndex;
 		//Remove any links to previous occupants
-		if(occupantType == OccupantType.VILLAGE){
+		if(_occupantType == OccupantType.VILLAGE){
 			_occupyingStructure = null;
 			_occupyingUnit = null;
 		}
-		else if(occupantType == OccupantType.STRUCTURE){
+		else if(_occupantType == OccupantType.STRUCTURE){
 			_occupyingUnit = null;
 		}
-		else if(occupantType == OccupantType.UNIT){
+		else if(_occupantType == OccupantType.UNIT){
 			_occupyingStructure = null;
 		}
+	}
+
+
+	public void setOccupyingStructure(StructureComponent occupyingStructure) {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCsetOccupyingStructure", RPCMode.All); //TODO: Pass the appropriate parameters
+		}
+		else{
+			_occupyingStructure = occupyingStructure;
+		}
+	}
+
+	[RPC]
+	public void RPCsetOccupyingStructure() {
+		//TODO: Need to figure out a strategy to update the village across the network. 
+		//	Suggestion: (1)Find string/int representations of the data. 
+		//				(2)Learn about proper serialization over the network
+		//				(3)Perhaps the other player doesn't need to know the data for the Village if it doesn't affect them
+	
+		//_occupyingStructure = occupyingStructure;
 	}
 
 	public StructureComponent getOccupyingStructure() {
 		return _occupyingStructure;
 	}
 
-	public void setOccupyingStructure(StructureComponent occupyingStructure) {
-		_occupyingStructure = occupyingStructure;
+
+	public void setOccupyingUnit(UnitComponent occupyingUnit) {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCsetOccupyingUnit", RPCMode.All); //TODO: Pass the appropriate parameters
+		}
+		else{
+			_occupyingUnit = occupyingUnit;
+		}
+	}
+
+	[RPC]
+	public void RPCsetOccupyingUnit() {
+		//TODO: Need to figure out a strategy to update the village across the network. 
+		//	Suggestion: (1)Find string/int representations of the data. 
+		//				(2)Learn about proper serialization over the network
+		//				(3)Perhaps the other player doesn't need to know the data for the Village if it doesn't affect them
+
+		//_occupyingUnit = occupyingUnit;
 	}
 
 	public UnitComponent getOccupyingUnit() {
 		return _occupyingUnit;
 	}
 
-	public void setOccupyingUnit(UnitComponent occupyingUnit) {
-		_occupyingUnit = occupyingUnit;
-	}
-
-    public List<TileComponent> getNeighbours()
-    {
-        return _neighbours;
-    }
-
+	
     public void setNeighbours(List<TileComponent> neighbours)
     {
-        _neighbours = neighbours;
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCsetNeighbours", RPCMode.All); //TODO: Pass the appropriate parameters
+		}
+		else{
+        	_neighbours = neighbours;
+		}
     }
+
+	[RPC]
+	public void RPCsetNeighbours()
+	{
+		//TODO: Need to figure out a strategy to update the village across the network. 
+		//	Suggestion: (1)Find string/int representations of the data. 
+		//				(2)Learn about proper serialization over the network
+		//				(3)Perhaps the other player doesn't need to know the data for the Village if it doesn't affect them
+
+		//_neighbours = neighbours;
+	}
+
+	public List<TileComponent> getNeighbours()
+	{
+		return _neighbours;
+	}
+
 
 	/*********************
 	 *      METHODS      *
