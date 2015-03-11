@@ -44,11 +44,6 @@ public class PlayerComponent : MonoBehaviour {
 		return _userName;
 	}
 
-	public PlayerComponent Player(string userName, string password) {
-		/* TODO */
-		return null;
-	}
-
 	public GameComponent getGame() {
 		return _myGame;
 	}
@@ -84,11 +79,11 @@ public class PlayerComponent : MonoBehaviour {
 	}
 
 	public void incrementLosses() {
-		/* TODO */
+		++_losses;
 	}
 
 	public void incrementWins() {
-		/* TODO */
+		++_wins;
 	}
 
 	public void login(string userName, string password) {
@@ -96,18 +91,17 @@ public class PlayerComponent : MonoBehaviour {
 	}
 
 	public void remove(VillageComponent village) {
-		/* TODO */
+		_villages.Remove(village);
+		// TODO: Do we need to handle the whole region removal as well?
 	}
 
 
 
 	// Use this for initialization
 	void Start () {
-	
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
 	}
 }
