@@ -170,6 +170,7 @@ public class VillageComponent : MonoBehaviour {
         if (_goldStock < UnitComponent.INITIAL_COST[unitType])
         {
             // TODO: insufficient resource error
+            return null;
         }
         _goldStock = _goldStock - UnitComponent.INITIAL_COST[unitType];
         GameObject go = new GameObject();
@@ -190,6 +191,7 @@ public class VillageComponent : MonoBehaviour {
         if (hasSpace == false)
         {
             // TODO: no more space error
+            return null;
         }
         _supportingUnits.Add(u);
         return u;
