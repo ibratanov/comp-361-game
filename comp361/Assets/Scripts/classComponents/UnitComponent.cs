@@ -30,7 +30,7 @@ public class UnitComponent : MonoBehaviour {
         {UnitType.KNIGHT, 54}
     };
 
-
+    private AssetManager _assets;
 
 	/*********************
 	 *     ATTRIBUTES    *
@@ -70,6 +70,7 @@ public class UnitComponent : MonoBehaviour {
 
 	public bool setLocation(TileComponent location) {
 		_location = location;
+        _villagerGameObject.transform.position = location._tileGameObject.transform.position;
 		return true;
 	}
 
@@ -168,7 +169,6 @@ public class UnitComponent : MonoBehaviour {
 
 		tile.setOccupantType(OccupantType.UNIT);
 		tile.setOccupyingUnit(this);
-
 		setLocation(tile);
 	}
 
@@ -189,12 +189,14 @@ public class UnitComponent : MonoBehaviour {
 	}
 
 	public UnitComponent(UnitType unitType) {
+        _assets = GameObject.FindObjectOfType<AssetManager>();
         _roundsCultivating = 0;
         _upkeep = UPKEEP[unitType];
         _currentAction = ActionType.READY_FOR_ORDERS;
         _location = null;
         _unitType = unitType;
         _village = null;
+        _villagerGameObject = (GameObject)Instantiate(_assets.getUnitGameObject(unitType), new Vector3(0, 0, 0), Quaternion.identity);
 	}
 
 	public void cultivate() {
@@ -344,4 +346,9 @@ public class UnitComponent : MonoBehaviour {
 	void Update() {
 
 	}
+
+    void Awake()
+    {
+        
+    }
 }
