@@ -98,9 +98,6 @@ public class NetworkManager : MonoBehaviour {
 			Network.InitializeServer(_maxPlayers, _portNumber, !Network.HavePublicAddress());
 			MasterServer.RegisterHost(_projectName, _roomName, "This is a comment");
 		}
-		else{
-			//TODO: Are there any cases where we could potentially trigger this function while still connected?
-		}
 	}
 
 	//Confirmation that the server has indeed been created.
@@ -145,5 +142,17 @@ public class NetworkManager : MonoBehaviour {
 	}
 
 	#endregion JOIN SERVER
+
+	public void Disconnect(){
+		if(Network.isServer){
+			Network.Disconnect();
+			MasterServer.UnregisterHost();
+			Debug.Log("Disconnected Server");
+		}
+		else if(Network.isClient){
+			Network.Disconnect();
+			Debug.Log("Disconnected from Server");
+		}
+	}
 
 }
