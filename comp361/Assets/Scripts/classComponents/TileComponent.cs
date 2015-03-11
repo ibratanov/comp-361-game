@@ -392,6 +392,7 @@ public class TileComponent : MonoBehaviour {
 	void Start() {
         _terrainGameObject = (GameObject)Instantiate(_terrainGameObject, this.transform.position, Quaternion.identity);
 		_terrainGameObject.transform.parent = this.transform;
+        _game = GameObject.FindObjectOfType<GameComponent>();
 	}
 
 	void Awake(){
@@ -432,6 +433,7 @@ public class TileComponent : MonoBehaviour {
 
 	public void Select(){
 		HighlightRegion();
+        _game.setLastSelectedTile(this);
 		if(_occupantType == OccupantType.UNIT){
 			Debug.Log("Unit");
 			_menus.DisplayUnitActions();
