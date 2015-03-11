@@ -22,6 +22,15 @@ public class UnitComponent : MonoBehaviour {
 	public GameObject _villagerGameObject;
 
 	readonly static uint COST_PER_UNIT_UPGRADE = 10;
+    readonly static Dictionary<UnitType, uint> UPKEEP = new Dictionary<UnitType, uint>()
+    {
+        {UnitType.PEASANT, 2},
+        {UnitType.INFANTRY, 6},
+        {UnitType.SOLDIER, 18},
+        {UnitType.KNIGHT, 54}
+    };
+
+
 
 	/*********************
 	 *     ATTRIBUTES    *
@@ -151,8 +160,11 @@ public class UnitComponent : MonoBehaviour {
 	}
 
 	public void associate(TileComponent tile) {
-		_location.setOccupantType(OccupantType.NONE);
-		_location.setOccupyingUnit(null);
+        if (_location != null)
+        {
+            _location.setOccupantType(OccupantType.NONE);
+            _location.setOccupyingUnit(null);
+        }		
 
 		tile.setOccupantType(OccupantType.UNIT);
 		tile.setOccupyingUnit(this);
@@ -177,7 +189,12 @@ public class UnitComponent : MonoBehaviour {
 	}
 
 	public UnitComponent(UnitType unitType) {
-        /* TODO */
+        _roundsCultivating = 0;
+        _upkeep = UPKEEP[unitType];
+        _currentAction = ActionType.READY_FOR_ORDERS;
+        _location = null;
+        _unitType = unitType;
+        _village = null;
 	}
 
 	public void cultivate() {

@@ -84,8 +84,7 @@ public class GameComponent : MonoBehaviour {
 					if (!regionContainsVillage)
 					{
 						TileComponent tileWithVillage = region[0];
-						var newHovel = new VillageComponent(VillageType.HOVEL);
-
+						var newHovel = new VillageComponent(VillageType.HOVEL, _currentPlayer);
 						tileWithVillage.setOccupantType(OccupantType.VILLAGE);
 						tileWithVillage.setVillage(newHovel);
 
@@ -94,9 +93,9 @@ public class GameComponent : MonoBehaviour {
 
 						newHovel.associate(tileWithVillage);
 						newHovel.addGold(7);
-//	                   	UnitComponent newPeasant = newHovel.hireVillager(UnitType.PEASANT);
-//	                   	TileComponent villagerTile = region[1];
-//	                   	newPeasant.associate(villagerTile);
+                        UnitComponent newPeasant = newHovel.hireVillager(UnitType.PEASANT);
+                        TileComponent villagerTile = region[1];
+                        newPeasant.associate(villagerTile);
 					}
 				}
 			}
