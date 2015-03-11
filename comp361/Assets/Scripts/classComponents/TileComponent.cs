@@ -26,7 +26,7 @@ public class TileComponent : MonoBehaviour {
 												new Color(1.0f,1.0f,0.25f), 
 											};
 
-	public GameObject _terrainGameObject;
+	private GameObject _terrainGameObject;
 	private GameObject _villageGameObject;
     private GameObject _tileGameObject;
 	private AssetManager _assets;
@@ -62,7 +62,7 @@ public class TileComponent : MonoBehaviour {
         return _tileGameObject;
     }
 
-    public void setTileGameObject(GameObject tileGameObject)
+    public void setTileGameObject(ref GameObject tileGameObject)
     {
         _tileGameObject = tileGameObject;
     }
@@ -72,7 +72,7 @@ public class TileComponent : MonoBehaviour {
         return _terrainGameObject;
     }
 
-    public void setTerrainGameObject(GameObject terrainGameObject)
+    public void setTerrainGameObject(ref GameObject terrainGameObject)
     {
         _terrainGameObject = terrainGameObject;
     }
@@ -82,7 +82,7 @@ public class TileComponent : MonoBehaviour {
         return _villageGameObject;
     }
 
-    public void setVillageGameObject(GameObject villageGameObject)
+    public void setVillageGameObject(ref GameObject villageGameObject)
     {
         _villageGameObject = villageGameObject;
     }
