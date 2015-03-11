@@ -17,6 +17,7 @@ public class NetworkManager : MonoBehaviour {
 // --- INTERFACE CREATION --- //
 	#region CREATE INTERFACE
 
+	/*
 	//Create a GUI display
 	void OnGUI()
 	{
@@ -38,6 +39,7 @@ public class NetworkManager : MonoBehaviour {
 			}
 		}
 	}
+	*/
 
 	#endregion CREATE INTERFACE
 
@@ -47,7 +49,6 @@ public class NetworkManager : MonoBehaviour {
 	private void StartServer(){
 		Network.InitializeServer(maxPlayers, portNumber, !Network.HavePublicAddress());
 		MasterServer.RegisterHost(projectName, roomName, "This is a comment");
-//		MasterServer.ipAddress = "127.0.0.1"; //Testing locally - TODO: Remove this in final implementation
 	}
 
 	//Confirmation that the server has indeed been created.
@@ -69,14 +70,14 @@ public class NetworkManager : MonoBehaviour {
 	void OnMasterServerEvent(MasterServerEvent msEvent){
 		//Confirm the server was registered
 		if(msEvent == MasterServerEvent.RegistrationSucceeded){
-			Debug.Log("msEvent equalled RegistrationSucceeded");
+			Debug.Log("RegistrationSucceeded");
 		}
 
 		Debug.Log("msEvent: " + msEvent.ToString());
 		//Obtain data required to join the host server
 		if(msEvent == MasterServerEvent.HostListReceived){
 			hostList = MasterServer.PollHostList();
-			Debug.Log("msEvent equalled HostListReceived");
+			Debug.Log("HostListReceived");
 		}
 	}
 
