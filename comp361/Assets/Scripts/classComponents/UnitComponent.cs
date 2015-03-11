@@ -289,7 +289,7 @@ public class UnitComponent : MonoBehaviour {
 			List<VillageComponent> enemyVillages = enemyPlayer.getVillages();
 
 			GameComponent game = enemyPlayer.getGame();
-			PlayerComponent[] players = game.getRemainingPlayers();
+			List<PlayerComponent> players = game.getRemainingPlayers();
 
 			if (enemyVillages.Count == 0) {
 				enemyPlayer.incrementLosses();
@@ -298,7 +298,7 @@ public class UnitComponent : MonoBehaviour {
 				players = game.getRemainingPlayers();
 			}
 
-			if (players.Length == 1) {
+			if (players.Count == 1) {
 				players[0].incrementWins();
 				game.endGame();
 			}

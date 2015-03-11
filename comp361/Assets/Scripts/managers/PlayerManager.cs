@@ -20,9 +20,9 @@ public class PlayerManager : MonoBehaviour {
 	
 	}
 
-    public PlayerComponent[] GetPlayers()
+    public List<PlayerComponent> GetPlayers()
     {
-        return _players.ToArray();
+        return _players;
     }
 
 	public void AddPlayer(PlayerComponent playerProfile){
