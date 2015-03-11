@@ -70,7 +70,7 @@ public class UnitComponent : MonoBehaviour {
 
 	public bool setLocation(TileComponent location) {
 		_location = location;
-        _villagerGameObject.transform.position = location._tileGameObject.transform.position;
+        _villagerGameObject.transform.position = location.getTileGameObject().transform.position;
 		return true;
 	}
 

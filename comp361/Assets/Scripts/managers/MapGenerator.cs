@@ -66,7 +66,7 @@ public class MapGenerator : MonoBehaviour {
 				}
 				phase = !phase;
 				currentPosition += diag;
-                _landTiles[i, j]._tileGameObject = gameTile;
+                _landTiles[i, j].setTileGameObject(gameTile);
 			}
 		}
         // call getNeighbors on each tile
