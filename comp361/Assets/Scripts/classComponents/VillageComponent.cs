@@ -84,9 +84,16 @@ public class VillageComponent : MonoBehaviour {
 		_villageType = villageType;
 	}
 
+
 	/*********************
 	 *      METHODS      *
 	 ********************/
+
+
+    public void addToControlledRegion(TileComponent tile)
+    {
+        _controlledRegion.Add(tile);
+    }
 
 	public static uint calculateCost(VillageType villageType, VillageType newLevel) {
 		VillageType current = villageType;
@@ -138,18 +145,28 @@ public class VillageComponent : MonoBehaviour {
 	}
 
 	public UnitComponent hireVillager(UnitType unitType) {
+        if (_goldStock < UnitComponent.INITIAL_COST[unitType])
+        {
+            // TODO: insufficient resource error
+        }
+        _goldStock = _goldStock - UnitComponent.INITIAL_COST[unitType];
         UnitComponent u = new UnitComponent(unitType);
         u.setVillage(this);
+        bool hasSpace = false;
         for (int i = 0; i < _controlledRegion.Count; i++)
         {
             if (_controlledRegion[i].getOccupantType() == OccupantType.NONE)
             {
-                print("here");
+                hasSpace = true;
                 u.associate(_controlledRegion[i]);
                 break;
             }
-
-        }       
+        }
+       
+        if (hasSpace == false)
+        {
+            // TODO: no more space error
+        }
         _supportingUnits.Add(u);
         return u;
 	}
