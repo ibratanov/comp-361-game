@@ -22,6 +22,27 @@ public class GUIManager : MonoBehaviour {
 	
 	}
 
+	public void DisplayInGameMenu(){
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCDisplayInGameMenu", RPCMode.All);
+		}
+		else{
+			RPCDisplayInGameMenu();
+		}
+	}
+
+	[RPC]
+	private void RPCDisplayInGameMenu(){
+		for(int i = 0; i < _menus.Length; ++i){
+			if(_menus[i].name.Contains("Menu_InGame")){
+				_menus[i].SetActive(true);
+			}
+			else{
+				_menus[i].SetActive(false);
+			}
+		}
+	}
+
 	public void DisplayVillageActions(){
 		for(int i = 0; i < _inGamePanels.Length; ++i){
 			if(_inGamePanels[i].name.Contains("Panel_Village_Actions")){
