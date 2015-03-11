@@ -75,6 +75,7 @@ public class NetworkManager : MonoBehaviour {
 //						JoinServer(_hostList[i]);
 //					}
 				}
+				_refreshHostList = false;
 			}
 		}
 	}

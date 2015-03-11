@@ -26,7 +26,7 @@ public class TileComponent : MonoBehaviour {
 												new Color(1.0f,1.0f,0.25f), 
 											};
 
-	public GameObject _terrainGameObject;
+	private GameObject _terrainGameObject;
 	private GameObject _villageGameObject;
     private GameObject _tileGameObject;
 	private AssetManager _assets;
@@ -62,7 +62,7 @@ public class TileComponent : MonoBehaviour {
         return _tileGameObject;
     }
 
-    public void setTileGameObject(GameObject tileGameObject)
+    public void setTileGameObject(ref GameObject tileGameObject)
     {
         _tileGameObject = tileGameObject;
     }
@@ -72,7 +72,7 @@ public class TileComponent : MonoBehaviour {
         return _terrainGameObject;
     }
 
-    public void setTerrainGameObject(GameObject terrainGameObject)
+    public void setTerrainGameObject(ref GameObject terrainGameObject)
     {
         _terrainGameObject = terrainGameObject;
     }
@@ -82,7 +82,7 @@ public class TileComponent : MonoBehaviour {
         return _villageGameObject;
     }
 
-    public void setVillageGameObject(GameObject villageGameObject)
+    public void setVillageGameObject(ref GameObject villageGameObject)
     {
         _villageGameObject = villageGameObject;
     }
@@ -117,7 +117,7 @@ public class TileComponent : MonoBehaviour {
 	}
 	
 	[RPC]
-	public void RPCsetLandType(int landTypeIndex) {
+	private void RPCsetLandType(int landTypeIndex) {
 		_landType = (LandType)landTypeIndex;
 		_terrainGameObject = _assets.getTerrainGameObject((LandType)landTypeIndex);
 	}
@@ -142,7 +142,7 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	[RPC]
-	public void RPCsetVillage(int villageTypeIndex) {
+	private void RPCsetVillage(int villageTypeIndex) {
 		//TODO: Need to figure out a strategy to update the village across the network. 
 		//	Suggestion: (1)Find string/int representations of the data. 
 		//				(2)Learn about proper serialization over the network
@@ -186,7 +186,7 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	[RPC]
-	public void RPCsetOccupantType(int occupantTypeIndex) {
+	private void RPCsetOccupantType(int occupantTypeIndex) {
 		_occupantType = (OccupantType)occupantTypeIndex;
 		//Remove any links to previous occupants
 		if(_occupantType == OccupantType.VILLAGE){
@@ -212,7 +212,7 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	[RPC]
-	public void RPCsetOccupyingStructure() {
+	private void RPCsetOccupyingStructure() {
 		//TODO: Need to figure out a strategy to update the village across the network. 
 		//	Suggestion: (1)Find string/int representations of the data. 
 		//				(2)Learn about proper serialization over the network
@@ -236,7 +236,7 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	[RPC]
-	public void RPCsetOccupyingUnit() {
+	private void RPCsetOccupyingUnit() {
 		//TODO: Need to figure out a strategy to update the village across the network. 
 		//	Suggestion: (1)Find string/int representations of the data. 
 		//				(2)Learn about proper serialization over the network
@@ -252,16 +252,17 @@ public class TileComponent : MonoBehaviour {
 	
     public void setNeighbours(List<TileComponent> neighbours)
     {
+		_neighbours = neighbours;
 		if(Network.isServer || Network.isClient){
-			networkView.RPC("RPCsetNeighbours", RPCMode.All); //TODO: Pass the appropriate parameters
+//			networkView.RPC("RPCsetNeighbours", RPCMode.All); //TODO: Pass the appropriate parameters
 		}
 		else{
-        	_neighbours = neighbours;
+      
 		}
     }
 
 	[RPC]
-	public void RPCsetNeighbours()
+	private void RPCsetNeighbours()
 	{
 		//TODO: Need to figure out a strategy to update the village across the network. 
 		//	Suggestion: (1)Find string/int representations of the data. 
@@ -415,12 +416,7 @@ public class TileComponent : MonoBehaviour {
 
 	
 	void OnMouseDown() {
-		if(Network.isServer || Network.isClient){
-			networkView.RPC ("ToggleColours", RPCMode.All);
-		}
-		else{
-			Deselect();
-		}
+		Deselect();
 	}
 
 	void OnMouseUp(){
