@@ -140,8 +140,17 @@ public class VillageComponent : MonoBehaviour {
 	public UnitComponent hireVillager(UnitType unitType) {
         UnitComponent u = new UnitComponent(unitType);
         u.setVillage(this);
-        return null;
-        /*TODO*/
+        //for (int i = 0; i < _controlledRegion.Count; i++ )
+        //{
+        //    if (_controlledRegion[i].getOccupyingUnit() == null || i == _controlledRegion.Count - 1)
+        //    {
+        //        u.setLocation(_controlledRegion[i]);
+        //        break;
+        //    }
+
+        //}       
+        _supportingUnits.Add(u);
+        return u;
 	}
 
 	public void addGold(uint amount) {
@@ -254,9 +263,14 @@ public class VillageComponent : MonoBehaviour {
 		}
 	}
 
-    public VillageComponent(VillageType villageType)
+    public VillageComponent(VillageType villageType, PlayerComponent currentPlayer)
     {
-		_villageType = villageType;
+        _goldStock = 0;
+        _woodStock = 0;
+        _player = currentPlayer;
+        _controlledRegion = new List<TileComponent>();
+        _supportingUnits = new List<UnitComponent>();
+        _villageType = villageType;
     }
 
 
