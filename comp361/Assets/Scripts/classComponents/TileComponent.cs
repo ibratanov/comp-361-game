@@ -27,8 +27,8 @@ public class TileComponent : MonoBehaviour {
 											};
 
 	public GameObject _terrainGameObject;
-	public GameObject _villageGameObject;
-    public GameObject _tileGameObject;
+	private GameObject _villageGameObject;
+    private GameObject _tileGameObject;
 	private AssetManager _assets;
 	private GUIManager _menus;
 
@@ -56,6 +56,36 @@ public class TileComponent : MonoBehaviour {
 	/*********************
 	 *  GETTERS/SETTERS  *
 	 ********************/
+
+    public GameObject getTileGameObject()
+    {
+        return _tileGameObject;
+    }
+
+    public void setTileGameObject(GameObject tileGameObject)
+    {
+        _tileGameObject = tileGameObject;
+    }
+
+    public GameObject getTerrainGameObject()
+    {
+        return _terrainGameObject;
+    }
+
+    public void setTerrainGameObject(GameObject terrainGameObject)
+    {
+        _terrainGameObject = terrainGameObject;
+    }
+
+    public GameObject getVillageGameObject()
+    {
+        return _villageGameObject;
+    }
+
+    public void setVillageGameObject(GameObject villageGameObject)
+    {
+        _villageGameObject = villageGameObject;
+    }
 
 	public int getInitialPlayerIndex() {
 		return _initialPlayerIndex;
@@ -280,10 +310,6 @@ public class TileComponent : MonoBehaviour {
 		}
 	}
 
-	public GameObject getGameObject() {
-		return _terrainGameObject;
-	}
-
 	public TileComponent(int initialOwner) {
         _initialPlayerIndex = initialOwner;
         _hasRoad = false;
@@ -363,7 +389,7 @@ public class TileComponent : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start() {
-		_terrainGameObject = (GameObject)Instantiate(_terrainGameObject, this.transform.position, Quaternion.identity);
+        _terrainGameObject = (GameObject)Instantiate(_terrainGameObject, this.transform.position, Quaternion.identity);
 		_terrainGameObject.transform.parent = this.transform;
 	}
 
