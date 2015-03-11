@@ -315,7 +315,37 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	public void connectRegions() {
-		/* TODO */
+		foreach (TileComponent tile in _neighbours) {
+			VillageComponent neighbourVillage = tile.getVillage();
+
+			if (neighbourVillage && neighbourVillage != _village && neighbourVillage.getPlayer() == _village.getPlayer()) {
+				VillageComponent strongerVillage;
+				VillageComponent weakerVillage;
+				VillageType neighbourVillageType = neighbourVillage.getVillageType();
+				VillageType myVillageType = _village.getVillageType();
+
+				if (neighbourVillageType > myVillageType) {
+					strongerVillage = neighbourVillage;
+					weakerVillage = _village;
+				} else if (neighbourVillageType < myVillageType) {
+					strongerVillage = _village;
+					weakerVillage = neighbourVillage;
+				} else {
+					int neighbourRegionSize = neighbourVillage.getControlledRegion().Count;
+					int myRegionSize = _village.getControlledRegion().Count;
+
+					if (neighbourRegionSize > myRegionSize) {
+						strongerVillage = neighbourVillage;
+						weakerVillage = _village;
+					} else {
+						strongerVillage = _village;
+						weakerVillage = neighbourVillage;
+					}
+				}
+
+				strongerVillage.mergeWith(weakerVillage);
+			}
+		}
 	}
 
 	public void createRoad() {
