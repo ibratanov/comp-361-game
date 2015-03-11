@@ -66,6 +66,7 @@ public class NetworkManager : MonoBehaviour {
 						JoinServer(_hostList[0]); 
 						_currentMenu.SetActive(false);
 						_connectedMenu.SetActive(true);
+						_refreshHostList = false;
 					});
 					Text t = sessionButton.transform.GetChild(0).GetComponent<Text>();
 					t.text = _hostList[i].gameName;
@@ -74,13 +75,16 @@ public class NetworkManager : MonoBehaviour {
 //						JoinServer(_hostList[i]);
 //					}
 				}
-				_refreshHostList = false;
 			}
 		}
 	}
 
 	public void StartRefreshingHostList(){
 		_refreshHostList = true;
+	}
+
+	public void StopRefreshingHostList(){
+		_refreshHostList = false;
 	}
 
 	#endregion CREATE INTERFACE
