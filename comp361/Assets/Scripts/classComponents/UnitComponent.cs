@@ -263,11 +263,8 @@ public class UnitComponent : MonoBehaviour {
 		foreach (TileComponent neighbour in neighbours) {
 			List<TileComponent> region = neighbour.breadthFS();
 
-			bool containsVillage = TileComponent.containsVillage(region);
-
-			if (region.Count >= 3 && !containsVillage) {
-				// TODO: PUT PROPER STATS FOR NEW VILLAGE
-				VillageComponent newHovel = new VillageComponent(0, 0, null, null, null, VillageType.HOVEL);
+			if (region.Count >= 3 && !TileComponent.containsVillage(region)) {
+				VillageComponent newHovel = new VillageComponent(0, 0, enemyPlayer, region, null, VillageType.HOVEL);
 
 				enemyPlayer.add(newHovel);
 
