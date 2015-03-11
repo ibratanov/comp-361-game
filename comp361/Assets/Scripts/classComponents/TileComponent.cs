@@ -231,11 +231,6 @@ public class TileComponent : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start() {
-		_landType = LandType.GRASS;
-		_occupantType = OccupantType.NONE;
-		_occupyingUnit = null;
-		_occupyingStructure = null;
-		_village = null;
 		_terrainGameObject = (GameObject)Instantiate(_terrainGameObject, this.transform.position, Quaternion.identity);
 		_terrainGameObject.transform.parent = this.transform;
 	}
@@ -291,7 +286,9 @@ public class TileComponent : MonoBehaviour {
 			Debug.Log("Village");
 			_menus.DisplayVillageActions();
 		}
-		Debug.Log("None");
+		else{
+			Debug.Log("None");
+		}
 	}
 
 	public void Deselect(){
