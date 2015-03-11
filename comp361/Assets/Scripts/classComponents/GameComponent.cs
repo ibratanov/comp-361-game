@@ -15,10 +15,16 @@ public class GameComponent : MonoBehaviour {
 	List<PlayerComponent> _remainingPlayers;
 	TileComponent[,] _mapTiles;
     GameObject[,] _tileObjects;
+    TileComponent _lastSelectedTile;
 
 	/*********************
 	 *  GETTERS/SETTERS  *
 	 ********************/
+
+    public void setLastSelectedTile(TileComponent lastSelectedTile)
+    {
+        _lastSelectedTile = lastSelectedTile;
+    }
 
 	void setCurrentPlayer(PlayerComponent currentPlayer) {
 		_currentPlayer = currentPlayer;
@@ -35,6 +41,11 @@ public class GameComponent : MonoBehaviour {
 	/*********************
 	 *      METHODS      *
 	 ********************/
+
+    public void hireVillagerOnLastSelected(int unitType)
+    {
+        _lastSelectedTile.getVillage().hireVillager((UnitType) unitType);
+    }
 
 	/// <summary>
 	/// Creates a new game by generating a map and assigning players to tiles.
