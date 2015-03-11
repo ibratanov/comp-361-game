@@ -194,7 +194,12 @@ public class VillageComponent : MonoBehaviour {
 			units.Remove(unit);
 		}
 
+		if (_supportingUnits == null) {
+			_supportingUnits = new List<UnitComponent>();
+		}
+
 		_supportingUnits.Add(unit);
+
 		unit.setVillage(this);
 	}
 
