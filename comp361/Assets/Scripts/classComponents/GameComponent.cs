@@ -143,7 +143,10 @@ public class GameComponent : MonoBehaviour {
                     if (!regionContainsVillage)
                     {
                         TileComponent tileWithVillage = region[0];
-                        var newHovel = new VillageComponent(VillageType.HOVEL, _currentPlayer);
+
+                        GameObject go = new GameObject();
+                        go.AddComponent<VillageComponent>().InstantiateVillage(VillageType.HOVEL, _currentPlayer);
+                        var newHovel = go.GetComponent<VillageComponent>();
                         newHovel.setOccupyingTile(tileWithVillage);
                         tileWithVillage.setOccupantType(OccupantType.VILLAGE);
                         tileWithVillage.setVillage(newHovel);
@@ -154,15 +157,13 @@ public class GameComponent : MonoBehaviour {
                         newHovel.addGold(7);
                         // add enough wood to be able to upgrade to village for demo, can remove later
                         newHovel.addWood(24);
-                        //UnitComponent newPeasant = newHovel.hireVillager(UnitType.PEASANT);
-                        //TileComponent villagerTile = region[1];
-                        //newPeasant.associate(villagerTile);
                         // add all other tiles in the bfs to this village's controlled region
                         foreach (var controlledTile in tileWithVillage.breadthFS())
                         {
                             if (!newHovel.getControlledRegion().Contains(controlledTile))
                             {
                                 newHovel.addToControlledRegion(controlledTile);
+                                controlledTile.setVillage(newHovel);
                             }
                         }
 
