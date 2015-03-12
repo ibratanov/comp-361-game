@@ -437,29 +437,33 @@ public class TileComponent : MonoBehaviour {
 		_drawUpdated = true;
 	}
 
-	public void Select(){
-		HighlightRegion();
+    public void Select()
+    {
+        HighlightRegion();
         _game.setLastSelectedTile(this);
         if (this._occupyingUnit != null)
         {
             _game.setLastSelectedUnit(this._occupyingUnit);
-        }       
-		if(_occupantType == OccupantType.UNIT){
-			Debug.Log("Unit");
-			_menus.DisplayUnitActions();
-		}
-		else if(_occupantType == OccupantType.VILLAGE){
-			Debug.Log("Village");
-			_menus.DisplayVillageActions();
-		}
-		else{
-			Debug.Log("None");
-		}
+        }
+        if (_occupantType == OccupantType.UNIT)
+        {
+            Debug.Log("Unit");
+            _menus.DisplayUnitActions();
+        }
+        else if (_occupantType == OccupantType.VILLAGE)
+        {
+            Debug.Log("Village");
+            _menus.DisplayVillageActions();
+        }
+        else
+        {
+            Debug.Log("None");
+        }
         if (_game.isMoveStarted())
         {
             _game.moveLastSelectedUnit();
         }
-	}
+    }
 
 	public void Deselect(){
 		UnhighlightRegion();

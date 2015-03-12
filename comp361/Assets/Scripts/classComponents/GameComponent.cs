@@ -27,6 +27,16 @@ public class GameComponent : MonoBehaviour {
         return _moveStarted;
     }
 
+    public TileComponent getLastSelectedTile()
+    {
+        return _lastSelectedTile;
+    }
+    
+    public UnitComponent getLastSelectedUnit()
+    {
+        return _lastSelectedUnit;
+    }
+
     public void setLastSelectedTile(TileComponent lastSelectedTile)
     {
         _lastSelectedTile = lastSelectedTile;
@@ -68,6 +78,7 @@ public class GameComponent : MonoBehaviour {
         _moveStarted = true;
         //_lastSelectedTile.HighlightNeighbours();
         //_lastSelectedTile.UpdateDraw();
+        _lastSelectedUnit.moveUnit(_lastSelectedTile);
     }
 
     public void moveLastSelectedUnit()
