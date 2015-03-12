@@ -54,9 +54,22 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
+    public void HideVillageActions()
+    {
+        for (int i = 0; i < _inGamePanels.Length; ++i)
+        {
+            if (_inGamePanels[i].name.Contains("Panel_Village_Actions") || _inGamePanels[i].name.Contains("Panel_HireUnit_Village") ||
+                _inGamePanels[i].name.Contains("Panel_Upgrade_Village"))
+            {
+                _inGamePanels[i].SetActive(false);
+            }
+        }
+    }
+
 	public void DisplayUnitActions(){
 		for(int i = 0; i < _inGamePanels.Length; ++i){
-			if(_inGamePanels[i].name.Contains("Panel_Unit_Actions")){
+            if (_inGamePanels[i].name.Contains("Panel_Unit_Actions"))
+            {
 				_inGamePanels[i].SetActive(true);
 			}
 			else{
@@ -64,4 +77,15 @@ public class GUIManager : MonoBehaviour {
 			}
 		}
 	}
+
+    public void HideUnitActions()
+    {
+        for (int i = 0; i < _inGamePanels.Length; ++i)
+        {
+            if (_inGamePanels[i].name.Contains("Panel_Unit_Actions"))
+            {
+                _inGamePanels[i].SetActive(false);
+            }
+        }
+    }
 }
