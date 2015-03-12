@@ -440,6 +440,10 @@ public class TileComponent : MonoBehaviour {
 	public void Select(){
 		HighlightRegion();
         _game.setLastSelectedTile(this);
+        if (this._occupyingUnit != null)
+        {
+            _game.setLastSelectedUnit(this._occupyingUnit);
+        }       
 		if(_occupantType == OccupantType.UNIT){
 			Debug.Log("Unit");
 			_menus.DisplayUnitActions();
@@ -451,6 +455,10 @@ public class TileComponent : MonoBehaviour {
 		else{
 			Debug.Log("None");
 		}
+        if (_game.isMoveStarted())
+        {
+            _game.finishMoveLastSelectedUnit();
+        }
 	}
 
 	public void Deselect(){
