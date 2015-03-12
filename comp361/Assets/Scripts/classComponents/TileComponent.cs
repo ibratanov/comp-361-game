@@ -457,7 +457,7 @@ public class TileComponent : MonoBehaviour {
 		}
         if (_game.isMoveStarted())
         {
-            _game.finishMoveLastSelectedUnit();
+            _game.moveLastSelectedUnit();
         }
 	}
 

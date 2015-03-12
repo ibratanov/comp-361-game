@@ -27,11 +27,6 @@ public class GameComponent : MonoBehaviour {
         return _moveStarted;
     }
 
-    public void startMove()
-    {
-        _moveStarted = true;
-    }
-
     public void setLastSelectedTile(TileComponent lastSelectedTile)
     {
         _lastSelectedTile = lastSelectedTile;
@@ -70,16 +65,21 @@ public class GameComponent : MonoBehaviour {
 
     public void startMoveLastSelectedUnit()
     {
-        startMove();
+        _moveStarted = true;
         //_lastSelectedTile.HighlightNeighbours();
         //_lastSelectedTile.UpdateDraw();
     }
 
-    public void finishMoveLastSelectedUnit()
+    public void moveLastSelectedUnit()
     {
         //_lastSelectedTile.UnhighlightNeighbours();
         //_lastSelectedTile.UpdateDraw();
         _lastSelectedUnit.moveUnit(_lastSelectedTile);
+    }
+
+    public void finishMoveLastSelectedUnit()
+    {
+        _moveStarted = false;
     }
 
 	/// <summary>
