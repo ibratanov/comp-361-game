@@ -453,6 +453,7 @@ public class TileComponent : MonoBehaviour {
         {
             Debug.Log("Village");
             _menus.DisplayVillageActions();
+            _menus.setWoodStock((int)_village.getWoodStock());
         }
         else
         {
@@ -462,7 +463,7 @@ public class TileComponent : MonoBehaviour {
         {
             _game.moveLastSelectedUnit();
         }
-        _menus.setWoodStock((int)_village.getWoodStock());
+        
     }
 
 	public void Deselect(){
