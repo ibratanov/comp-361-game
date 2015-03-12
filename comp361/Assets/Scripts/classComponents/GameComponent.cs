@@ -81,7 +81,6 @@ public class GameComponent : MonoBehaviour {
         //_lastSelectedTile.UpdateDraw();
         _lastSelectedUnit.moveUnit(_lastSelectedTile);
     }
-
 	/// <summary>
 	/// Creates a new game by generating a map and assigning players to tiles.
 	/// </summary>
