@@ -112,7 +112,7 @@ public class TileComponent : MonoBehaviour {
 		}
 		else{
 			_landType = landType;
-			_terrainGameObject = _assets.getTerrainGameObject(landType);
+		    _terrainGameObject = _assets.getTerrainGameObject(landType);
 		}
 	}
 	
@@ -370,7 +370,6 @@ public class TileComponent : MonoBehaviour {
 						weakerVillage = neighbourVillage;
 					}
 				}
-
 				strongerVillage.mergeWith(weakerVillage);
 			}
 		}
