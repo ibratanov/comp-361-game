@@ -408,10 +408,9 @@ public class TileComponent : MonoBehaviour {
 		if(_drawUpdated){
             if (_occupantType == OccupantType.VILLAGE)
             {
-                print(_village.getVillageType());
+                Destroy(_terrainGameObject);
                 _terrainGameObject = (GameObject)Instantiate(_assets.getVillageGameObject(_village.getVillageType()), this.transform.position, Quaternion.identity);
-                //_terrainGameObject.renderer.materials[2] = _assets.getVillageMaterial(_village.getVillageType());
-                print(_terrainGameObject.renderer.materials[2]);
+                _terrainGameObject.transform.parent = this.transform;
             }
             Highlight();
 			_drawUpdated = false;

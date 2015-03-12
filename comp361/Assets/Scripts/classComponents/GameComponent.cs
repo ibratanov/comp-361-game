@@ -112,7 +112,7 @@ public class GameComponent : MonoBehaviour {
                         newHovel.associate(tileWithVillage);
                         newHovel.addGold(7);
                         // add enough wood to be able to upgrade to village for demo, can remove later
-                        newHovel.addWood(8);
+                        newHovel.addWood(24);
                         //UnitComponent newPeasant = newHovel.hireVillager(UnitType.PEASANT);
                         //TileComponent villagerTile = region[1];
                         //newPeasant.associate(villagerTile);
