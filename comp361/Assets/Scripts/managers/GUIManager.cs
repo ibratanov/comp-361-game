@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GUIManager : MonoBehaviour {
 	public GameObject[] _menus;
@@ -21,6 +22,24 @@ public class GUIManager : MonoBehaviour {
 	void Update () {
 	
 	}
+
+    public void setWoodStock(int stock)
+    {
+        for (int i = 0; i < _inGamePanels.Length; ++i)
+        {
+            if (_inGamePanels[i].name.Contains("Panel_Resources"))
+            {
+                _inGamePanels[i].SetActive(true);
+                for (int j = 0; j < _inGamePanels[i].transform.childCount; j++)
+                {
+                    if (_inGamePanels[i].transform.GetChild(j).name.Contains("Text_WoodCount"))
+                    {
+                        _inGamePanels[i].transform.GetChild(j).GetComponent<Text>().text = stock.ToString();
+                    }
+                }
+            }
+        }
+    }
 
 	public void DisplayInGameMenu(){
 		if(Network.isServer || Network.isClient){

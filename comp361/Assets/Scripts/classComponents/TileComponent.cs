@@ -462,6 +462,7 @@ public class TileComponent : MonoBehaviour {
         {
             _game.moveLastSelectedUnit();
         }
+        _menus.setWoodStock((int)_village.getWoodStock());
     }
 
 	public void Deselect(){
