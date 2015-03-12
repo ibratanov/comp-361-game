@@ -47,6 +47,11 @@ public class GameComponent : MonoBehaviour {
         _lastSelectedTile.getVillage().hireVillager((UnitType) unitType);
     }
 
+    public void upgradeLastSelectedVillage()
+    {
+        _lastSelectedTile.getVillage().upgradeVillage();
+    }
+
 	/// <summary>
 	/// Creates a new game by generating a map and assigning players to tiles.
 	/// </summary>
@@ -98,14 +103,16 @@ public class GameComponent : MonoBehaviour {
                     {
                         TileComponent tileWithVillage = region[0];
                         var newHovel = new VillageComponent(VillageType.HOVEL, _currentPlayer);
+                        newHovel.setOccupyingTile(tileWithVillage);
                         tileWithVillage.setOccupantType(OccupantType.VILLAGE);
                         tileWithVillage.setVillage(newHovel);
 
                         var player = participants[playerIndex - 1];
                         player.add(newHovel);
-
                         newHovel.associate(tileWithVillage);
                         newHovel.addGold(7);
+                        // add enough wood to be able to upgrade to village for demo, can remove later
+                        newHovel.addWood(8);
                         //UnitComponent newPeasant = newHovel.hireVillager(UnitType.PEASANT);
                         //TileComponent villagerTile = region[1];
                         //newPeasant.associate(villagerTile);
@@ -144,20 +151,48 @@ public class GameComponent : MonoBehaviour {
 		else if( _currentMap.Equals("TestMap") ){
 			TestMapGeneration();
 		}
+        //GameLoop();
 	}
+
+    private void BeginTurn()
+    {
+
+    }
+
+    /// <summary>
+    /// Main loop for the game
+    /// </summary>
+    public void GameLoop()
+    {
+        while (true) // I know this is terrible practice, should be replaced with while(nobodyWins()) when we have that
+        {
+            BeginTurn();
+        }
+    }
 
 	/// <summary>
 	/// Debugging map with predefined players.
 	/// </summary>
 	public void TestMapGeneration(){
 		_playerManager.AddPlayer(new PlayerComponent("Rita", "rita"));
-		_playerManager.AddPlayer(new PlayerComponent("Rita2", "rita2"));
-		_playerManager.AddPlayer(new PlayerComponent("Rita3", "rita3"));
+		_playerManager.AddPlayer(new PlayerComponent("Marc", "marc"));
+		_playerManager.AddPlayer(new PlayerComponent("Ivo", "ivo"));
 		newGame(_playerManager.GetPlayers());
 	}
 
+    public void endTurn()
+    {
+        for (int i = 0; i < _remainingPlayers.Count; i++)
+        {
+            if (_remainingPlayers[i] == _currentPlayer)
+            {
+                _currentPlayer = _remainingPlayers[(i + 1) % _remainingPlayers.Count];
+            }
+        }
+    }
+
 	public void endGame() {
-		/* TODO */
+        /* TODO */
 	}
 
 	public void removePlayer(PlayerComponent player) {

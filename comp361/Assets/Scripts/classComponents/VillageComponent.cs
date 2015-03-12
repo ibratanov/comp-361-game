@@ -19,6 +19,7 @@ public class VillageComponent : MonoBehaviour {
 	List<TileComponent> _controlledRegion = new List<TileComponent>();
 	List<UnitComponent> _supportingUnits;
 	VillageType _villageType;
+    TileComponent _occupyingTile;
 
 	/*
 	 * TODO: Decide - may be unnecessary
@@ -41,6 +42,16 @@ public class VillageComponent : MonoBehaviour {
 	/*********************
 	 *  GETTERS/SETTERS  *
 	 ********************/
+
+    public void setOccupyingTile(TileComponent tile)
+    {
+        _occupyingTile = tile;
+    }
+
+    public TileComponent getOccupyingTile()
+    {
+        return _occupyingTile;
+    }
 
 	public uint getGoldStock() {
 		return _goldStock;
@@ -118,17 +129,28 @@ public class VillageComponent : MonoBehaviour {
 		return cost;
 	}
 
-	public bool upgradeVillage(VillageType newLevel) {
-		if (newLevel > _villageType) {
-			uint cost = calculateCost(_villageType, newLevel);
+	public bool upgradeVillage() {
 
-			if (_woodStock >= cost) {
-				setVillageType(newLevel);
-				removeWood(cost);
-				return true;
-			}
-		}
-		return false;
+        VillageType newLevel = (VillageType)_villageType + 1;
+        if ((int)newLevel > (int) VillageType.FORT)
+        {
+            /* TODO: error message, village already at max level*/ 
+            return false;
+        }
+        uint cost = calculateCost(_villageType, newLevel);
+        if (_woodStock >= cost)
+        {
+            setVillageType(newLevel);
+            removeWood(cost);
+            _occupyingTile.UpdateDraw();
+            return true;
+        }
+        else
+        {
+            /* TODO: error message, insufficient funds */
+            return false;
+        }
+		
 	}
 
 	public bool payWages() {
@@ -294,6 +316,7 @@ public class VillageComponent : MonoBehaviour {
         _controlledRegion = new List<TileComponent>();
         _supportingUnits = new List<UnitComponent>();
         _villageType = villageType;
+        _occupyingTile = null;
     }
 
 
