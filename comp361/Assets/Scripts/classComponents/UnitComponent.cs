@@ -78,8 +78,93 @@ public class UnitComponent : MonoBehaviour {
 
 	public bool setLocation(TileComponent location) {
 		_location = location;
-        _villagerGameObject.transform.position = location.getTileGameObject().transform.position;
+		_villagerGameObject.transform.position = location.getTileGameObject ().transform.position;
+
 		return true;
+	}
+
+	public bool setDestination(TileComponent dest) {
+		/**
+		 * Implementation of setLocation Seq. Diagr.
+		 * setLocation above is actually a setter.
+		 */
+		bool contested = isContested (dest);
+		if (!contested) {
+			OccupantType occType = dest.getOccupantType();
+			LandType lType = dest.getLandType();
+			VillageComponent destVillage = dest.getVillage();
+
+			switch (occType) { //TODO: Check if switch properly checks enum equality
+				case OccupantType.NONE:
+					if (lType == LandType.SEA || (_unitType == UnitType.KNIGHT && lType == LandType.FOREST)) {
+						return false;
+					} else if (destVillage == null) {
+						_village.associate(dest);
+						associate(dest);
+						setCurrentAction(ActionType.EXPANDING_REGION);
+						return true;
+					} else if (destVillage != null && destVillage != _village) {
+						if (_unitType == UnitType.PEASANT) {
+						    return false;
+						}
+						takeOverTile(dest);
+						setCurrentAction(ActionType.EXPANDING_REGION);
+						return true;
+					} else if (destVillage != null && destVillage == _village) {
+						associate(dest);
+						return true;
+					}
+					break;
+				case OccupantType.UNIT:
+					if (destVillage == _village) {
+						return false;
+					}
+					UnitComponent destUnit = dest.getOccupyingUnit();
+					//destUnit.dieInBattle(); //TODO: implement a method which kills the unit on the newly invaded tile.
+					takeOverTile(dest);
+					setCurrentAction(ActionType.ATTACKING);
+					return true;
+					break;
+				case OccupantType.VILLAGE:
+					if (destVillage == _village || _unitType <= UnitType.INFANTRY) { //TODO: check comparisons for enums
+						return false;
+				    } else if (_unitType >= UnitType.SOLDIER) {
+					takeOverTile(dest);
+						setCurrentAction(ActionType.ATTACKING);
+						return true;
+					}
+					break;
+				case OccupantType.STRUCTURE:
+				StructureComponent destStruct = dest.getOccupyingStructure();
+					StructureType sType = destStruct.getStructureType();
+
+					if (destVillage == _village && sType != StructureType.TOMBSTONE) {
+						return false;
+					} else if (destVillage != _village && sType == StructureType.WATCHTOWER) {
+						if (_unitType <= UnitType.INFANTRY) {
+							return false;
+						} else if (_unitType >= UnitType.SOLDIER) {
+							//destStruct.destroy() //TODO: implement a destroy method which destroys an enemy's structure upon invasion
+						takeOverTile(dest);
+							setCurrentAction(ActionType.ATTACKING);
+							return true;
+						}
+					} else if (sType == StructureType.TOMBSTONE) {
+						//destStruct.destroy() //TODO: implement a destroy method which destroys a tombstone when land has been overtaken
+						if (destVillage == _village) {
+						_village.associate(dest);
+						associate(dest);
+						} else {
+						takeOverTile(dest);
+						}
+						setCurrentAction(ActionType.CLEARING_TOMBSTONE);
+						return true;
+					}
+					break;
+			}
+		}
+
+		return false;
 	}
 
 	public UnitType getUnitType() {
@@ -118,7 +203,7 @@ public class UnitComponent : MonoBehaviour {
 	}
 
 	public bool isContested(TileComponent destination) {
-		List<TileComponent> neighbours = _location.getNeighbours();
+		List<TileComponent> neighbours = destination.getNeighbours();
 		neighbours.Add(destination);
 
 		foreach (TileComponent tile in neighbours) {
@@ -143,7 +228,7 @@ public class UnitComponent : MonoBehaviour {
 					if (enemyStructureType == StructureType.WATCHTOWER) {
 						VillageComponent enemyVillage = tile.getVillage();
 
-						if (_unitType <= UnitType.INFANTRY || _village != enemyVillage) {
+						if (_unitType <= UnitType.INFANTRY || _village != enemyVillage) { //TODO: check condition, should be AND?
 							return true;
 						}
 					}
@@ -236,19 +321,19 @@ public class UnitComponent : MonoBehaviour {
 
 	public void moveUnit(TileComponent destination) {
 		if (_currentAction == ActionType.READY_FOR_ORDERS) {
-			List<TileComponent> neighbours = destination.getNeighbours();
+			List<TileComponent> neighbours = _location.getNeighbours();
 
 			bool isReachable = false;
 
 			foreach (TileComponent tile in neighbours) {
-				if (tile == _location) {
+				if (tile == destination) {
 					isReachable = true;
 					break;
 				}
 			}
 
 			if (isReachable) {
-				bool isRelocated = setLocation(destination);
+				bool isRelocated = setDestination(destination); //setLocation(destination);
 
 				if (isRelocated) {
 					LandType landType = destination.getLandType();
@@ -303,7 +388,7 @@ public class UnitComponent : MonoBehaviour {
 
 					if (tileOccupantType == OccupantType.UNIT) {
 						UnitComponent occupyingUnit = tile.getOccupyingUnit();
-						occupyingUnit.die();
+						occupyingUnit.die(); //TODO: check if this is the right die()method
 
 						StructureComponent tomb = new StructureComponent(StructureType.TOMBSTONE, tile);
 						tile.setOccupyingStructure(tomb);
