@@ -70,11 +70,11 @@ public class PlayerComponent : MonoBehaviour {
 
 	public void beginTurn() {
 		foreach (VillageComponent village in _villages) {
-			village.produceMeadows();
-			village.replaceTombstonesByForest();
-			village.produceRoads();
-			village.updateGoldStock();
-			village.payWages();
+            //village.produceMeadows();
+            //village.replaceTombstonesByForest();
+            //village.produceRoads();
+            //village.updateGoldStock();
+            //village.payWages();
 		}
 	}
 
