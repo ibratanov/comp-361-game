@@ -16,14 +16,30 @@ public class GameComponent : MonoBehaviour {
 	TileComponent[,] _mapTiles;
     GameObject[,] _tileObjects;
     TileComponent _lastSelectedTile;
+    UnitComponent _lastSelectedUnit;
+    bool _moveStarted = false;
 
 	/*********************
 	 *  GETTERS/SETTERS  *
 	 ********************/
+    public bool isMoveStarted()
+    {
+        return _moveStarted;
+    }
+
+    public void startMove()
+    {
+        _moveStarted = true;
+    }
 
     public void setLastSelectedTile(TileComponent lastSelectedTile)
     {
         _lastSelectedTile = lastSelectedTile;
+    }
+
+    public void setLastSelectedUnit(UnitComponent lastSelectedUnit)
+    {
+        _lastSelectedUnit = lastSelectedUnit;
     }
 
 	void setCurrentPlayer(PlayerComponent currentPlayer) {
@@ -50,6 +66,20 @@ public class GameComponent : MonoBehaviour {
     public void upgradeLastSelectedVillage()
     {
         _lastSelectedTile.getVillage().upgradeVillage();
+    }
+
+    public void startMoveLastSelectedUnit()
+    {
+        startMove();
+        //_lastSelectedTile.HighlightNeighbours();
+        //_lastSelectedTile.UpdateDraw();
+    }
+
+    public void finishMoveLastSelectedUnit()
+    {
+        //_lastSelectedTile.UnhighlightNeighbours();
+        //_lastSelectedTile.UpdateDraw();
+        _lastSelectedUnit.moveUnit(_lastSelectedTile);
     }
 
 	/// <summary>

@@ -172,7 +172,9 @@ public class VillageComponent : MonoBehaviour {
             // TODO: insufficient resource error
         }
         _goldStock = _goldStock - UnitComponent.INITIAL_COST[unitType];
-        UnitComponent u = new UnitComponent(unitType);
+        GameObject go = new GameObject();
+        go.AddComponent<UnitComponent>().InstantiateUnit(unitType);
+        var u = go.GetComponent<UnitComponent>();
         u.setVillage(this);
         bool hasSpace = false;
         for (int i = 0; i < _controlledRegion.Count; i++)
