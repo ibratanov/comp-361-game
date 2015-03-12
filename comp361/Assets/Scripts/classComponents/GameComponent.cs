@@ -193,24 +193,17 @@ public class GameComponent : MonoBehaviour {
 		else if( _currentMap.Equals("TestMap") ){
 			TestMapGeneration();
 		}
-        //GameLoop();
+        BeginRound();
 	}
 
-    private void BeginTurn()
+    private void BeginRound()
     {
-
-    }
-
-    /// <summary>
-    /// Main loop for the game
-    /// </summary>
-    public void GameLoop()
-    {
-        while (true) // I know this is terrible practice, should be replaced with while(nobodyWins()) when we have that
+        foreach(var player in _remainingPlayers)
         {
-            BeginTurn();
+            player.beginTurn();
         }
     }
+
 
 	/// <summary>
 	/// Debugging map with predefined players.
@@ -231,6 +224,7 @@ public class GameComponent : MonoBehaviour {
                 _currentPlayer = _remainingPlayers[(i + 1) % _remainingPlayers.Count];
             }
         }
+        BeginRound();
     }
 
 	public void endGame() {
