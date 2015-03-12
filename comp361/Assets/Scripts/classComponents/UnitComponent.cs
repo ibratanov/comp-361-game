@@ -105,6 +105,26 @@ public class UnitComponent : MonoBehaviour
             LandType lType = dest.getLandType();
             VillageComponent destVillage = dest.getVillage();
 
+            switch (lType)
+            {
+                case LandType.MEADOW:
+                    if (_unitType != UnitType.INFANTRY || _unitType != UnitType.PEASANT)
+                    {
+                        associate(dest);
+                        TrampleMeadow();                        
+                        return true;
+                    }
+                    break;
+                case LandType.FOREST:
+                    if (_unitType != UnitType.KNIGHT)
+                    {
+                        associate(dest);
+                        GatherWood();                       
+                        return true;
+                    }
+                    break;
+            }
+
             switch (occType)
             { //TODO: Check if switch properly checks enum equality
                 case OccupantType.NONE:
@@ -374,6 +394,17 @@ public class UnitComponent : MonoBehaviour
         {
             ++_roundsCultivating;
         }
+    }
+
+    public void TrampleMeadow()
+    {
+        /* TODO */
+    }
+
+    public void GatherWood()
+    {
+        _village.addWood(1);
+        _location.setLandType(LandType.GRASS);
     }
 
     public void die()
