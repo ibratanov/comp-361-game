@@ -118,8 +118,7 @@ public class UnitComponent : MonoBehaviour
                 case LandType.FOREST:
                     if (_unitType != UnitType.KNIGHT)
                     {
-                        associate(dest);
-                        GatherWood();                       
+                        GatherWood(dest);                       
                         return true;
                     }
                     break;
@@ -401,10 +400,11 @@ public class UnitComponent : MonoBehaviour
         /* TODO */
     }
 
-    public void GatherWood()
+    public void GatherWood(TileComponent tile)
     {
+        associate(tile);
         _village.addWood(1);
-        _location.setLandType(LandType.GRASS);
+        tile.setLandType(LandType.GRASS);
     }
 
     public void die()
