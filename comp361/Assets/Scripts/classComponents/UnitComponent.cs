@@ -196,6 +196,18 @@ public class UnitComponent : MonoBehaviour {
         }
 	}
 
+    public void InstantiateUnit(UnitType unitType)
+    {
+        _assets = GameObject.FindObjectOfType<AssetManager>();
+        _roundsCultivating = 0;
+        _upkeep = UPKEEP[unitType];
+        _currentAction = ActionType.READY_FOR_ORDERS;
+        _location = null;
+        _unitType = unitType;
+        _village = null;
+        _villagerGameObject = (GameObject)Instantiate(_assets.getUnitGameObject(unitType), new Vector3(0, 0, 0), Quaternion.identity);
+    }
+
 	public UnitComponent(UnitType unitType) {
         _assets = GameObject.FindObjectOfType<AssetManager>();
         _roundsCultivating = 0;
@@ -355,5 +367,10 @@ public class UnitComponent : MonoBehaviour {
     void Awake()
     {
         
+    }
+
+    public void Select()
+    {
+
     }
 }
