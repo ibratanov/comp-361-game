@@ -313,17 +313,6 @@ public class VillageComponent : MonoBehaviour {
 		}
 	}
 
-    public VillageComponent(VillageType villageType, PlayerComponent currentPlayer)
-    {
-        _goldStock = 0;
-        _woodStock = 0;
-        _player = currentPlayer;
-        _controlledRegion = new List<TileComponent>();
-        _supportingUnits = new List<UnitComponent>();
-        _villageType = villageType;
-        _occupyingTile = null;
-    }
-
     public void InstantiateVillage(VillageType villageType, PlayerComponent currentPlayer)
     {
         _goldStock = 0;

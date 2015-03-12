@@ -2106,6 +2106,7 @@ MonoBehaviour:
   _inGamePanels:
   - {fileID: 139820051}
   - {fileID: 1649780917}
+  - {fileID: 1510337722}
 --- !u!4 &322718659
 Transform:
   m_ObjectHideFlags: 0
@@ -5120,7 +5121,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '24
+  m_Text: '0
 
 '
 --- !u!222 &794604506
@@ -9953,7 +9954,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11406842, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: _inGamePanels.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 406842, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_LocalPosition.x
@@ -10027,6 +10028,10 @@ Prefab:
       propertyPath: _menus.Array.data[7]
       value: 
       objectReference: {fileID: 248852137}
+    - target: {fileID: 11406842, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
+      propertyPath: _inGamePanels.Array.data[2]
+      value: 
+      objectReference: {fileID: 1510337722}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
   m_RootGameObject: {fileID: 322718657}
@@ -10468,7 +10473,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '24
+  m_Text: '0
 
 '
 --- !u!222 &1617723606
@@ -11006,6 +11011,18 @@ Prefab:
     - target: {fileID: 11407744, guid: 137c1f28474007243b9f72aa2844747d, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11498288, guid: 137c1f28474007243b9f72aa2844747d, type: 2}
+      propertyPath: m_Text
+      value: '0
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 11498326, guid: 137c1f28474007243b9f72aa2844747d, type: 2}
+      propertyPath: m_Text
+      value: '0
+
+'
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 137c1f28474007243b9f72aa2844747d, type: 2}
