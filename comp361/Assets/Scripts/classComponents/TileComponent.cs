@@ -406,7 +406,14 @@ public class TileComponent : MonoBehaviour {
 		//Calling Select() from any other method seems to break the prefab's connection to its materials, wrecking all the colours.
 		// Therefore, call the "Draw()" function to update the selection.
 		if(_drawUpdated){
-			Highlight();
+            if (_occupantType == OccupantType.VILLAGE)
+            {
+                print(_village.getVillageType());
+                _terrainGameObject = (GameObject)Instantiate(_assets.getVillageGameObject(_village.getVillageType()), this.transform.position, Quaternion.identity);
+                //_terrainGameObject.renderer.materials[2] = _assets.getVillageMaterial(_village.getVillageType());
+                print(_terrainGameObject.renderer.materials[2]);
+            }
+            Highlight();
 			_drawUpdated = false;
 		}
 	}
