@@ -20,6 +20,7 @@ public class VillageComponent : MonoBehaviour {
 	List<UnitComponent> _supportingUnits;
 	VillageType _villageType;
     TileComponent _occupyingTile;
+    private GUIManager _menus;
 
 	/*
 	 * TODO: Decide - may be unnecessary
@@ -204,6 +205,7 @@ public class VillageComponent : MonoBehaviour {
 
 	public void addWood(uint amount) {
 		_woodStock += amount;
+        _menus.setWoodStock((int)_woodStock);
 	}
 
 	public void associate(List<TileComponent> tiles) {
@@ -288,6 +290,7 @@ public class VillageComponent : MonoBehaviour {
 
 	public void removeWood(uint amount) {
 		_woodStock -= amount;
+        _menus.setWoodStock((int)_woodStock);
 	}
 
 	public void replaceTombstonesByForest() {
@@ -322,6 +325,7 @@ public class VillageComponent : MonoBehaviour {
         _supportingUnits = new List<UnitComponent>();
         _villageType = villageType;
         _occupyingTile = null;
+        _menus = GameObject.FindObjectOfType<GUIManager>();
     }
 
 
