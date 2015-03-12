@@ -402,6 +402,7 @@ public class UnitComponent : MonoBehaviour
 
     public void GatherWood(TileComponent tile)
     {
+        _currentAction = ActionType.GATHERING_WOOD;
         associate(tile);
         _village.addWood(1);
         tile.setLandType(LandType.GRASS);
@@ -444,7 +445,7 @@ public class UnitComponent : MonoBehaviour
                         destination.setLandType(LandType.GRASS);
                     }
 
-                    destination.connectRegions();
+                    //destination.connectRegions();
                 }
             }
         }
