@@ -446,11 +446,13 @@ public class TileComponent : MonoBehaviour {
         }
         if (_occupantType == OccupantType.UNIT)
         {
+			_menus.HideVillageActions();
             Debug.Log("Unit");
             _menus.DisplayUnitActions();
         }
         else if (_occupantType == OccupantType.VILLAGE)
         {
+			_menus.HideUnitActions();
             Debug.Log("Village");
             _menus.DisplayVillageActions();
             _menus.setWoodStock((int)_village.getWoodStock());
