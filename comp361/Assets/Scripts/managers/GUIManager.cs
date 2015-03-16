@@ -107,4 +107,24 @@ public class GUIManager : MonoBehaviour {
             }
         }
     }
+
+	public void UpdateGamePanels(PlayerComponent currentPlayer, Color currentColor)
+	{
+		foreach (GameObject g in _inGamePanels)
+		{
+			if (g.name.Contains ("Panel_CurrentPlayer"))
+			{
+				Text[] playerTexts = g.GetComponentsInChildren<Text>() as Text[];
+				foreach (Text t in playerTexts)
+				{
+					if (t.name.Contains ("CurrentPlayer"))
+					{
+						t.text = currentPlayer.getUserName();
+						t.color = currentColor;
+					}
+				}
+				break;
+			}
+		}
+	}
 }
