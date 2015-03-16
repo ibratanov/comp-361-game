@@ -7,6 +7,8 @@ public class GameComponent : MonoBehaviour {
 	/*********************
 	 *     ATTRIBUTES    *
 	 ********************/
+	public static GameComponent ins; 
+
 	public PlayerManager _playerManager;
 	public GUIManager _guiManager; 
 	public string _currentMap;
@@ -30,6 +32,11 @@ public class GameComponent : MonoBehaviour {
     {
         return _moveStarted;
     }
+
+	public PlayerComponent getCurrentPlayer()
+	{
+		return _currentPlayer;
+	}
 
     public TileComponent getLastSelectedTile()
     {
@@ -235,6 +242,11 @@ public class GameComponent : MonoBehaviour {
 
 	public void removePlayer(PlayerComponent player) {
 		_remainingPlayers.Remove(player);
+	}
+
+	void Awake()
+	{
+		ins = this;
 	}
 	
 }
