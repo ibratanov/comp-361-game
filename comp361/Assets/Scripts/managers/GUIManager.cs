@@ -67,7 +67,8 @@ public class GUIManager : MonoBehaviour {
 			if(_inGamePanels[i].name.Contains("Panel_Village_Actions")){
 				_inGamePanels[i].SetActive(true);
 			}
-			else{
+			else if (!(_inGamePanels[i].name.Contains("CurrentPlayer")))
+			{
 				_inGamePanels[i].SetActive(false);
 			}
 		}
@@ -91,7 +92,8 @@ public class GUIManager : MonoBehaviour {
             {
 				_inGamePanels[i].SetActive(true);
 			}
-			else{
+			else if (!(_inGamePanels[i].name.Contains("CurrentPlayer")))
+			{
 				_inGamePanels[i].SetActive(false);
 			}
 		}
