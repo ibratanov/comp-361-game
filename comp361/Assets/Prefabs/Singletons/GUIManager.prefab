@@ -54,6 +54,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
 --- !u!148 &14808408
 NetworkView:
   m_ObjectHideFlags: 1

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class GUIManager : MonoBehaviour {
 	public GameObject[] _menus;
 	public GameObject[] _inGamePanels;
+	public float _fadeSpeed;
 
 	// Use this for initialization
 	void Start () {
@@ -109,6 +110,28 @@ public class GUIManager : MonoBehaviour {
             }
         }
     }
+
+	public void DisplayTurnPanel(PlayerComponent currentPlayer, Color currentColor)
+	{
+		foreach (GameObject g in _inGamePanels)
+		{
+			if (g.name.Contains ("PlayerTurn"))
+			{
+				FadeInPanel (g);
+				return;
+			}
+		}
+	}
+
+	public void FadeInPanel(GameObject panel)
+	{
+
+	}
+
+	public void FadeOutPanel(GameObject panel)
+	{
+
+	}
 
 	public void UpdateGamePanels(PlayerComponent currentPlayer, Color currentColor)
 	{
