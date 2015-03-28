@@ -3,15 +3,27 @@ using System.Collections;
 
 public class CameraControls : MonoBehaviour {
 
-	public float speed;
-	// Use this for initialization
-	void Start () {
-	
+	float speed;
+	public float minSpeed;
+	public float maxSpeed;
+
+	GameComponent _game;
+	Vector3 initPos;
+
+	void OnEnable () {
+		speed = minSpeed;
+		_game = GameObject.FindObjectOfType<GameComponent>();
+		TileComponent currentTile = _game.getLastSelectedTile();
+
+		if (currentTile != null && currentTile.isSelected)
+		{
+			transform.position = new Vector3 (currentTile.transform.position.x, transform.position.y, currentTile.transform.position.z);
+		}
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 		moveCamera();
+		adjustSpeed();
 	}
 
 	void moveCamera()
@@ -32,6 +44,18 @@ public class CameraControls : MonoBehaviour {
 		else if (Input.GetKey (KeyCode.D))
 		{
 			transform.position = new Vector3 (transform.position.x - speed, transform.position.y, transform.position.z);
+		}
+	}
+
+	void adjustSpeed()
+	{
+		if (Input.GetKey(KeyCode.LeftShift))
+		{
+			speed = maxSpeed;
+		}
+		if (Input.GetKeyUp(KeyCode.LeftShift))
+		{
+			speed = minSpeed;
 		}
 	}
 }
