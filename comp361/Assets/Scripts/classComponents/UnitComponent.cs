@@ -22,7 +22,7 @@ public enum UnitType
 
 public class UnitComponent : MonoBehaviour
 {
-    public GameObject _villagerGameObject;
+    public GameObject _unitGameObject;
 
     readonly static uint COST_PER_UNIT_UPGRADE = 10;
     public readonly static Dictionary<UnitType, uint> UPKEEP = new Dictionary<UnitType, uint>()
@@ -87,7 +87,7 @@ public class UnitComponent : MonoBehaviour
     public bool setLocation(TileComponent location)
     {
         _location = location;
-        _villagerGameObject.transform.position = location.gameObject.transform.position;
+        _unitGameObject.transform.position = location.gameObject.transform.position;
 
         return true;
     }
@@ -221,14 +221,30 @@ public class UnitComponent : MonoBehaviour
         return false;
     }
 
+	public void setUnitType(UnitType unitType) {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCsetUnitType", RPCMode.Others, (int)unitType);
+		}
+		else{
+			RPCsetUnitType((int)unitType);
+		}
+	}
+	
+	[RPC]
+	private void RPCsetUnitType(int unitTypeIndex) {
+		_unitType = (UnitType)unitTypeIndex;
+		if(_unitGameObject){
+			GameObject oldObject = _unitGameObject;
+			Destroy(oldObject);
+		}
+		AssetManager assetManager = GameObject.FindGameObjectWithTag("AssetManager").GetComponent<AssetManager>();
+		_unitGameObject = assetManager.createUnitGameObject((UnitType)unitTypeIndex, this.gameObject.transform.position);
+		_unitGameObject.transform.parent = this.transform;
+	}
+
     public UnitType getUnitType()
     {
         return _unitType;
-    }
-
-    public void setUnitType(UnitType unitType)
-    {
-        _unitType = unitType;
     }
 
     public VillageComponent getVillage()
@@ -318,7 +334,8 @@ public class UnitComponent : MonoBehaviour
 
             if (_village.getGoldStock() >= cost)
             {
-                _unitType = newLevel;
+                //_unitType = newLevel;
+				setUnitType(newLevel);
                 _village.removeGold(cost);
                 return true;
             }
@@ -357,6 +374,7 @@ public class UnitComponent : MonoBehaviour
         }
     }
 
+	/*
     public void InstantiateUnit(UnitType unitType)
     {
         _assets = GameObject.FindObjectOfType<AssetManager>();
@@ -366,9 +384,29 @@ public class UnitComponent : MonoBehaviour
         _location = null;
         _unitType = unitType;
         _village = null;
-        _villagerGameObject = _assets.createUnitGameObject(unitType, new Vector3(0, 0, 0));
+        _unitGameObject = _assets.createUnitGameObject(unitType, new Vector3(0, 0, 0));
     }
 
+	[RPC]
+	private void InstantiateUnit(int unitTypeIndex){
+		AssetManager assetManager = GameObject.FindGameObjectWithTag("AssetManager").GetComponent<AssetManager>();
+		_unitGameObject = assetManager.createUnitGameObject((UnitType)unitTypeIndex, this.gameObject.transform.position);
+		_terrainGameObject.transform.parent = this.transform;
+	}
+	*/
+
+	public void Initialize(UnitType uType)
+	{
+		_roundsCultivating = 0;
+		_upkeep = UPKEEP[uType];
+		_currentAction = ActionType.READY_FOR_ORDERS;
+		_location = this.gameObject.GetComponent<TileComponent>();
+		_village = this.gameObject.GetComponent<TileComponent>().getVillage();
+		setUnitType(uType);
+		_location.setOccupantType(OccupantType.UNIT);
+	}
+
+	/*
     public UnitComponent(UnitType unitType)
     {
         _assets = GameObject.FindObjectOfType<AssetManager>();
@@ -378,8 +416,9 @@ public class UnitComponent : MonoBehaviour
         _location = null;
         _unitType = unitType;
         _village = null;
-        _villagerGameObject = _assets.createUnitGameObject(unitType, new Vector3(0, 0, 0));
+        _unitGameObject = _assets.createUnitGameObject(unitType, new Vector3(0, 0, 0));
     }
+    */
 
     public void cultivate()
     {
@@ -545,12 +584,12 @@ public class UnitComponent : MonoBehaviour
 
     public GameObject getGameObject()
     {
-        return _villagerGameObject;
+        return _unitGameObject;
     }
 
     public void setGameObject(AssetManager assets, UnitType unitType)
     {
-        _villagerGameObject = assets.createUnitGameObject(unitType, this.gameObject.transform.position);
+        _unitGameObject = assets.createUnitGameObject(unitType, this.gameObject.transform.position);
     }
 
     /*********************
