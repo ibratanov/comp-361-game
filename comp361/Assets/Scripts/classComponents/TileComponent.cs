@@ -412,6 +412,10 @@ public class TileComponent : MonoBehaviour {
     public void Select()
     {
         HighlightRegion();
+		if (_game.getLastSelectedTile() != null)
+		{
+			_game.getLastSelectedTile().Deselect();
+		}
         _game.setLastSelectedTile(this);
 
 		GameComponent gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>();
