@@ -95,7 +95,7 @@ public class MapGenerator : MonoBehaviour {
 		gameTile.transform.parent = this.transform;
 		_landTiles[i,j] = gameTile.GetComponent<TileComponent>();
 		gameTile.transform.parent = this.transform; //Keep things organized with a parental hierarchy
-		_landTiles[i,j].setTileGameObject(gameTile);
+//		_landTiles[i,j].setTileGameObject(gameTile);
 		_landTiles[i,j].setLandType(LandType.GRASS);
 	}
 

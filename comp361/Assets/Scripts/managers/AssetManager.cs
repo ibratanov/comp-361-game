@@ -8,16 +8,16 @@ public class AssetManager : MonoBehaviour {
 	public GameObject[] _structures;
     public Material[] _villageMaterials;
 
-	public GameObject getTerrainGameObject(LandType lType){
-		return _terrains[(int)lType];
+	public GameObject createTerrainGameObject(LandType lType, Vector3 position){
+		return (GameObject)Instantiate(_terrains[(int)lType], position, Quaternion.identity);
 	}
 
-	public GameObject getUnitGameObject(UnitType uType){
-		return _villagerUnits[(int)uType];
+	public GameObject createUnitGameObject(UnitType uType, Vector3 position){
+		return (GameObject)Instantiate(_villagerUnits[(int)uType], position, Quaternion.identity);
 	}
 
-	public GameObject getVillageGameObject(VillageType vType){
-		return _villages[(int)vType];
+	public GameObject createVillageGameObject(VillageType vType, Vector3 position){
+		return (GameObject)Instantiate(_villages[(int)vType], position, Quaternion.identity);
 	}
 
     public Material getVillageMaterial(VillageType vType)
@@ -25,7 +25,7 @@ public class AssetManager : MonoBehaviour {
         return _villageMaterials[(int)vType];
     }
 
-	public GameObject getStructureGameObject(StructureType sType){
-		return _structures[(int)sType];
+	public GameObject createStructureGameObject(StructureType sType, Vector3 position){
+		return (GameObject)Instantiate(_structures[(int)sType], position, Quaternion.identity);
 	}
 }

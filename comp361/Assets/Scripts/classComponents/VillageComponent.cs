@@ -9,6 +9,8 @@ public enum VillageType {
 
 public class VillageComponent : MonoBehaviour {
 
+	private GameObject _villageGameObject;
+
 	/*********************
 	 *     ATTRIBUTES    *
 	 ********************/
@@ -16,7 +18,7 @@ public class VillageComponent : MonoBehaviour {
 	uint _goldStock;
 	uint _woodStock;
 	PlayerComponent _player;
-	List<TileComponent> _controlledRegion = new List<TileComponent>();
+	List<TileComponent> _controlledRegion;
 	List<UnitComponent> _supportingUnits;
 	VillageType _villageType;
     TileComponent _occupyingTile;
@@ -88,14 +90,30 @@ public class VillageComponent : MonoBehaviour {
 		return _supportingUnits;
 	}
 
+
+	public void setVillageType(VillageType villageType) {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCsetVillageType", RPCMode.Others, (int)villageType);
+		}
+		else{
+			RPCsetVillageType((int)villageType);
+		}
+	}
+	
+	[RPC]
+	private void RPCsetVillageType(int villageTypeIndex) {
+		_villageType = (VillageType)villageTypeIndex;
+		if(_villageGameObject){
+			GameObject oldObject = _villageGameObject;
+			Destroy(oldObject);
+		}
+		AssetManager assetManager = GameObject.FindGameObjectWithTag("AssetManager").GetComponent<AssetManager>();
+		_villageGameObject = assetManager.createVillageGameObject((VillageType)villageTypeIndex, this.gameObject.transform.position);
+	}
+
 	public VillageType getVillageType() {
 		return _villageType;
 	}
-
-	public void setVillageType(VillageType villageType) {
-		_villageType = villageType;
-	}
-
 
 	/*********************
 	 *      METHODS      *
@@ -143,15 +161,17 @@ public class VillageComponent : MonoBehaviour {
         {
             setVillageType(newLevel);
             removeWood(cost);
-            _occupyingTile.UpdateDraw();
             return true;
         }
         else
         {
             /* TODO: error message, insufficient funds */
             return false;
-        }
-		
+        }	
+	}
+
+	private void createVillageObject(VillageType vType, Vector3 position){
+
 	}
 
 	public bool payWages() {
@@ -328,11 +348,39 @@ public class VillageComponent : MonoBehaviour {
         _menus = GameObject.FindObjectOfType<GUIManager>();
     }
 
+	public void Initialize(VillageType vType, PlayerComponent currentPlayer)
+	{
+		_goldStock = 0;
+		_woodStock = 0;
+		_player = currentPlayer;
+		_villageType = vType;
+		_controlledRegion = new List<TileComponent>();
+		_supportingUnits = new List<UnitComponent>();
+		_occupyingTile = null;
+		_menus = GameObject.FindObjectOfType<GUIManager>();
+		setVillageGameObject(vType);
+	}
 
+	public void setVillageGameObject(VillageType vType)
+	{
+		if(_villageGameObject){
+			GameObject oldVillage = _villageGameObject;
+			Destroy(oldVillage);
+		}
+		AssetManager assetManager = GameObject.FindGameObjectWithTag("AssetManager").GetComponent<AssetManager>();
+		GameObject village = assetManager.createVillageGameObject(vType, this.gameObject.transform.position);//(GameObject)Instantiate( assetManager.getVillageGameObject(vType), this.gameObject.transform.position, Quaternion.identity);
+		_villageGameObject = village;
+		village.transform.parent = this.gameObject.transform;
+	}
 
+	public GameObject getVillageGameObject()
+	{
+		return _villageGameObject;
+	}
+	
 	// Use this for initialization
 	void Start () {
-	
+
 	}
 	
 	// Update is called once per frame

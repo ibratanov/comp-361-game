@@ -85,8 +85,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1578e1efbdeaaec4297dcaa973b9022c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _terrainGameObject: {fileID: 159312, guid: f7f41b7a4ff1983428772aa5ad139fc3, type: 2}
-  _villageGameObject: {fileID: 194586, guid: fbcc519b6e9225e49b2f3411aff1e9a3, type: 2}
+  isSelected: 0
 --- !u!148 &14882100
 NetworkView:
   m_ObjectHideFlags: 1
@@ -95,7 +94,7 @@ NetworkView:
   m_GameObject: {fileID: 137900}
   m_Enabled: 1
   m_StateSynchronization: 1
-  m_Observed: {fileID: 437900}
+  m_Observed: {fileID: 11437900}
   m_ViewID:
     m_ID: 0
     m_Type: 0

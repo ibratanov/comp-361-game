@@ -27,8 +27,7 @@ public class TileComponent : MonoBehaviour {
 											};
 
 	private GameObject _terrainGameObject;
-	private GameObject _villageGameObject;
-    private GameObject _tileGameObject;
+//    private GameObject _tileGameObject;
 	private AssetManager _assets;
 	private GUIManager _menus;
 
@@ -59,35 +58,25 @@ public class TileComponent : MonoBehaviour {
 	 *  GETTERS/SETTERS  *
 	 ********************/
 
-    public GameObject getTileGameObject()
-    {
-        return _tileGameObject;
-    }
+ //   public GameObject getTileGameObject()
+ //   {
+ //       return _tileGameObject;
+ //   }
 
-    public void setTileGameObject(GameObject tileGameObject)
-    {
-        _tileGameObject = tileGameObject;
-    }
+ //   public void setTileGameObject(GameObject tileGameObject)
+ //   {
+ //       _tileGameObject = tileGameObject;
+ //   }
 
-    public GameObject getTerrainGameObject()
-    {
-        return _terrainGameObject;
-    }
+//    public GameObject getTerrainGameObject()
+//    {
+//        return _terrainGameObject;
+//    }
 
-    public void setTerrainGameObject(ref GameObject terrainGameObject)
-    {
-        _terrainGameObject = terrainGameObject;
-    }
-
-    public GameObject getVillageGameObject()
-    {
-        return _villageGameObject;
-    }
-
-    public void setVillageGameObject(ref GameObject villageGameObject)
-    {
-        _villageGameObject = villageGameObject;
-    }
+//    public void setTerrainGameObject(ref GameObject terrainGameObject)
+//    {
+//        _terrainGameObject = terrainGameObject;
+//    }
 
 	public int getInitialPlayerIndex() {
 		return _initialPlayerIndex;
@@ -110,41 +99,44 @@ public class TileComponent : MonoBehaviour {
 
 	public void setLandType(LandType landType) {
 		if(Network.isServer || Network.isClient){
-			networkView.RPC("RPCsetLandType", RPCMode.All, (int)landType);
+			networkView.RPC("RPCsetLandType", RPCMode.Others, (int)landType);
 		}
 		else{
-			_landType = landType;
-		    _terrainGameObject = _assets.getTerrainGameObject(landType);
+			RPCsetLandType((int)landType);
 		}
 	}
 	
 	[RPC]
 	private void RPCsetLandType(int landTypeIndex) {
 		_landType = (LandType)landTypeIndex;
-		_terrainGameObject = _assets.getTerrainGameObject((LandType)landTypeIndex);
+		if(_terrainGameObject){
+			GameObject oldObject = _terrainGameObject;
+			Destroy(oldObject);
+		}
+		_terrainGameObject = _assets.createTerrainGameObject((LandType)landTypeIndex, this.gameObject.transform.position);
 	}
 
 	public LandType getLandType() {
 		return _landType;
 	}
-
-
+	
 	public void setVillage(VillageComponent village) {
 		if(Network.isServer || Network.isClient){
-			networkView.RPC("RPCsetVillage", RPCMode.All,(int)village.getVillageType() ); //TODO: Pass the appropriate parameters
+			networkView.RPC("RPCsetVillage", RPCMode.All ); //TODO: Pass the appropriate parameters
 		}
 		else{
 			_village = village;
 
-			if (_occupantType == OccupantType.VILLAGE) {
-				_landType = LandType.GRASS;
-				_terrainGameObject = _assets.getVillageGameObject(village.getVillageType());
-			}
+//			if (_occupantType == OccupantType.VILLAGE) {
+//				setLandType(LandType.GRASS);
+//				_landType = LandType.GRASS;
+//				_terrainGameObject = _assets.createVillageGameObject(village.getVillageType(), this.gameObject.transform.position);
+//			}
 		}
 	}
 
 	[RPC]
-	private void RPCsetVillage(int villageTypeIndex) {
+	private void RPCsetVillage() {
 		//TODO: Need to figure out a strategy to update the village across the network. 
 		//	Suggestion: (1)Find string/int representations of the data. 
 		//				(2)Learn about proper serialization over the network
@@ -152,15 +144,15 @@ public class TileComponent : MonoBehaviour {
 
 		//_village = village;
 		
-		if (_occupantType == OccupantType.VILLAGE) {
-			_landType = LandType.GRASS;
-			_terrainGameObject = _assets.getVillageGameObject((VillageType)villageTypeIndex);
-		}
+//		if (_occupantType == OccupantType.VILLAGE) {
+//			_landType = LandType.GRASS;
+//			_terrainGameObject = _assets.createVillageGameObject((VillageType)villageTypeIndex, this.gameObject.transform.position);
+//		}
 	}
 
 
 	public VillageComponent getVillage() {
-		return _village;
+		return this.gameObject.GetComponent<VillageComponent>();
 	}
 
 	public OccupantType getOccupantType() {
@@ -391,8 +383,6 @@ public class TileComponent : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start() {
-        _terrainGameObject = (GameObject)Instantiate(_terrainGameObject, this.transform.position, Quaternion.identity);
-		_terrainGameObject.transform.parent = this.transform;
         _game = GameObject.FindObjectOfType<GameComponent>();
 		Unhighlight();
 	}
@@ -410,9 +400,10 @@ public class TileComponent : MonoBehaviour {
 		if(_drawUpdated){
             if (_occupantType == OccupantType.VILLAGE)
             {
+//				GameObject oldVillage
 //                Destroy(_terrainGameObject);
 //                _terrainGameObject = (GameObject)Instantiate(_assets.getVillageGameObject(_village.getVillageType()), this.transform.position, Quaternion.identity);
-//                _terrainGameObject.transform.parent = this.transform;
+ //               _terrainGameObject.transform.parent = this.transform;
             }
 //            Highlight();
 			_drawUpdated = false;
