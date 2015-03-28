@@ -87,7 +87,7 @@ public class UnitComponent : MonoBehaviour
     public bool setLocation(TileComponent location)
     {
         _location = location;
-        _villagerGameObject.transform.position = location.getTileGameObject().transform.position;
+        _villagerGameObject.transform.position = location.gameObject.transform.position;
 
         return true;
     }
@@ -366,7 +366,7 @@ public class UnitComponent : MonoBehaviour
         _location = null;
         _unitType = unitType;
         _village = null;
-        _villagerGameObject = (GameObject)Instantiate(_assets.getUnitGameObject(unitType), new Vector3(0, 0, 0), Quaternion.identity);
+        _villagerGameObject = _assets.createUnitGameObject(unitType, new Vector3(0, 0, 0));
     }
 
     public UnitComponent(UnitType unitType)
@@ -378,7 +378,7 @@ public class UnitComponent : MonoBehaviour
         _location = null;
         _unitType = unitType;
         _village = null;
-        _villagerGameObject = (GameObject)Instantiate(_assets.getUnitGameObject(unitType), new Vector3(0, 0, 0), Quaternion.identity);
+        _villagerGameObject = _assets.createUnitGameObject(unitType, new Vector3(0, 0, 0));
     }
 
     public void cultivate()
@@ -550,7 +550,7 @@ public class UnitComponent : MonoBehaviour
 
     public void setGameObject(AssetManager assets, UnitType unitType)
     {
-        _villagerGameObject = assets.getUnitGameObject(unitType);
+        _villagerGameObject = assets.createUnitGameObject(unitType, this.gameObject.transform.position);
     }
 
     /*********************

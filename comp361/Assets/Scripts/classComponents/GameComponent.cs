@@ -119,7 +119,7 @@ public class GameComponent : MonoBehaviour {
 		m.GenerateMap();
 		
 		_mapTiles = m.getLandTiles();
-		
+
 		foreach (var tile in _mapTiles)
 		{
 			int randIndex = Random.Range(0, participants.Count + 1);
@@ -129,7 +129,6 @@ public class GameComponent : MonoBehaviour {
 		foreach (var tile in _mapTiles)
 		{
             int playerIndex = tile.getInitialPlayerIndex();
-            //tile.getGameObject().GetComponent<Renderer>().materials[2].color = Color.white;
 
             if (playerIndex > 0)
             {
@@ -151,40 +150,48 @@ public class GameComponent : MonoBehaviour {
                         {
                             regionContainsVillage = true;
                         }
-                        //rTile.getGameObject().GetComponent<Renderer>().materials[2].color = _playerColours[playerIndex];
                     }
                     if (!regionContainsVillage)
                     {
                         TileComponent tileWithVillage = region[0];
-
+						VillageComponent newHovel = CreateVillage(tileWithVillage, VillageType.HOVEL, _currentPlayer);
+						tileWithVillage.setOccupantType(OccupantType.VILLAGE);
+						tileWithVillage.setVillage(newHovel);
+						/*
                         GameObject go = new GameObject();
                         go.AddComponent<VillageComponent>().InstantiateVillage(VillageType.HOVEL, _currentPlayer);
                         var newHovel = go.GetComponent<VillageComponent>();
                         newHovel.setOccupyingTile(tileWithVillage);
                         tileWithVillage.setOccupantType(OccupantType.VILLAGE);
                         tileWithVillage.setVillage(newHovel);
+						*/
 
-                        var player = participants[playerIndex - 1];
-                        player.add(newHovel);
-                        newHovel.associate(tileWithVillage);
-                        newHovel.addGold(7);
+                        PlayerComponent player = participants[playerIndex - 1];
+						player.add(newHovel);
+						newHovel.associate(tileWithVillage);
+						newHovel.addGold(7);
                         // add enough wood to be able to upgrade to village for demo, can remove later
-                        newHovel.addWood(24);
+						newHovel.addWood(24);
                         // add all other tiles in the bfs to this village's controlled region
                         foreach (var controlledTile in tileWithVillage.breadthFS())
                         {
-                            if (!newHovel.getControlledRegion().Contains(controlledTile))
+							if (!newHovel.getControlledRegion().Contains(controlledTile))
                             {
-                                newHovel.addToControlledRegion(controlledTile);
-                                controlledTile.setVillage(newHovel);
+								newHovel.addToControlledRegion(controlledTile);
+								controlledTile.setVillage(newHovel);
                             }
                         }
-
                     }
                 }
             }
             tile.UpdateDraw();
 		}
+	}
+
+	public VillageComponent CreateVillage(TileComponent tc, VillageType vType, PlayerComponent pc){
+		VillageComponent vc = tc.gameObject.AddComponent<VillageComponent>();
+		vc.Initialize(VillageType.HOVEL, pc);
+		return vc;
 	}
 
 	/// <summary>
