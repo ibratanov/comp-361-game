@@ -5,7 +5,8 @@ using UnityEngine.UI;
 public class GUIManager : MonoBehaviour {
 	public GameObject[] _menus;
 	public GameObject[] _inGamePanels;
-	public float _fadeSpeed;
+
+	float _fadeSpeed = 0.8f;
 
 	// Use this for initialization
 	void Start () {
@@ -21,7 +22,7 @@ public class GUIManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 
     public void setWoodStock(int stock)
@@ -111,28 +112,6 @@ public class GUIManager : MonoBehaviour {
         }
     }
 
-	public void DisplayTurnPanel(PlayerComponent currentPlayer, Color currentColor)
-	{
-		foreach (GameObject g in _inGamePanels)
-		{
-			if (g.name.Contains ("PlayerTurn"))
-			{
-				FadeInPanel (g);
-				return;
-			}
-		}
-	}
-
-	public void FadeInPanel(GameObject panel)
-	{
-
-	}
-
-	public void FadeOutPanel(GameObject panel)
-	{
-
-	}
-
 	public void UpdateGamePanels(PlayerComponent currentPlayer, Color currentColor)
 	{
 		foreach (GameObject g in _inGamePanels)
@@ -146,9 +125,45 @@ public class GUIManager : MonoBehaviour {
 					{
 						t.text = currentPlayer.getUserName();
 						t.color = currentColor;
+						break;
 					}
 				}
 				break;
+			}
+		}
+		DisplayTurnPanel(currentPlayer, currentColor);
+	}
+
+	public void DisplayTurnPanel(PlayerComponent currentPlayer, Color currentColor)
+	{
+		foreach (GameObject g in _inGamePanels)
+		{
+			if (g.name.Contains ("Panel_PlayerTurn"))
+			{
+				g.SetActive(true);
+				Text[] playerTexts = g.GetComponentsInChildren<Text>() as Text[];
+				foreach (Text t in playerTexts)
+				{
+					if (t.name.Contains ("CurrentPlayer"))
+					{
+						t.text = currentPlayer.getUserName();
+						t.color = currentColor;
+						break;
+					}
+				}
+			}
+		}
+		StartCoroutine ("delayStartFade");
+	}
+
+	IEnumerator delayStartFade()
+	{
+		yield return new WaitForSeconds(_fadeSpeed);
+		foreach (GameObject g in _inGamePanels)
+		{
+			if (g.name.Contains ("Panel_PlayerTurn"))
+			{
+				g.SetActive(false);
 			}
 		}
 	}
