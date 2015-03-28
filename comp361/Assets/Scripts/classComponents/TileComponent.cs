@@ -391,13 +391,18 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	void OnMouseUp(){
-		if (isSelected)
+		if (!isSelected)
 		{
-			//Deselect ();
+			Select ();
 		}
 		else 
 		{
-			Select();
+			List<TileComponent> region = this.breadthFS();
+			if (region.Contains (_game.getLastSelectedTile()))
+			{
+				_game.getLastSelectedTile().isSelected = false;
+				Select ();
+			}
 		}
 	}
 
