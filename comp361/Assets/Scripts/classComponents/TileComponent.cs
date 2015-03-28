@@ -484,6 +484,7 @@ public class TileComponent : MonoBehaviour {
 
 	public void Deselect(){
 		UnhighlightRegion();
+		isSelected = false;
 		_menus.HideUnitActions();
 		_menus.HideVillageActions ();
 	}

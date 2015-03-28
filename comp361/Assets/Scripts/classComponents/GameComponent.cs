@@ -62,6 +62,7 @@ public class GameComponent : MonoBehaviour {
 		_currentPlayer = _remainingPlayers[index];
 		_currentColour = _playerColours [index];
 		_guiManager.UpdateGamePanels (_currentPlayer, _currentColour);
+		_guiManager.SwitchCameras();
 	}
 
 	public List<PlayerComponent> getRemainingPlayers() {
@@ -238,6 +239,11 @@ public class GameComponent : MonoBehaviour {
     public void endTurn()
     {
 		_currentPlayerIndex = (_currentPlayerIndex + 1) % _remainingPlayers.Count;
+		if (_lastSelectedTile.isSelected)
+		{
+			_lastSelectedTile.Deselect();
+		}
+
 		setCurrentPlayer (_currentPlayerIndex);
 
         BeginRound();

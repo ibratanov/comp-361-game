@@ -6,6 +6,9 @@ public class GUIManager : MonoBehaviour {
 	public GameObject[] _menus;
 	public GameObject[] _inGamePanels;
 
+	public GameObject[] _cameras; 
+	public Vector3 _initZoomCameraPos;
+
 	float _fadeSpeed = 0.8f;
 
 	// Use this for initialization
@@ -16,6 +19,13 @@ public class GUIManager : MonoBehaviour {
 			}
 			else{
 				_menus[i].SetActive(false);
+			}
+		}
+		foreach (GameObject g in _cameras)
+		{
+			if (g.name.Contains ("zoom"))
+			{
+				_initZoomCameraPos = g.transform.position;
 			}
 		}
 	}
@@ -112,6 +122,8 @@ public class GUIManager : MonoBehaviour {
         }
     }
 
+	#region EndTurn
+
 	public void UpdateGamePanels(PlayerComponent currentPlayer, Color currentColor)
 	{
 		foreach (GameObject g in _inGamePanels)
@@ -134,12 +146,19 @@ public class GUIManager : MonoBehaviour {
 		DisplayTurnPanel(currentPlayer, currentColor);
 	}
 
+	/// <summary>
+	/// Displays the panel indicating next player to get a turn.
+	/// </summary>
+	/// <param name="currentPlayer">Current player.</param>
+	/// <param name="currentColor">Current color.</param>
 	public void DisplayTurnPanel(PlayerComponent currentPlayer, Color currentColor)
 	{
+		print ("display turn panel");
 		foreach (GameObject g in _inGamePanels)
 		{
 			if (g.name.Contains ("Panel_PlayerTurn"))
 			{
+				print ("found panel");
 				g.SetActive(true);
 				Text[] playerTexts = g.GetComponentsInChildren<Text>() as Text[];
 				foreach (Text t in playerTexts)
@@ -151,12 +170,13 @@ public class GUIManager : MonoBehaviour {
 						break;
 					}
 				}
+				break;
 			}
 		}
-		StartCoroutine ("delayStartFade");
+		StartCoroutine ("DelayStartFade");
 	}
-
-	IEnumerator delayStartFade()
+	
+	IEnumerator DelayStartFade()
 	{
 		yield return new WaitForSeconds(_fadeSpeed);
 		foreach (GameObject g in _inGamePanels)
@@ -167,4 +187,31 @@ public class GUIManager : MonoBehaviour {
 			}
 		}
 	}
+
+	/// <summary>
+	/// Switches to zoomed out camera if current player ends turn while zoomed in.
+	/// </summary>
+	public void SwitchCameras()
+	{
+		if (_cameras[0].name.Contains ("main"))
+		{
+			if (!_cameras[0].activeSelf)
+			{
+				_cameras[1].transform.position = _initZoomCameraPos;
+				_cameras[1].SetActive (false);
+				_cameras[0].SetActive (true);
+			}
+		}
+		else 
+		{
+			if (!_cameras[1].activeSelf)
+			{
+				_cameras[0].transform.position = _initZoomCameraPos;
+				_cameras[0].SetActive (false);
+				_cameras[1].SetActive (true);
+			}
+		}
+	}
+
+	#endregion
 }
