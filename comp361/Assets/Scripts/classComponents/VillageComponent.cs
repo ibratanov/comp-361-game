@@ -281,7 +281,7 @@ public class VillageComponent : MonoBehaviour {
 		}
 
 		_controlledRegion.Add(tile);
-		tile.setVillage(this);
+		tile.UpdateVillageReference();
 	}
 
 	public void associate(List<UnitComponent> units) {

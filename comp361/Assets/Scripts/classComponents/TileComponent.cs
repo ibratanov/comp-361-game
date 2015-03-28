@@ -44,7 +44,7 @@ public class TileComponent : MonoBehaviour {
 	 ********************/
 
 	bool _hasRoad;
-	int _initialPlayerIndex;
+	int _playerIndex;
 
 	GameComponent _game;
 	LandType _landType;
@@ -78,32 +78,33 @@ public class TileComponent : MonoBehaviour {
 //        _terrainGameObject = terrainGameObject;
 //    }
 
-	public int getInitialPlayerIndex() {
-		return _initialPlayerIndex;
+	public int getPlayerIndex() {
+		return _playerIndex;
 	}
 
-	public void setInitialPlayerIndex(int initialPlayerIndex) {
+	public void setPlayerIndex(int playerIndex) {
 		if(Network.isServer || Network.isClient){
-			networkView.RPC("RPCsetInitialPlayerIndex", RPCMode.All, initialPlayerIndex);
+			networkView.RPC("RPCsetPlayerIndex", RPCMode.All, playerIndex);
 		}
 		else{
-			_initialPlayerIndex = initialPlayerIndex;
+			RPCsetPlayerIndex(playerIndex);
 		}
 	}
 
 	[RPC]
-	private void RPCsetInitialPlayerIndex(int initialPlayerIndex){
-		_initialPlayerIndex = initialPlayerIndex;
+	private void RPCsetPlayerIndex(int playerIndex){
+		_playerIndex = playerIndex;
 	}
 
+	public LandType getLandType() {
+		return _landType;
+	}
 
 	public void setLandType(LandType landType) {
 		if(Network.isServer || Network.isClient){
 			networkView.RPC("RPCsetLandType", RPCMode.Others, (int)landType);
 		}
-		else{
-			RPCsetLandType((int)landType);
-		}
+		RPCsetLandType((int)landType);
 	}
 	
 	[RPC]
@@ -118,43 +119,26 @@ public class TileComponent : MonoBehaviour {
 		_terrainGameObject.transform.parent = this.transform;
 	}
 
-	public LandType getLandType() {
-		return _landType;
+	public VillageComponent getVillage() {
+		return _village;
 	}
-	
-	public void setVillage(VillageComponent village) {
-		if(Network.isServer || Network.isClient){
-			networkView.RPC("RPCsetVillage", RPCMode.All ); //TODO: Pass the appropriate parameters
-		}
-		else{
-			_village = village;
 
-//			if (_occupantType == OccupantType.VILLAGE) {
-//				setLandType(LandType.GRASS);
-//				_landType = LandType.GRASS;
-//				_terrainGameObject = _assets.createVillageGameObject(village.getVillageType(), this.gameObject.transform.position);
-//			}
+	//Updates the reference to the VillageComponent that controls the region
+	public void UpdateVillageReference() {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCUpdateVillage", RPCMode.Others); //TODO: Pass the appropriate parameters
 		}
+		RPCUpdateVillage();
 	}
 
 	[RPC]
-	private void RPCsetVillage() {
-		//TODO: Need to figure out a strategy to update the village across the network. 
-		//	Suggestion: (1)Find string/int representations of the data. 
-		//				(2)Learn about proper serialization over the network
-		//				(3)Perhaps the other player doesn't need to know the data for the Village if it doesn't affect them
-
-		//_village = village;
-		
-//		if (_occupantType == OccupantType.VILLAGE) {
-//			_landType = LandType.GRASS;
-//			_terrainGameObject = _assets.createVillageGameObject((VillageType)villageTypeIndex, this.gameObject.transform.position);
-//		}
-	}
-
-
-	public VillageComponent getVillage() {
-		return _village;
+	private void RPCUpdateVillage() {
+		List<TileComponent> region = breadthFS();
+		foreach(TileComponent tile in region){
+			if(tile.GetComponent<VillageComponent>()){
+				_village = tile.GetComponent<VillageComponent>();
+			}
+		}
 	}
 
 	public OccupantType getOccupantType() {
@@ -163,11 +147,11 @@ public class TileComponent : MonoBehaviour {
 
 	public void setOccupantType(OccupantType occupantType) {
 		if(Network.isServer || Network.isClient){
-			networkView.RPC("RPCsetOccupantType", RPCMode.All, (int)occupantType);
+			networkView.RPC("RPCsetOccupantType", RPCMode.Others, (int)occupantType);
 		}
-		else{
-			_occupantType = occupantType;
+		RPCsetOccupantType((int)occupantType);
 			//Remove any links to previous occupants
+			/*
 			if(occupantType == OccupantType.VILLAGE){
 				_occupyingStructure = null;
 				_occupyingUnit = null;
@@ -178,12 +162,13 @@ public class TileComponent : MonoBehaviour {
 			else if(occupantType == OccupantType.UNIT){
 				_occupyingStructure = null;
 			}
-		}
+			*/
 	}
 
 	[RPC]
 	private void RPCsetOccupantType(int occupantTypeIndex) {
 		_occupantType = (OccupantType)occupantTypeIndex;
+		/*
 		//Remove any links to previous occupants
 		if(_occupantType == OccupantType.VILLAGE){
 			_occupyingStructure = null;
@@ -195,6 +180,7 @@ public class TileComponent : MonoBehaviour {
 		else if(_occupantType == OccupantType.UNIT){
 			_occupyingStructure = null;
 		}
+		*/
 	}
 
 
@@ -245,28 +231,11 @@ public class TileComponent : MonoBehaviour {
 		return _occupyingUnit;
 	}
 
-	
+	//Networking for this is handled in MapGenerator::generateNeighbours(int i, int j)
     public void setNeighbours(List<TileComponent> neighbours)
     {
 		_neighbours = neighbours;
-		if(Network.isServer || Network.isClient){
-//			networkView.RPC("RPCsetNeighbours", RPCMode.All); //TODO: Pass the appropriate parameters
-		}
-		else{
-      
-		}
     }
-
-	[RPC]
-	private void RPCsetNeighbours()
-	{
-		//TODO: Need to figure out a strategy to update the village across the network. 
-		//	Suggestion: (1)Find string/int representations of the data. 
-		//				(2)Learn about proper serialization over the network
-		//				(3)Perhaps the other player doesn't need to know the data for the Village if it doesn't affect them
-
-		//_neighbours = neighbours;
-	}
 
 	public List<TileComponent> getNeighbours()
 	{
@@ -308,7 +277,7 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	public TileComponent(int initialOwner) {
-        _initialPlayerIndex = initialOwner;
+        _playerIndex = initialOwner;
         _hasRoad = false;
 
         _landType = LandType.GRASS;
@@ -328,7 +297,7 @@ public class TileComponent : MonoBehaviour {
 			t = q.Dequeue();
 			foreach (var neighbour in t.getNeighbours())
 			{
-				if (neighbour.getInitialPlayerIndex() == this.getInitialPlayerIndex() && !regionTiles.Contains(neighbour))
+				if (neighbour.getPlayerIndex() == this.getPlayerIndex() && !regionTiles.Contains(neighbour))
 				{
 					q.Enqueue(neighbour);
 					regionTiles.Add(neighbour);
@@ -520,16 +489,18 @@ public class TileComponent : MonoBehaviour {
 	 ****************************/
 
 	public void Highlight(){
-		_terrainGameObject.renderer.materials[2].SetColor("_Color", PLAYER_COLOURS[_initialPlayerIndex]);
+		int lastMaterialIndex = _terrainGameObject.renderer.materials.Length - 1;
+		_terrainGameObject.renderer.materials[lastMaterialIndex].SetColor("_Color", PLAYER_COLOURS[_playerIndex]);
 	}
 	
 	public void Unhighlight(){
-		Color colour = PLAYER_COLOURS[_initialPlayerIndex];
+		Color colour = PLAYER_COLOURS[_playerIndex];
 		Color newColour = new Color(0,0,0);
 		newColour.r = Mathf.Min(colour.r + 0.5f, 1.0f);
 		newColour.g = Mathf.Min(colour.g + 0.5f, 1.0f);
 		newColour.b = Mathf.Min(colour.b + 0.5f, 1.0f);
-		_terrainGameObject.renderer.materials[2].SetColor("_Color", newColour);
+		int lastMaterialIndex = _terrainGameObject.renderer.materials.Length - 1;
+		_terrainGameObject.renderer.materials[lastMaterialIndex].SetColor("_Color", newColour);
 	}
 
 	public void HighlightNeighbours(){

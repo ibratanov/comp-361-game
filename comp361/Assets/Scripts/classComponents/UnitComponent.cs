@@ -247,9 +247,7 @@ public class UnitComponent : MonoBehaviour
 		if(Network.isServer || Network.isClient){
 			networkView.RPC("RPCsetUnitType", RPCMode.Others, (int)unitType);
 		}
-		else{
-			RPCsetUnitType((int)unitType);
-		}
+		RPCsetUnitType((int)unitType);
 	}
 
 	[RPC]
@@ -261,9 +259,7 @@ public class UnitComponent : MonoBehaviour
 		if(Network.isServer || Network.isClient){
 			networkView.RPC("RPCcreateUnit", RPCMode.Others, (int)unitType);
 		}
-		else{
-			RPCcreateUnit((int)unitType);
-		}
+		RPCcreateUnit((int)unitType);
 	}
 	
 	[RPC]
