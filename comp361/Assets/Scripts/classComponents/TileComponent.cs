@@ -28,7 +28,7 @@ public class TileComponent : MonoBehaviour {
 
 	private GameObject _terrainGameObject;
 //    private GameObject _tileGameObject;
-	private AssetManager _assets;
+//	private AssetManager _assets;
 	private GUIManager _menus;
 
 	readonly static uint MEADOW_REVENUE = 2;
@@ -113,7 +113,9 @@ public class TileComponent : MonoBehaviour {
 			GameObject oldObject = _terrainGameObject;
 			Destroy(oldObject);
 		}
-		_terrainGameObject = _assets.createTerrainGameObject((LandType)landTypeIndex, this.gameObject.transform.position);
+		AssetManager assetManager = GameObject.FindGameObjectWithTag("AssetManager").GetComponent<AssetManager>();
+		_terrainGameObject = assetManager.createTerrainGameObject((LandType)landTypeIndex, this.gameObject.transform.position);
+		_terrainGameObject.transform.parent = this.transform;
 	}
 
 	public LandType getLandType() {
@@ -152,7 +154,7 @@ public class TileComponent : MonoBehaviour {
 
 
 	public VillageComponent getVillage() {
-		return this.gameObject.GetComponent<VillageComponent>();
+		return _village;
 	}
 
 	public OccupantType getOccupantType() {
@@ -388,7 +390,7 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	void Awake(){
-		_assets = GameObject.FindObjectOfType<AssetManager>();
+		//_assets = GameObject.FindObjectOfType<AssetManager>();
 		_menus = GameObject.FindObjectOfType<GUIManager>();
 	}
 
@@ -442,6 +444,37 @@ public class TileComponent : MonoBehaviour {
     {
         HighlightRegion();
         _game.setLastSelectedTile(this);
+
+		GameComponent gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>();
+		if(this.GetComponent<UnitComponent>()){
+			_game.setLastSelectedUnit(this.GetComponent<UnitComponent>());
+			PlayerComponent pc = this.GetComponent<UnitComponent>().getVillage().getPlayer();
+			if (this.GetComponent<UnitComponent>().getVillage().getPlayer() == gameManager.getCurrentPlayer())
+			{
+				_menus.HideVillageActions();
+				Debug.Log("Unit");
+				_menus.DisplayUnitActions();
+			}
+		}
+		else if (this.GetComponent<VillageComponent>())
+		{
+			if (this.GetComponent<VillageComponent>().getPlayer() == gameManager.getCurrentPlayer())
+			{
+				_menus.HideUnitActions();
+				Debug.Log("Village");
+				_menus.DisplayVillageActions();
+				_menus.setWoodStock((int)_village.getWoodStock());
+			}
+		}
+		else
+		{
+			Debug.Log("None");
+		}
+		if (_game.isMoveStarted())
+		{
+			_game.moveLastSelectedUnit();
+		}
+		/*
         if (this._occupyingUnit != null)
         {
             _game.setLastSelectedUnit(this._occupyingUnit);
@@ -473,7 +506,7 @@ public class TileComponent : MonoBehaviour {
         {
             _game.moveLastSelectedUnit();
         }
-        
+        */
     }
 
 	public void Deselect(){

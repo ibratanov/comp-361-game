@@ -109,6 +109,7 @@ public class VillageComponent : MonoBehaviour {
 		}
 		AssetManager assetManager = GameObject.FindGameObjectWithTag("AssetManager").GetComponent<AssetManager>();
 		_villageGameObject = assetManager.createVillageGameObject((VillageType)villageTypeIndex, this.gameObject.transform.position);
+		_villageGameObject.transform.parent = this.transform;
 	}
 
 	public VillageType getVillageType() {
@@ -170,10 +171,6 @@ public class VillageComponent : MonoBehaviour {
         }	
 	}
 
-	private void createVillageObject(VillageType vType, Vector3 position){
-
-	}
-
 	public bool payWages() {
 		uint wages = getWages();
 
@@ -187,6 +184,7 @@ public class VillageComponent : MonoBehaviour {
 		return false;
 	}
 
+	/*
 	public UnitComponent hireVillager(UnitType unitType) {
         if (_goldStock < UnitComponent.INITIAL_COST[unitType])
         {
@@ -217,6 +215,46 @@ public class VillageComponent : MonoBehaviour {
         }
         _supportingUnits.Add(u);
         return u;
+	}
+	*/
+
+	public void hireVillager(UnitType unitType) {
+		if (_goldStock < UnitComponent.INITIAL_COST[unitType])
+		{
+			// TODO: insufficient resource error
+		}
+		_goldStock = _goldStock - UnitComponent.INITIAL_COST[unitType];
+		bool hasSpace = false;
+		for (int i = 0; i < _controlledRegion.Count; i++)
+		{
+			if (_controlledRegion[i].getOccupantType() == OccupantType.NONE)
+			{
+				//if (unitType == UnitType.KNIGHT && _controlledRegion[i].getLandType() != LandType.MEADOW)
+				//{
+				hasSpace = true;
+				UnitComponent unit = CreateUnit(_controlledRegion[i], unitType);
+				_supportingUnits.Add(unit);
+				break;
+				//}
+			}
+		}
+		
+		if (hasSpace == false)
+		{
+			// TODO: no more space error
+		}
+	}
+
+	/// <summary>
+	/// Creates a Unit of a given type.
+	/// </summary>
+	/// <returns>The unit.</returns>
+	/// <param name="tc">The tileComponent which will own this unit.</param>
+	/// <param name="uType">The type of unit to create</param>
+	public UnitComponent CreateUnit(TileComponent tc, UnitType uType){
+		UnitComponent uc = tc.gameObject.AddComponent<UnitComponent>();
+		uc.Initialize(uType);
+		return uc;
 	}
 
 	public void addGold(uint amount) {
@@ -336,6 +374,7 @@ public class VillageComponent : MonoBehaviour {
 		}
 	}
 
+	/*
     public void InstantiateVillage(VillageType villageType, PlayerComponent currentPlayer)
     {
         _goldStock = 0;
@@ -347,6 +386,7 @@ public class VillageComponent : MonoBehaviour {
         _occupyingTile = null;
         _menus = GameObject.FindObjectOfType<GUIManager>();
     }
+    */
 
 	public void Initialize(VillageType vType, PlayerComponent currentPlayer)
 	{

@@ -8,11 +8,11 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 437900}
-  - 114: {fileID: 11437900}
   - 33: {fileID: 3337900}
   - 23: {fileID: 2337900}
   - 64: {fileID: 6437900}
   - 148: {fileID: 14882100}
+  - 114: {fileID: 11437900}
   m_Layer: 0
   m_Name: GameTile
   m_TagString: Untagged

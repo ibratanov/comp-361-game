@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Reflection; //For copying components
 
 public enum ActionType
 {
@@ -22,7 +23,8 @@ public enum UnitType
 
 public class UnitComponent : MonoBehaviour
 {
-    public GameObject _villagerGameObject;
+    public GameObject _unitGameObject;
+	private bool _isMoving;
 
     readonly static uint COST_PER_UNIT_UPGRADE = 10;
     public readonly static Dictionary<UnitType, uint> UPKEEP = new Dictionary<UnitType, uint>()
@@ -41,8 +43,6 @@ public class UnitComponent : MonoBehaviour
         {UnitType.KNIGHT, 40}
     };
 
-    private AssetManager _assets;
-
     /*********************
      *     ATTRIBUTES    *
      ********************/
@@ -52,7 +52,6 @@ public class UnitComponent : MonoBehaviour
     uint _roundsCultivating;
     uint _upkeep;
     ActionType _currentAction;
-    TileComponent _location;
     UnitType _unitType;
     VillageComponent _village;
 
@@ -81,13 +80,35 @@ public class UnitComponent : MonoBehaviour
 
     public TileComponent getLocation()
     {
-        return _location;
+        return this.GetComponent<TileComponent>();
     }
 
-    public bool setLocation(TileComponent location)
+    public bool setLocation(TileComponent destination)
     {
-        _location = location;
-        _villagerGameObject.transform.position = location.gameObject.transform.position;
+		if(this.gameObject.transform.position != destination.gameObject.transform.position){
+			if(destination.GetComponent<UnitComponent>() == null){
+				destination.gameObject.AddComponent<UnitComponent>();
+			}
+			UnitComponent destComponent = destination.GetComponent<UnitComponent>();
+			
+			//Copy all the info into the destination tile
+			destComponent.setCurrentAction( this.getCurrentAction() );
+			destComponent.setUnitType( this.getUnitType() );
+			destComponent.setVillage( this.getVillage() );
+			destComponent.setGameObject( this.getGameObject() );
+			destination.setOccupantType(OccupantType.UNIT);
+
+			//Remove the association from the previous tile
+			Destroy(this.gameObject.GetComponent<UnitComponent>());
+
+			//Update the visible object's location
+			//_unitGameObject.transform.position = destination.gameObject.transform.position; //Use this only if you want them to snap to the new position
+			//_isMoving = true;
+
+			//Keep the UnitComponent selected for further actions
+			GameComponent gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>();
+			gameManager.setLastSelectedUnit(destComponent.GetComponent<UnitComponent>());
+		}
 
         return true;
     }
@@ -110,7 +131,7 @@ public class UnitComponent : MonoBehaviour
                 case LandType.MEADOW:
                     if (_unitType != UnitType.INFANTRY || _unitType != UnitType.PEASANT)
                     {
-                        associate(dest);
+                        setLocation(dest);
                         TrampleMeadow();                        
                         return true;
                     }
@@ -118,6 +139,7 @@ public class UnitComponent : MonoBehaviour
                 case LandType.FOREST:
                     if (_unitType != UnitType.KNIGHT)
                     {
+						setLocation(dest);
                         GatherWood(dest);                       
                         return true;
                     }
@@ -134,7 +156,7 @@ public class UnitComponent : MonoBehaviour
                     else if (destVillage == null)
                     {
                         _village.associate(dest);
-                        associate(dest);
+						setLocation(dest);
                         setCurrentAction(ActionType.EXPANDING_REGION);
                         return true;
                     }
@@ -150,7 +172,7 @@ public class UnitComponent : MonoBehaviour
                     }
                     else if (destVillage != null && destVillage == _village)
                     {
-                        associate(dest);
+						setLocation(dest);
                         return true;
                     }
                     break;
@@ -205,7 +227,7 @@ public class UnitComponent : MonoBehaviour
                         if (destVillage == _village)
                         {
                             _village.associate(dest);
-                            associate(dest);
+							setLocation(dest);
                         }
                         else
                         {
@@ -221,14 +243,44 @@ public class UnitComponent : MonoBehaviour
         return false;
     }
 
+	public void setUnitType(UnitType unitType) {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCsetUnitType", RPCMode.Others, (int)unitType);
+		}
+		else{
+			RPCsetUnitType((int)unitType);
+		}
+	}
+
+	[RPC]
+	private void RPCsetUnitType(int unitTypeIndex) {
+		_unitType = (UnitType)unitTypeIndex;
+	}
+
+	public void createUnit(UnitType unitType) {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCcreateUnit", RPCMode.Others, (int)unitType);
+		}
+		else{
+			RPCcreateUnit((int)unitType);
+		}
+	}
+	
+	[RPC]
+	private void RPCcreateUnit(int unitTypeIndex) {
+		_unitType = (UnitType)unitTypeIndex;
+		if(_unitGameObject){
+			GameObject oldObject = _unitGameObject;
+			Destroy(oldObject);
+		}
+		AssetManager assetManager = GameObject.FindGameObjectWithTag("AssetManager").GetComponent<AssetManager>();
+		_unitGameObject = assetManager.createUnitGameObject((UnitType)unitTypeIndex, this.gameObject.transform.position);
+		_unitGameObject.transform.parent = this.transform;
+	}
+
     public UnitType getUnitType()
     {
         return _unitType;
-    }
-
-    public void setUnitType(UnitType unitType)
-    {
-        _unitType = unitType;
     }
 
     public VillageComponent getVillage()
@@ -318,7 +370,8 @@ public class UnitComponent : MonoBehaviour
 
             if (_village.getGoldStock() >= cost)
             {
-                _unitType = newLevel;
+                //_unitType = newLevel;
+				setUnitType(newLevel);
                 _village.removeGold(cost);
                 return true;
             }
@@ -326,20 +379,7 @@ public class UnitComponent : MonoBehaviour
 
         return false;
     }
-
-    public void associate(TileComponent tile)
-    {
-        if (_location != null)
-        {
-            _location.setOccupantType(OccupantType.NONE);
-            _location.setOccupyingUnit(null);
-        }
-
-        tile.setOccupantType(OccupantType.UNIT);
-        tile.setOccupyingUnit(this);
-        setLocation(tile);
-    }
-
+	
     public void buildRoad()
     {
         var ut = getUnitType();
@@ -357,35 +397,23 @@ public class UnitComponent : MonoBehaviour
         }
     }
 
-    public void InstantiateUnit(UnitType unitType)
-    {
-        _assets = GameObject.FindObjectOfType<AssetManager>();
-        _roundsCultivating = 0;
-        _upkeep = UPKEEP[unitType];
-        _currentAction = ActionType.READY_FOR_ORDERS;
-        _location = null;
-        _unitType = unitType;
-        _village = null;
-        _villagerGameObject = _assets.createUnitGameObject(unitType, new Vector3(0, 0, 0));
-    }
 
-    public UnitComponent(UnitType unitType)
-    {
-        _assets = GameObject.FindObjectOfType<AssetManager>();
-        _roundsCultivating = 0;
-        _upkeep = UPKEEP[unitType];
-        _currentAction = ActionType.READY_FOR_ORDERS;
-        _location = null;
-        _unitType = unitType;
-        _village = null;
-        _villagerGameObject = _assets.createUnitGameObject(unitType, new Vector3(0, 0, 0));
-    }
+	public void Initialize(UnitType uType)
+	{
+		_roundsCultivating = 0;
+		_upkeep = UPKEEP[uType];
+		_currentAction = ActionType.READY_FOR_ORDERS;
+		TileComponent tComponent = this.gameObject.GetComponent<TileComponent>();
+		_village = tComponent.getVillage();
+		createUnit(uType);
+		tComponent.setOccupantType(OccupantType.UNIT);
+	}
 
     public void cultivate()
     {
         if (_roundsCultivating >= 2)
         {
-            _location.setLandType(LandType.MEADOW);
+            this.GetComponent<TileComponent>().setLandType(LandType.MEADOW);
             _currentAction = ActionType.READY_FOR_ORDERS;
             _roundsCultivating = 0;
         }
@@ -403,22 +431,22 @@ public class UnitComponent : MonoBehaviour
     public void GatherWood(TileComponent tile)
     {
         _currentAction = ActionType.GATHERING_WOOD;
-        associate(tile);
         _village.addWood(1);
         tile.setLandType(LandType.GRASS);
     }
 
     public void die()
     {
-        StructureComponent tombstone = new StructureComponent(StructureType.TOMBSTONE, _location);
-        _location.setOccupyingStructure(tombstone);
+		TileComponent tc = this.GetComponent<TileComponent>();
+		StructureComponent tombstone = new StructureComponent(StructureType.TOMBSTONE, tc);
+		tc.setOccupyingStructure(tombstone);
     }
 
     public void moveUnit(TileComponent destination)
     {
         if (_currentAction == ActionType.READY_FOR_ORDERS)
         {
-            List<TileComponent> neighbours = _location.getNeighbours();
+            List<TileComponent> neighbours = this.GetComponent<TileComponent>().getNeighbours();
 
             bool isReachable = false;
 
@@ -433,7 +461,7 @@ public class UnitComponent : MonoBehaviour
 
             if (isReachable)
             {
-                bool isRelocated = setDestination(destination); //setLocation(destination);
+                bool isRelocated = setDestination(destination);
 
                 if (isRelocated)
                 {
@@ -465,7 +493,7 @@ public class UnitComponent : MonoBehaviour
         }
 
         _village.associate(destination);
-        associate(destination);
+		setLocation(destination);
 
         List<TileComponent> neighbours = destination.getNeighbours();
 
@@ -545,12 +573,14 @@ public class UnitComponent : MonoBehaviour
 
     public GameObject getGameObject()
     {
-        return _villagerGameObject;
+        return _unitGameObject;
     }
 
-    public void setGameObject(AssetManager assets, UnitType unitType)
+    public void setGameObject(GameObject gameObject)
     {
-        _villagerGameObject = assets.createUnitGameObject(unitType, this.gameObject.transform.position);
+		_unitGameObject = gameObject;
+		_unitGameObject.transform.parent = this.gameObject.transform;
+		_isMoving = true;
     }
 
     /*********************
@@ -567,15 +597,19 @@ public class UnitComponent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+		if(_isMoving){
+			float moveRate = 10.0f;
+			if( Vector3.Magnitude(this.gameObject.transform.position - _unitGameObject.transform.position) > 0.01f){
+				_unitGameObject.transform.position = Vector3.Lerp(_unitGameObject.transform.position, this.gameObject.transform.position, moveRate * Time.deltaTime);
+			}
+			else{
+				_unitGameObject.transform.position = this.gameObject.transform.position;
+				_isMoving = false;
+			}
+		}
     }
 
     void Awake()
-    {
-
-    }
-
-    public void Select()
     {
 
     }

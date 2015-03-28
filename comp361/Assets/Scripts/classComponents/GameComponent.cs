@@ -7,7 +7,7 @@ public class GameComponent : MonoBehaviour {
 	/*********************
 	 *     ATTRIBUTES    *
 	 ********************/
-	public static GameComponent ins; 
+//	public static GameComponent instance;
 
 	public PlayerManager _playerManager;
 	public GUIManager _guiManager; 
@@ -253,7 +253,7 @@ public class GameComponent : MonoBehaviour {
 
 	void Awake()
 	{
-		ins = this;
+//		instance = this;
 	}
 	
 }
