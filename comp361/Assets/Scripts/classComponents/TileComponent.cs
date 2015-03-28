@@ -38,6 +38,8 @@ public class TileComponent : MonoBehaviour {
 
 	private bool _drawUpdated = true; //True when an update to the visuals need to be made. Use UpdateDraw() to turn on.
 
+	public bool isSelected = false;
+
 	/*********************
 	 *     ATTRIBUTES    *
 	 ********************/
@@ -422,11 +424,19 @@ public class TileComponent : MonoBehaviour {
 
 	
 	void OnMouseDown() {
-		Deselect();
+		//Deselect();
 	}
 
 	void OnMouseUp(){
-		Select();
+		if (isSelected)
+		{
+			Deselect ();
+		}
+		else 
+		{
+			Select();
+		}
+		isSelected = !isSelected;
 	}
 
 	/// <summary>
@@ -446,16 +456,22 @@ public class TileComponent : MonoBehaviour {
         }
         if (_occupantType == OccupantType.UNIT)
         {
-			_menus.HideVillageActions();
-            Debug.Log("Unit");
-            _menus.DisplayUnitActions();
+			if (this._occupyingUnit.getVillage().getPlayer() == GameComponent.ins.getCurrentPlayer())
+			{
+				_menus.HideVillageActions();
+	            Debug.Log("Unit");
+	            _menus.DisplayUnitActions();
+			}
         }
         else if (_occupantType == OccupantType.VILLAGE)
         {
-			_menus.HideUnitActions();
-            Debug.Log("Village");
-            _menus.DisplayVillageActions();
-            _menus.setWoodStock((int)_village.getWoodStock());
+			if (_village.getPlayer() == GameComponent.ins.getCurrentPlayer())
+			{
+				_menus.HideUnitActions();
+				Debug.Log("Village");
+				_menus.DisplayVillageActions();
+				_menus.setWoodStock((int)_village.getWoodStock());
+			}
         }
         else
         {
@@ -469,7 +485,8 @@ public class TileComponent : MonoBehaviour {
     }
 
 	public void Deselect(){
-		UnhighlightRegion();
+		_menus.HideUnitActions();
+		_menus.HideVillageActions ();
 	}
 
 	/*****************************

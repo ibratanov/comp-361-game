@@ -9,6 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 406842}
   - 114: {fileID: 11406842}
+  - 148: {fileID: 14808408}
   m_Layer: 0
   m_Name: GUIManager
   m_TagString: Untagged
@@ -40,12 +41,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menus:
-  - {fileID: 114776, guid: dd75c465a366a5440be9d6daa9bf662f, type: 2}
-  - {fileID: 166394, guid: 868d667f9d229e646971e41c893c9ef0, type: 2}
-  - {fileID: 178288, guid: f19aea19d5ef2e44ca8dee8e77794847, type: 2}
-  - {fileID: 115502, guid: 8a671a0bf278c694da06388bb2e03c38, type: 2}
-  - {fileID: 178346, guid: 885fde01cc4a1e9439d1ade851d77214, type: 2}
-  - {fileID: 198312, guid: 137c1f28474007243b9f72aa2844747d, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _inGamePanels:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!148 &14808408
+NetworkView:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 106842}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 406842}
+  m_ViewID:
+    m_ID: 0
+    m_Type: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

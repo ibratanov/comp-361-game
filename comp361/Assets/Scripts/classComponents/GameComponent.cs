@@ -7,7 +7,10 @@ public class GameComponent : MonoBehaviour {
 	/*********************
 	 *     ATTRIBUTES    *
 	 ********************/
+	public static GameComponent ins; 
+
 	public PlayerManager _playerManager;
+	public GUIManager _guiManager; 
 	public string _currentMap;
 
 	PlayerComponent _currentPlayer;
@@ -19,6 +22,9 @@ public class GameComponent : MonoBehaviour {
     UnitComponent _lastSelectedUnit;
     bool _moveStarted = false;
 
+	Color _currentColour;
+	int _currentPlayerIndex;
+
 	/*********************
 	 *  GETTERS/SETTERS  *
 	 ********************/
@@ -26,6 +32,11 @@ public class GameComponent : MonoBehaviour {
     {
         return _moveStarted;
     }
+
+	public PlayerComponent getCurrentPlayer()
+	{
+		return _currentPlayer;
+	}
 
     public TileComponent getLastSelectedTile()
     {
@@ -47,8 +58,10 @@ public class GameComponent : MonoBehaviour {
         _lastSelectedUnit = lastSelectedUnit;
     }
 
-	void setCurrentPlayer(PlayerComponent currentPlayer) {
-		_currentPlayer = currentPlayer;
+	void setCurrentPlayer(int index) {
+		_currentPlayer = _remainingPlayers[index];
+		_currentColour = _playerColours [index];
+		_guiManager.UpdateGamePanels (_currentPlayer, _currentColour);
 	}
 
 	public List<PlayerComponent> getRemainingPlayers() {
@@ -98,9 +111,9 @@ public class GameComponent : MonoBehaviour {
 	/// </summary>
 	/// <param name="participants">Participants.</param>
 	public void newGame(List<PlayerComponent> participants) {
-		var firstPlayer = participants[0];
+		_currentPlayerIndex = 0;
 		setRemainingPlayers(participants);
-		setCurrentPlayer(firstPlayer);
+		setCurrentPlayer(_currentPlayerIndex);
 		
 		MapGenerator m = this.GetComponent<MapGenerator>();
 		m.GenerateMap();
@@ -198,10 +211,10 @@ public class GameComponent : MonoBehaviour {
 
     private void BeginRound()
     {
-        foreach(var player in _remainingPlayers)
-        {
-            player.beginTurn();
-        }
+//        foreach(var player in _remainingPlayers)
+//        {
+//            player.beginTurn();
+//        }
     }
 
 
@@ -217,13 +230,9 @@ public class GameComponent : MonoBehaviour {
 
     public void endTurn()
     {
-        for (int i = 0; i < _remainingPlayers.Count; i++)
-        {
-            if (_remainingPlayers[i] == _currentPlayer)
-            {
-                _currentPlayer = _remainingPlayers[(i + 1) % _remainingPlayers.Count];
-            }
-        }
+		_currentPlayerIndex = (_currentPlayerIndex + 1) % _remainingPlayers.Count;
+		setCurrentPlayer (_currentPlayerIndex);
+
         BeginRound();
     }
 
@@ -234,4 +243,10 @@ public class GameComponent : MonoBehaviour {
 	public void removePlayer(PlayerComponent player) {
 		_remainingPlayers.Remove(player);
 	}
+
+	void Awake()
+	{
+		ins = this;
+	}
+	
 }
