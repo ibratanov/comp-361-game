@@ -393,13 +393,12 @@ public class TileComponent : MonoBehaviour {
 	void OnMouseUp(){
 		if (isSelected)
 		{
-			Deselect ();
+			//Deselect ();
 		}
 		else 
 		{
 			Select();
 		}
-		isSelected = !isSelected;
 	}
 
 	/// <summary>
@@ -411,10 +410,15 @@ public class TileComponent : MonoBehaviour {
 
     public void Select()
     {
+		isSelected = true;
         HighlightRegion();
 		if (_game.getLastSelectedTile() != null)
 		{
-			_game.getLastSelectedTile().Deselect();
+			List<TileComponent> region = this.breadthFS();
+			if (!region.Contains(_game.getLastSelectedTile()))
+			{
+				_game.getLastSelectedTile().Deselect();
+			}
 		}
         _game.setLastSelectedTile(this);
 
