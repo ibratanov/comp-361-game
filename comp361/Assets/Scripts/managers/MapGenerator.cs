@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 
 public class MapGenerator : MonoBehaviour {
-
-    //public static MapGenerator _instance;
-
+	
+	//public static MapGenerator _instance;
+	
 	public AssetManager _assets;
 	public GameObject _gameTile;
-
+	
 	//public GameObject _playerManager;
-
+	
 	public Vector3 _origin;
 	public int _rows = 17;
 	public int _columns = 18;
@@ -19,13 +19,20 @@ public class MapGenerator : MonoBehaviour {
 	public Vector3 _tileDiagonal = new Vector3(1.5f, 0, 0.866f);
 	private TileComponent[,] _landTiles;
 	private TileComponent[,] _waterTiles;
-
+	
 	public void GenerateMap(){
-        _landTiles = new TileComponent[_columns, _rows];
 		GenerateSquareGrid( _rows, _columns, _origin, _tileHeight, _tileDiagonal);
+		/*
+		int nPlayers = this.GetComponent<GameComponent>()._playerManager.GetPlayers().Count;
+		for(int i = 0; i < _columns; ++i){
+			for(int j = 0; j < _rows; ++j){
+				_landTiles[i,j].setInitialPlayerIndex(Random.Range(0, nPlayers));
+			}
+		}
+		*/
 		AddTerrain(_forestRatio, _meadowRatio);
 	}
-
+	
 	/// <summary>
 	/// Non-random grid creation. Creates just basic hex tiles in a rectangular formation.
 	/// </summary>
@@ -36,7 +43,11 @@ public class MapGenerator : MonoBehaviour {
 	/// <param name="tileDiagonal">The diagonal length of an individual tile.</param>
 	private void GenerateSquareGrid( int rows, int columns, Vector3 startLocation, Vector3 tileHeight, Vector3 tileDiagonal ) 
 	{
-		int nPlayers = this.GetComponent<GameComponent>()._playerManager.GetPlayers().Count;
+		if(Network.isServer){
+			networkView.RPC("InitializeMapArray", RPCMode.Others, columns, rows);
+		}
+		InitializeMapArray(columns, rows);
+
 		int gridId = 0;
 		Vector3 currentPosition = startLocation;
 		for (int i = 0; i < columns; ++i)
@@ -45,20 +56,11 @@ public class MapGenerator : MonoBehaviour {
 			currentPosition = startLocation + tileHeight * i;
 			for (int j = 0; j < rows; ++j)
 			{
-                GameObject gameTile;
-				//Create a new tile and add it to the landTiles array
-                if (Network.isClient || Network.isServer) {
-                    gameTile = (GameObject)Network.Instantiate(_gameTile, currentPosition, Quaternion.identity, 0);
-                }
-                else
-                {
-                    gameTile = (GameObject)Instantiate(_gameTile, currentPosition, Quaternion.identity);
-                }
-				_landTiles[i,j] = gameTile.GetComponent<TileComponent>();
-				//_landTiles[i,j].setGameObject(LandType.GRASS);
-				_landTiles[i,j].setInitialPlayerIndex(Random.Range(0, nPlayers));
-				gameTile.transform.parent = this.transform; //Keep things organized with a parental hierarchy
-
+				if(Network.isServer){
+					networkView.RPC("InstantiateTile", RPCMode.Others, currentPosition, i, j);
+				}
+				InstantiateTile(currentPosition, i, j);
+				
 				//Update position for next tile
 				Vector3 diag = tileDiagonal;
 				if(phase){
@@ -66,66 +68,40 @@ public class MapGenerator : MonoBehaviour {
 				}
 				phase = !phase;
 				currentPosition += diag;
-                _landTiles[i, j].setTileGameObject(ref gameTile);
-				_landTiles[i, j].setLandType(LandType.GRASS);
 			}
 		}
-        // call getNeighbors on each tile
-        for (int i = 0; i < columns; ++i)
-        {
-            for (int j = 0; j < rows; ++j)
-            {
-                generateNeighbours(i, j);
-            }
-        }
+		// call getNeighbors on each tile
+		for (int i = 0; i < columns; ++i)
+		{
+			for (int j = 0; j < rows; ++j)
+			{
+				if(Network.isServer){
+					networkView.RPC("generateNeighbours", RPCMode.Others, i, j);
+				}
+				generateNeighbours(i, j);
+			}
+		}
 	}
 	
-	/// <summary>
-	/// Converts some of the tiles within the grid to forest and meadow tiles.
-	/// </summary>
-	/// <param name="forestRatio">A value between 0 and 1.</param>
-	/// <param name="meadowRatio">A value between 0 and 1.</param>
-	private void AddTerrain( float forestRatio, float meadowRatio ) {
-		//Ensure that the requested amount doesn't exceed the current amount of tiles
-		float adjustedRatio_forest = Mathf.Min(Mathf.Max(0.0f, forestRatio), 1.0f);
-		float adjustedRatio_meadow = Mathf.Min(Mathf.Max(0.0f, forestRatio), 1.0f);
-		//If forest and meadow ratios together exceed 1, reduce the number of meadows
-		while (adjustedRatio_forest + adjustedRatio_meadow > 1.0f) {
-			adjustedRatio_meadow -= 0.1f;
-		}
-		int tileCount = _landTiles.GetLength(0) * _landTiles.GetLength(1);
-		int forestCount = (int)(tileCount * adjustedRatio_forest);
-		int meadowCount = (int)(tileCount * adjustedRatio_meadow);
-		
-		//Change into forest tiles
-		for (int i = 0; i < forestCount; ++i )
-		{
-			//Choose a random tile
-			int indexX = Random.Range(0, _landTiles.GetLength(0)-1);
-			int indexY = Random.Range(0, _landTiles.GetLength(1)-1);
-			TileComponent tile = (TileComponent)_landTiles[indexX, indexY];
-			//Change its properties
-			tile.setLandType(LandType.FOREST);
-			//Update the visual component of this tile
-			//tile.setGameObject(LandType.FOREST);
-		}
-		
-		//Change into meadow tiles
-		for (int i = 0; i < meadowCount; ++i)
-		{
-			//Choose a random tile
-			int indexX = Random.Range(0, _landTiles.GetLength(0)-1);
-			int indexY = Random.Range(0, _landTiles.GetLength(1)-1);
-			TileComponent tile = (TileComponent)_landTiles[indexX, indexY];
-			//Change its properties
-			tile.setLandType(LandType.MEADOW);
-			//Update the visual component of this tile
-			//tile.setGameObject(LandType.MEADOW);
-		}
+
+	[RPC]
+	private void InitializeMapArray(int columns, int rows){
+		_landTiles = new TileComponent[columns, rows];
 	}
 
-	public void generateNeighbours(int i, int j)
-    {
+	[RPC]
+	private void InstantiateTile(Vector3 position, int i, int j){
+		GameObject gameTile = (GameObject)Instantiate(_gameTile, position, Quaternion.identity);
+		gameTile.transform.parent = this.transform;
+		_landTiles[i,j] = gameTile.GetComponent<TileComponent>();
+		gameTile.transform.parent = this.transform; //Keep things organized with a parental hierarchy
+		_landTiles[i,j].setTileGameObject(gameTile);
+		_landTiles[i,j].setLandType(LandType.GRASS);
+	}
+
+	[RPC]
+	private void generateNeighbours(int i, int j)
+	{
 		List<TileComponent> n = new List<TileComponent>();
 		
 		if (i + 1 < _columns)
@@ -173,7 +149,65 @@ public class MapGenerator : MonoBehaviour {
 			
 		}
 		_landTiles[i,j].setNeighbours(n);
-    }
+	}
+
+	/// <summary>
+	/// Converts some of the tiles within the grid to forest and meadow tiles.
+	/// </summary>
+	/// <param name="forestRatio">A value between 0 and 1.</param>
+	/// <param name="meadowRatio">A value between 0 and 1.</param>
+	private void AddTerrain( float forestRatio, float meadowRatio ) {
+		//Ensure that the requested amount doesn't exceed the current amount of tiles
+		float adjustedRatio_forest = Mathf.Min(Mathf.Max(0.0f, forestRatio), 1.0f);
+		float adjustedRatio_meadow = Mathf.Min(Mathf.Max(0.0f, forestRatio), 1.0f);
+		//If forest and meadow ratios together exceed 1, reduce the number of meadows
+		while (adjustedRatio_forest + adjustedRatio_meadow > 1.0f) {
+			adjustedRatio_meadow -= 0.1f;
+		}
+		int tileCount = _landTiles.GetLength(0) * _landTiles.GetLength(1);
+		int forestCount = (int)(tileCount * adjustedRatio_forest);
+		int meadowCount = (int)(tileCount * adjustedRatio_meadow);
+		
+		//Change into forest tiles
+		for (int i = 0; i < forestCount; ++i )
+		{
+			//Choose a random tile
+			int indexX = Random.Range(0, _landTiles.GetLength(0)-1);
+			int indexY = Random.Range(0, _landTiles.GetLength(1)-1);
+			if(Network.isServer){
+				networkView.RPC("SetToTerrain", RPCMode.Others, indexX, indexY, (int)LandType.FOREST);
+			}
+			_landTiles[indexX, indexY].setLandType(LandType.FOREST);
+			//Change its properties
+			//tile.setLandType(LandType.FOREST);
+			//Update the visual component of this tile
+			//tile.setGameObject(LandType.FOREST);
+		}
+		
+		//Change into meadow tiles
+		for (int i = 0; i < meadowCount; ++i)
+		{
+			//Choose a random tile
+			int indexX = Random.Range(0, _landTiles.GetLength(0)-1);
+			int indexY = Random.Range(0, _landTiles.GetLength(1)-1);
+			if(Network.isServer){
+				networkView.RPC("SetToTerrain", RPCMode.Others, indexX, indexY, (int)LandType.MEADOW);
+			}
+			_landTiles[indexX, indexY].setLandType(LandType.MEADOW);
+			//Update the visual component of this tile
+			//tile.setGameObject(LandType.MEADOW);
+		}
+	}
+
+	[RPC]
+	private void SetToTerrain(int i, int j, int landTypeIndex){
+		_landTiles[i, j].setLandType((LandType)landTypeIndex);
+	}
+
+	[RPC]
+	private void SetToMeadow(int i, int j){
+		_landTiles[i, j].setLandType(LandType.MEADOW);
+	}
 
 	public TileComponent[,] getLandTiles()
 	{

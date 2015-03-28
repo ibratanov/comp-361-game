@@ -10,7 +10,6 @@ GameObject:
   - 4: {fileID: 459312}
   - 33: {fileID: 3359312}
   - 23: {fileID: 2359312}
-  - 95: {fileID: 9559312}
   - 64: {fileID: 6476166}
   m_Layer: 0
   m_Name: tile_neutral
@@ -73,21 +72,6 @@ MeshCollider:
   m_SmoothSphereCollisions: 0
   m_Convex: 0
   m_Mesh: {fileID: 4300000, guid: d821d6cc0f2261b4e9115636835429b9, type: 3}
---- !u!95 &9559312
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 159312}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: d821d6cc0f2261b4e9115636835429b9, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

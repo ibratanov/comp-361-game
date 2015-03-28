@@ -6701,6 +6701,7 @@ GameObject:
   - 4: {fileID: 969104345}
   - 114: {fileID: 969104344}
   - 114: {fileID: 969104343}
+  - 148: {fileID: 969104346}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -6756,6 +6757,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
+--- !u!148 &969104346
+NetworkView:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 969104342}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 969104345}
+  m_ViewID:
+    m_ID: 2
+    m_Type: 1
 --- !u!1 &987151046
 GameObject:
   m_ObjectHideFlags: 0

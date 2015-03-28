@@ -64,7 +64,7 @@ public class TileComponent : MonoBehaviour {
         return _tileGameObject;
     }
 
-    public void setTileGameObject(ref GameObject tileGameObject)
+    public void setTileGameObject(GameObject tileGameObject)
     {
         _tileGameObject = tileGameObject;
     }
@@ -394,6 +394,7 @@ public class TileComponent : MonoBehaviour {
         _terrainGameObject = (GameObject)Instantiate(_terrainGameObject, this.transform.position, Quaternion.identity);
 		_terrainGameObject.transform.parent = this.transform;
         _game = GameObject.FindObjectOfType<GameComponent>();
+		Unhighlight();
 	}
 
 	void Awake(){
@@ -405,15 +406,15 @@ public class TileComponent : MonoBehaviour {
 	void Update() {
 
 		//Calling Select() from any other method seems to break the prefab's connection to its materials, wrecking all the colours.
-		// Therefore, call the "Draw()" function to update the selection.
+		// Therefore, call the "UpdateDraw()" function to update the selection.
 		if(_drawUpdated){
             if (_occupantType == OccupantType.VILLAGE)
             {
-                Destroy(_terrainGameObject);
-                _terrainGameObject = (GameObject)Instantiate(_assets.getVillageGameObject(_village.getVillageType()), this.transform.position, Quaternion.identity);
-                _terrainGameObject.transform.parent = this.transform;
+//                Destroy(_terrainGameObject);
+//                _terrainGameObject = (GameObject)Instantiate(_assets.getVillageGameObject(_village.getVillageType()), this.transform.position, Quaternion.identity);
+//                _terrainGameObject.transform.parent = this.transform;
             }
-            Highlight();
+//            Highlight();
 			_drawUpdated = false;
 		}
 	}
@@ -485,6 +486,7 @@ public class TileComponent : MonoBehaviour {
     }
 
 	public void Deselect(){
+		UnhighlightRegion();
 		_menus.HideUnitActions();
 		_menus.HideVillageActions ();
 	}
@@ -494,16 +496,16 @@ public class TileComponent : MonoBehaviour {
 	 ****************************/
 
 	public void Highlight(){
+		_terrainGameObject.renderer.materials[2].SetColor("_Color", PLAYER_COLOURS[_initialPlayerIndex]);
+	}
+	
+	public void Unhighlight(){
 		Color colour = PLAYER_COLOURS[_initialPlayerIndex];
 		Color newColour = new Color(0,0,0);
 		newColour.r = Mathf.Min(colour.r + 0.5f, 1.0f);
 		newColour.g = Mathf.Min(colour.g + 0.5f, 1.0f);
 		newColour.b = Mathf.Min(colour.b + 0.5f, 1.0f);
 		_terrainGameObject.renderer.materials[2].SetColor("_Color", newColour);
-	}
-	
-	public void Unhighlight(){
-		_terrainGameObject.renderer.materials[2].SetColor("_Color", PLAYER_COLOURS[_initialPlayerIndex]);
 	}
 
 	public void HighlightNeighbours(){
