@@ -447,7 +447,7 @@ public class TileComponent : MonoBehaviour {
 
 		GameComponent gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>();
 		if(this.GetComponent<UnitComponent>()){
-			_game.setLastSelectedUnit(this._occupyingUnit);
+			_game.setLastSelectedUnit(this.GetComponent<UnitComponent>());
 			PlayerComponent pc = this.GetComponent<UnitComponent>().getVillage().getPlayer();
 			if (this.GetComponent<UnitComponent>().getVillage().getPlayer() == gameManager.getCurrentPlayer())
 			{
