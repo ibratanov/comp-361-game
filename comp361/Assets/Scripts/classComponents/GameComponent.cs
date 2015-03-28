@@ -123,12 +123,12 @@ public class GameComponent : MonoBehaviour {
 		foreach (var tile in _mapTiles)
 		{
 			int randIndex = Random.Range(0, participants.Count + 1);
-			tile.setInitialPlayerIndex(randIndex);
+			tile.setPlayerIndex(randIndex);
 		}
 		
 		foreach (var tile in _mapTiles)
 		{
-            int playerIndex = tile.getInitialPlayerIndex();
+            int playerIndex = tile.getPlayerIndex();
 
             if (playerIndex > 0)
             {
@@ -137,7 +137,7 @@ public class GameComponent : MonoBehaviour {
                 {
                     foreach (var rTile in region)
                     {
-                        rTile.setInitialPlayerIndex(0);
+                        rTile.setPlayerIndex(0);
                     }
                 }
                 else
@@ -156,7 +156,7 @@ public class GameComponent : MonoBehaviour {
                         TileComponent tileWithVillage = region[0];
 						VillageComponent newHovel = CreateVillage(tileWithVillage, VillageType.HOVEL, _currentPlayer);
 						tileWithVillage.setOccupantType(OccupantType.VILLAGE);
-						tileWithVillage.setVillage(newHovel);
+						tileWithVillage.UpdateVillageReference();
 						/*
                         GameObject go = new GameObject();
                         go.AddComponent<VillageComponent>().InstantiateVillage(VillageType.HOVEL, _currentPlayer);
@@ -178,7 +178,7 @@ public class GameComponent : MonoBehaviour {
 							if (!newHovel.getControlledRegion().Contains(controlledTile))
                             {
 								newHovel.addToControlledRegion(controlledTile);
-								controlledTile.setVillage(newHovel);
+								controlledTile.UpdateVillageReference();
                             }
                         }
                     }
