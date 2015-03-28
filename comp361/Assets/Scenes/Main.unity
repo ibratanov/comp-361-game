@@ -2253,13 +2253,26 @@ GameObject:
   - 20: {fileID: 342299173}
   - 92: {fileID: 342299172}
   - 124: {fileID: 342299171}
+  - 114: {fileID: 342299170}
   m_Layer: 0
   m_Name: camera_zoom
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
+--- !u!114 &342299170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 342299169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d01a172daea60cf4fa1f4aa120b9bfe6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 2
 --- !u!124 &342299171
 Behaviour:
   m_ObjectHideFlags: 0
