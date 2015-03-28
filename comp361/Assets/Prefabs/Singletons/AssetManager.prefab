@@ -45,14 +45,15 @@ MonoBehaviour:
   - {fileID: 102244, guid: 264094a6e708093419c1737d75dcc591, type: 2}
   - {fileID: 163666, guid: c4279e92aef292542b712f32a511ee31, type: 2}
   _villagerUnits:
-  - {fileID: 133368, guid: 182437a0d761e3e42a1ad5b9ff32c25b, type: 2}
-  - {fileID: 162040, guid: 1a57e517b0b12464e8e2650135682d51, type: 2}
-  - {fileID: 102866, guid: cb2e3c00eee4c024ea2e80b2f288a3f7, type: 2}
-  - {fileID: 142864, guid: 5d6a761a8863f8f4da8b4fe974f1bf91, type: 2}
+  - {fileID: 169722, guid: 92d5ded7cee88bc45b0d81fc7fb4df37, type: 2}
+  - {fileID: 168382, guid: f7761ee27ad6d894bb81791a00dd5b25, type: 2}
+  - {fileID: 175968, guid: 23b60104aa9cffe438fd0f36d70fb24c, type: 2}
+  - {fileID: 191024, guid: e8d2c697db2bb1645a375bfbc9d2da4d, type: 2}
   _villages:
-  - {fileID: 194586, guid: fbcc519b6e9225e49b2f3411aff1e9a3, type: 2}
-  - {fileID: 125140, guid: a7ffb34434bf8e04b9d2b4381a230089, type: 2}
-  - {fileID: 156234, guid: 37819ce1e01cef24db7b46c1cd8779d8, type: 2}
+  - {fileID: 113392, guid: 53e376323288c634caa183c624c290f8, type: 2}
+  - {fileID: 188148, guid: 0b73a180022220049ac9066499d8d67f, type: 2}
+  - {fileID: 103102, guid: 9076caf9eb2eded48b668c0ef5934566, type: 2}
+  - {fileID: 119074, guid: 864af7426bb87a9478ec30764f0d3d6e, type: 2}
   _structures:
   - {fileID: 169860, guid: c72c6832cfc869b4aae43094e36caaaf, type: 2}
   - {fileID: 141584, guid: 6827576947f9b3741bee0709f5aa9a22, type: 2}
