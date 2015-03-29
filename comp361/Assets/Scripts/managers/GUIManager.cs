@@ -5,7 +5,11 @@ using UnityEngine.UI;
 public class GUIManager : MonoBehaviour {
 	public GameObject[] _menus;
 	public GameObject[] _inGamePanels;
-	public float _fadeSpeed;
+
+	public GameObject[] _cameras; 
+	public Vector3 _initZoomCameraPos;
+
+	float _fadeSpeed = 0.8f;
 
 	// Use this for initialization
 	void Start () {
@@ -17,11 +21,18 @@ public class GUIManager : MonoBehaviour {
 				_menus[i].SetActive(false);
 			}
 		}
+		foreach (GameObject g in _cameras)
+		{
+			if (g.name.Contains ("zoom"))
+			{
+				_initZoomCameraPos = g.transform.position;
+			}
+		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 
     public void setWoodStock(int stock)
@@ -111,27 +122,7 @@ public class GUIManager : MonoBehaviour {
         }
     }
 
-	public void DisplayTurnPanel(PlayerComponent currentPlayer, Color currentColor)
-	{
-		foreach (GameObject g in _inGamePanels)
-		{
-			if (g.name.Contains ("PlayerTurn"))
-			{
-				FadeInPanel (g);
-				return;
-			}
-		}
-	}
-
-	public void FadeInPanel(GameObject panel)
-	{
-
-	}
-
-	public void FadeOutPanel(GameObject panel)
-	{
-
-	}
+	#region EndTurn
 
 	public void UpdateGamePanels(PlayerComponent currentPlayer, Color currentColor)
 	{
@@ -146,10 +137,79 @@ public class GUIManager : MonoBehaviour {
 					{
 						t.text = currentPlayer.getUserName();
 						t.color = currentColor;
+						break;
 					}
 				}
 				break;
 			}
 		}
+		DisplayTurnPanel(currentPlayer, currentColor);
 	}
+
+	/// <summary>
+	/// Displays the panel indicating next player to get a turn.
+	/// </summary>
+	/// <param name="currentPlayer">Current player.</param>
+	/// <param name="currentColor">Current color.</param>
+	public void DisplayTurnPanel(PlayerComponent currentPlayer, Color currentColor)
+	{
+		foreach (GameObject g in _inGamePanels)
+		{
+			if (g.name.Contains ("Panel_PlayerTurn"))
+			{
+				g.SetActive(true);
+				Text[] playerTexts = g.GetComponentsInChildren<Text>() as Text[];
+				foreach (Text t in playerTexts)
+				{
+					if (t.name.Contains ("CurrentPlayer"))
+					{
+						t.text = currentPlayer.getUserName();
+						t.color = currentColor;
+						break;
+					}
+				}
+				break;
+			}
+		}
+		StartCoroutine ("DelayStartFade");
+	}
+	
+	IEnumerator DelayStartFade()
+	{
+		yield return new WaitForSeconds(_fadeSpeed);
+		foreach (GameObject g in _inGamePanels)
+		{
+			if (g.name.Contains ("Panel_PlayerTurn"))
+			{
+				g.SetActive(false);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Switches to zoomed out camera if current player ends turn while zoomed in.
+	/// </summary>
+	public void SwitchCameras()
+	{
+		if (_cameras[0].name.Contains ("main"))
+		{
+			if (!_cameras[0].activeSelf)
+			{
+				_cameras[1].transform.position = _initZoomCameraPos;
+				_cameras[1].SetActive (false);
+				_cameras[0].SetActive (true);
+			}
+		}
+		else 
+		{
+			if (!_cameras[1].activeSelf)
+			{
+				_cameras[0].transform.position = _initZoomCameraPos;
+				_cameras[0].SetActive (false);
+				_cameras[1].SetActive (true);
+			}
+		}
+	}
+
+	#endregion
 }

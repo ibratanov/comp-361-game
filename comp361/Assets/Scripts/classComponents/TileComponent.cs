@@ -391,15 +391,19 @@ public class TileComponent : MonoBehaviour {
 	}
 
 	void OnMouseUp(){
-		if (isSelected)
+		if (!isSelected)
 		{
-			Deselect ();
+			Select ();
 		}
 		else 
 		{
-			Select();
+			List<TileComponent> region = this.breadthFS();
+			if (region.Contains (_game.getLastSelectedTile()))
+			{
+				_game.getLastSelectedTile().isSelected = false;
+				Select ();
+			}
 		}
-		isSelected = !isSelected;
 	}
 
 	/// <summary>
@@ -411,14 +415,22 @@ public class TileComponent : MonoBehaviour {
 
     public void Select()
     {
-        HighlightRegion();
+		isSelected = true;
+		if (_game.getLastSelectedTile() != null)
+		{
+			List<TileComponent> region = this.breadthFS();
+			if (!region.Contains(_game.getLastSelectedTile()))
+			{
+				_game.getLastSelectedTile().Deselect();
+			}
+		}
         _game.setLastSelectedTile(this);
+		HighlightRegion();
 
-		GameComponent gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>();
 		if(this.GetComponent<UnitComponent>()){
 			_game.setLastSelectedUnit(this.GetComponent<UnitComponent>());
 			PlayerComponent pc = this.GetComponent<UnitComponent>().getVillage().getPlayer();
-			if (this.GetComponent<UnitComponent>().getVillage().getPlayer() == gameManager.getCurrentPlayer())
+			if (pc.getUserName().Equals(_game.getCurrentPlayer().getUserName()))
 			{
 				_menus.HideVillageActions();
 				Debug.Log("Unit");
@@ -427,7 +439,9 @@ public class TileComponent : MonoBehaviour {
 		}
 		else if (this.GetComponent<VillageComponent>())
 		{
-			if (this.GetComponent<VillageComponent>().getPlayer() == gameManager.getCurrentPlayer())
+			PlayerComponent pc = this.GetComponent<VillageComponent>().getPlayer();
+			//print ("village's player " + pc.getUserName());
+			if (pc.getUserName().Equals (_game.getCurrentPlayer().getUserName ()))
 			{
 				_menus.HideUnitActions();
 				Debug.Log("Village");
@@ -480,6 +494,7 @@ public class TileComponent : MonoBehaviour {
 
 	public void Deselect(){
 		UnhighlightRegion();
+		isSelected = false;
 		_menus.HideUnitActions();
 		_menus.HideVillageActions ();
 	}
