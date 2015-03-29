@@ -4,7 +4,8 @@ using System.Collections.Generic;
 public enum VillageType {
 	HOVEL,
 	TOWN,
-	FORT
+	FORT,
+    CASTLE
 }
 
 public class VillageComponent : MonoBehaviour {
@@ -138,12 +139,26 @@ public class VillageComponent : MonoBehaviour {
 				} else if (newLevel.Equals(VillageType.FORT)) {
 					cost = 16;
 				}
+                else if (newLevel.Equals(VillageType.CASTLE))
+                {
+                    cost = 28;
+                }
 				break;
 			case VillageType.TOWN:
 				if (newLevel.Equals(VillageType.FORT)) {
 					cost = 8;
 				}
+                else if (newLevel.Equals(VillageType.CASTLE))
+                {
+                    cost = 20;
+                }
 				break;
+            case VillageType.FORT:
+                if (newLevel.Equals(VillageType.CASTLE))
+                {
+                    cost = 12;
+                }
+                break;
 		}
 
 		return cost;
@@ -152,7 +167,7 @@ public class VillageComponent : MonoBehaviour {
 	public bool upgradeVillage() {
 
         VillageType newLevel = (VillageType)_villageType + 1;
-        if ((int)newLevel > (int) VillageType.FORT)
+        if ((int)newLevel > (int) VillageType.CASTLE)
         {
             /* TODO: error message, village already at max level*/ 
             return false;
