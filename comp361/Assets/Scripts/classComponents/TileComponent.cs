@@ -416,7 +416,6 @@ public class TileComponent : MonoBehaviour {
     public void Select()
     {
 		isSelected = true;
-        HighlightRegion();
 		if (_game.getLastSelectedTile() != null)
 		{
 			List<TileComponent> region = this.breadthFS();
@@ -426,12 +425,12 @@ public class TileComponent : MonoBehaviour {
 			}
 		}
         _game.setLastSelectedTile(this);
+		HighlightRegion();
 
-		GameComponent gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>();
 		if(this.GetComponent<UnitComponent>()){
 			_game.setLastSelectedUnit(this.GetComponent<UnitComponent>());
 			PlayerComponent pc = this.GetComponent<UnitComponent>().getVillage().getPlayer();
-			if (this.GetComponent<UnitComponent>().getVillage().getPlayer() == gameManager.getCurrentPlayer())
+			if (pc.getUserName().Equals(_game.getCurrentPlayer().getUserName()))
 			{
 				_menus.HideVillageActions();
 				Debug.Log("Unit");
@@ -440,7 +439,9 @@ public class TileComponent : MonoBehaviour {
 		}
 		else if (this.GetComponent<VillageComponent>())
 		{
-			if (this.GetComponent<VillageComponent>().getPlayer() == gameManager.getCurrentPlayer())
+			PlayerComponent pc = this.GetComponent<VillageComponent>().getPlayer();
+			//print ("village's player " + pc.getUserName());
+			if (pc.getUserName().Equals (_game.getCurrentPlayer().getUserName ()))
 			{
 				_menus.HideUnitActions();
 				Debug.Log("Village");

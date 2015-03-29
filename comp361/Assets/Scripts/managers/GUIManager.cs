@@ -153,12 +153,10 @@ public class GUIManager : MonoBehaviour {
 	/// <param name="currentColor">Current color.</param>
 	public void DisplayTurnPanel(PlayerComponent currentPlayer, Color currentColor)
 	{
-		print ("display turn panel");
 		foreach (GameObject g in _inGamePanels)
 		{
 			if (g.name.Contains ("Panel_PlayerTurn"))
 			{
-				print ("found panel");
 				g.SetActive(true);
 				Text[] playerTexts = g.GetComponentsInChildren<Text>() as Text[];
 				foreach (Text t in playerTexts)
