@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class GameComponent : MonoBehaviour {
 	private Color[] _playerColours = {Color.red, Color.green, Color.blue, Color.yellow};
@@ -12,6 +13,8 @@ public class GameComponent : MonoBehaviour {
 	public PlayerManager _playerManager;
 	public GUIManager _guiManager; 
 	public string _currentMap;
+
+	int _roundCount; 
 
 	PlayerComponent _currentPlayer;
 	PlayerComponent[] _participants;
@@ -61,8 +64,9 @@ public class GameComponent : MonoBehaviour {
 	void setCurrentPlayer(int index) {
 		_currentPlayer = _remainingPlayers[index];
 		_currentColour = _playerColours [index];
-		_guiManager.UpdateGamePanels (_currentPlayer, _currentColour);
+
 		_guiManager.SwitchCameras();
+		_guiManager.UpdateGamePanels (_currentPlayer, _currentColour);
 	}
 
 	public List<PlayerComponent> getRemainingPlayers() {
@@ -214,11 +218,14 @@ public class GameComponent : MonoBehaviour {
 		else if( _currentMap.Equals("TestMap") ){
 			TestMapGeneration();
 		}
-        BeginRound();
 	}
 
     private void BeginRound()
     {
+		print ("new round");
+		_roundCount++;
+		_guiManager.DisplayRoundPanel(_roundCount);
+		StartCoroutine("delaySetPlayer");
 //        foreach(var player in _remainingPlayers)
 //        {
 //            player.beginTurn();
@@ -239,15 +246,27 @@ public class GameComponent : MonoBehaviour {
     public void endTurn()
     {
 		_currentPlayerIndex = (_currentPlayerIndex + 1) % _remainingPlayers.Count;
-		if (_lastSelectedTile.isSelected)
+		if (_lastSelectedTile != null && _lastSelectedTile.isSelected)
 		{
 			_lastSelectedTile.Deselect();
 		}
 
-		setCurrentPlayer (_currentPlayerIndex);
+		if (_currentPlayerIndex == 0)
+		{
+			BeginRound();
 
-        BeginRound();
+		}
+		else
+		{
+			setCurrentPlayer (_currentPlayerIndex);
+		}
     }
+
+	IEnumerator delaySetPlayer()
+	{
+		yield return new WaitForSeconds(_guiManager._fadeSpeed);
+		setCurrentPlayer (_currentPlayerIndex);
+	}
 
 	public void endGame() {
         /* TODO */
@@ -259,6 +278,7 @@ public class GameComponent : MonoBehaviour {
 
 	void Awake()
 	{
+		_roundCount = 0;
 //		instance = this;
 	}
 	
