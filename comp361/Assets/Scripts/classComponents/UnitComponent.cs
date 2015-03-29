@@ -142,7 +142,6 @@ public class UnitComponent : MonoBehaviour
 						setCurrentAction(ActionType.EXPANDING_REGION);
 						setLocation(dest);
 						dest.setPlayerIndex(this.GetComponent<TileComponent>().getPlayerIndex());
-						dest.UpdateDraw();
 						successfullyMoved = true;
 					}
 					else if (destVillage != null && destVillage != _village)
