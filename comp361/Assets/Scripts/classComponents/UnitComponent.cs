@@ -83,6 +83,7 @@ public class UnitComponent : MonoBehaviour
         return this.GetComponent<TileComponent>();
     }
 
+	//Updates the Unit Component on the destination tile and removes it from the current tile
     public bool setLocation(TileComponent destination)
     {
 		if(this.gameObject.transform.position != destination.gameObject.transform.position){
@@ -100,6 +101,7 @@ public class UnitComponent : MonoBehaviour
 
 			//Remove the association from the previous tile
 			Destroy(this.gameObject.GetComponent<UnitComponent>());
+			this.gameObject.GetComponent<TileComponent>().setOccupantType(OccupantType.NONE);
 
 			//Update the visible object's location
 			//_unitGameObject.transform.position = destination.gameObject.transform.position; //Use this only if you want them to snap to the new position
