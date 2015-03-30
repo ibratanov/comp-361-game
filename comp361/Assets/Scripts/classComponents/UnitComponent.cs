@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Reflection; //For copying components
 
@@ -18,7 +18,8 @@ public enum UnitType
     PEASANT,
     INFANTRY,
     SOLDIER,
-    KNIGHT
+    KNIGHT,
+    CANNON
 }
 
 public class UnitComponent : MonoBehaviour
@@ -32,7 +33,8 @@ public class UnitComponent : MonoBehaviour
         {UnitType.PEASANT, 2},
         {UnitType.INFANTRY, 6},
         {UnitType.SOLDIER, 18},
-        {UnitType.KNIGHT, 54}
+        {UnitType.KNIGHT, 54},
+        {UnitType.CANNON, 5}
     };
 
     public readonly static Dictionary<UnitType, uint> INITIAL_COST = new Dictionary<UnitType, uint>()
@@ -40,7 +42,8 @@ public class UnitComponent : MonoBehaviour
         {UnitType.PEASANT, 10},
         {UnitType.INFANTRY, 20},
         {UnitType.SOLDIER, 30},
-        {UnitType.KNIGHT, 40}
+        {UnitType.KNIGHT, 40},
+        {UnitType.CANNON, 35}
     };
 
     /*********************
@@ -367,6 +370,8 @@ public class UnitComponent : MonoBehaviour
 
     public bool upgradeUnit(UnitType newLevel)
     {
+        if (newLevel == UnitType.CANNON) return false;
+        if (this._unitType == UnitType.CANNON) return false;
         if (newLevel >= _unitType)
         {
             uint cost = calculateCost(_unitType, newLevel);
