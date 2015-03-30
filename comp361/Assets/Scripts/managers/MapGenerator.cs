@@ -22,14 +22,6 @@ public class MapGenerator : MonoBehaviour {
 	
 	public void GenerateMap(){
 		GenerateSquareGrid( _rows, _columns, _origin, _tileHeight, _tileDiagonal);
-		/*
-		int nPlayers = this.GetComponent<GameComponent>()._playerManager.GetPlayers().Count;
-		for(int i = 0; i < _columns; ++i){
-			for(int j = 0; j < _rows; ++j){
-				_landTiles[i,j].setInitialPlayerIndex(Random.Range(0, nPlayers));
-			}
-		}
-		*/
 		AddTerrain(_forestRatio, _meadowRatio);
 	}
 	
@@ -50,16 +42,18 @@ public class MapGenerator : MonoBehaviour {
 
 		int gridId = 0;
 		Vector3 currentPosition = startLocation;
+		int nPlayers = this.GetComponent<GameComponent>()._playerManager.GetPlayers().Count;
 		for (int i = 0; i < columns; ++i)
 		{
 			bool phase = false;
 			currentPosition = startLocation + tileHeight * i;
 			for (int j = 0; j < rows; ++j)
 			{
+				int playerIndex = Random.Range(0, nPlayers+1);
 				if(Network.isServer){
-					networkView.RPC("InstantiateTile", RPCMode.Others, currentPosition, i, j);
+					networkView.RPC("InstantiateTile", RPCMode.Others, currentPosition, i, j, playerIndex);
 				}
-				InstantiateTile(currentPosition, i, j);
+				InstantiateTile(currentPosition, i, j, playerIndex);
 				
 				//Update position for next tile
 				Vector3 diag = tileDiagonal;
@@ -90,13 +84,15 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 	[RPC]
-	private void InstantiateTile(Vector3 position, int i, int j){
+	private void InstantiateTile(Vector3 position, int i, int j, int playerIndex){
 		GameObject gameTile = (GameObject)Instantiate(_gameTile, position, Quaternion.identity);
-		gameTile.transform.parent = this.transform;
+		//gameTile.transform.parent = this.transform;
 		_landTiles[i,j] = gameTile.GetComponent<TileComponent>();
 		gameTile.transform.parent = this.transform; //Keep things organized with a parental hierarchy
 //		_landTiles[i,j].setTileGameObject(gameTile);
 		_landTiles[i,j].setLandType(LandType.GRASS);
+		int nPlayers = this.GetComponent<GameComponent>()._playerManager.GetPlayers().Count;
+		_landTiles[i,j].setPlayerIndex(playerIndex);
 	}
 
 	[RPC]
