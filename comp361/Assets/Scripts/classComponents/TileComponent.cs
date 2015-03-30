@@ -440,7 +440,7 @@ public class TileComponent : MonoBehaviour {
 		else if (this.GetComponent<VillageComponent>())
 		{
 			PlayerComponent pc = this.GetComponent<VillageComponent>().getPlayer();
-			//print ("village's player " + pc.getUserName());
+			print ("village's player " + pc.getUserName());
 			if (pc.getUserName().Equals (_game.getCurrentPlayer().getUserName ()))
 			{
 				_menus.HideUnitActions();

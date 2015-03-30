@@ -118,7 +118,9 @@ public class GameComponent : MonoBehaviour {
 	public void newGame(List<PlayerComponent> participants) {
 		_currentPlayerIndex = 0;
 		setRemainingPlayers(participants);
-		setCurrentPlayer(_currentPlayerIndex);
+		BeginRound();
+		StartCoroutine("delaySetPlayer");
+		//setCurrentPlayer(_currentPlayerIndex);
 		
 		MapGenerator m = this.GetComponent<MapGenerator>();
 		m.GenerateMap();
@@ -220,12 +222,49 @@ public class GameComponent : MonoBehaviour {
 		}
 	}
 
-    private void BeginRound()
+    public void BeginRound()
     {
 		print ("new round");
 		_roundCount++;
 		_guiManager.DisplayRoundPanel(_roundCount);
 		StartCoroutine("delaySetPlayer");
+	
+		if (_roundCount > 1)
+		{
+			List<TileComponent> tiles = new List<TileComponent>();
+			foreach (TileComponent tc in _mapTiles)
+			{
+				// a forest has 50% chance of spawning another forest on a neighbouring tile
+				if (tc.getLandType() == LandType.FOREST)
+				{
+					if (tiles.Contains (tc))
+					{
+						continue;
+					}
+					if (Random.value < .5f)
+					{
+						tiles.Add (tc);
+						tiles.AddRange (tc.getNeighbours());
+						TileComponent randomNeighbour = tc.getNeighbours()[Random.Range (0, tc.getNeighbours().Count)];
+						
+						if (randomNeighbour.getLandType() != LandType.FOREST)
+						{
+							randomNeighbour.setLandType(LandType.FOREST);
+						}
+					}
+				}
+				if (tc.getOccupantType() == OccupantType.STRUCTURE)
+				{
+					// tombstones turn into forests
+					if (tc.GetComponent<StructureComponent>().getStructureType() == StructureType.TOMBSTONE)
+					{
+						Destroy (tc.GetComponent<StructureComponent>());
+						tc.setLandType(LandType.FOREST);
+					}
+				}
+			}
+		}
+			
 //        foreach(var player in _remainingPlayers)
 //        {
 //            player.beginTurn();
