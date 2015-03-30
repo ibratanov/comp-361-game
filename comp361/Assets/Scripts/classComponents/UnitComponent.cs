@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Reflection; //For copying components
 
@@ -42,7 +42,8 @@ public class UnitComponent : MonoBehaviour
         {UnitType.PEASANT, 10},
         {UnitType.INFANTRY, 20},
         {UnitType.SOLDIER, 30},
-        {UnitType.KNIGHT, 40}
+        {UnitType.KNIGHT, 40},
+        {UnitType.CANNON, 35}
     };
 
     /*********************
@@ -130,56 +131,38 @@ public class UnitComponent : MonoBehaviour
             LandType lType = dest.getLandType();
             VillageComponent destVillage = dest.getVillage();
 
-            switch (lType)
-            {
-                case LandType.MEADOW:
-                    if (_unitType != UnitType.INFANTRY || _unitType != UnitType.PEASANT)
-                    {
-                        setLocation(dest);
-                        TrampleMeadow();                        
-                        return true;
-                    }
-                    break;
-                case LandType.FOREST:
-                    if (_unitType != UnitType.KNIGHT)
-                    {
-						setLocation(dest);
-                        GatherWood(dest);                       
-                        return true;
-                    }
-                    break;
-            }
-
+			bool successfullyMoved = false;
             switch (occType)
             { //TODO: Check if switch properly checks enum equality
                 case OccupantType.NONE:
                     if (lType == LandType.SEA || (_unitType == UnitType.KNIGHT && lType == LandType.FOREST))
                     {
-                        return false;
+						return false;
                     }
                     else if (destVillage == null)
                     {
                         _village.associate(dest);
+						setCurrentAction(ActionType.EXPANDING_REGION);
 						setLocation(dest);
-                        setCurrentAction(ActionType.EXPANDING_REGION);
-                        return true;
-                    }
-                    else if (destVillage != null && destVillage != _village)
+						dest.setPlayerIndex(this.GetComponent<TileComponent>().getPlayerIndex());
+						successfullyMoved = true;
+					}
+					else if (destVillage != null && destVillage != _village)
                     {
                         if (_unitType == UnitType.PEASANT)
                         {
-                            return false;
+							return false;
                         }
                         takeOverTile(dest);
                         setCurrentAction(ActionType.EXPANDING_REGION);
-                        return true;
-                    }
-                    else if (destVillage != null && destVillage == _village)
+						successfullyMoved = true;
+					}
+					else if (destVillage != null && destVillage == _village)
                     {
 						setLocation(dest);
-                        return true;
-                    }
-                    break;
+						successfullyMoved = true;
+					}
+					break;
                 case OccupantType.UNIT:
                     if (destVillage == _village)
                     {
@@ -189,9 +172,9 @@ public class UnitComponent : MonoBehaviour
                     //destUnit.dieInBattle(); //TODO: implement a method which kills the unit on the newly invaded tile.
                     takeOverTile(dest);
                     setCurrentAction(ActionType.ATTACKING);
-                    return true;
-                    break;
-                case OccupantType.VILLAGE:
+					successfullyMoved = true;
+					break;
+				case OccupantType.VILLAGE:
                     if (destVillage == _village || _unitType <= UnitType.INFANTRY)
                     { //TODO: check comparisons for enums
                         return false;
@@ -200,9 +183,9 @@ public class UnitComponent : MonoBehaviour
                     {
                         takeOverTile(dest);
                         setCurrentAction(ActionType.ATTACKING);
-                        return true;
-                    }
-                    break;
+						successfullyMoved = true;
+					}
+					break;
                 case OccupantType.STRUCTURE:
                     StructureComponent destStruct = dest.getOccupyingStructure();
                     StructureType sType = destStruct.getStructureType();
@@ -222,13 +205,14 @@ public class UnitComponent : MonoBehaviour
                             //destStruct.destroy() //TODO: implement a destroy method which destroys an enemy's structure upon invasion
                             takeOverTile(dest);
                             setCurrentAction(ActionType.ATTACKING);
-                            return true;
-                        }
-                    }
+							successfullyMoved = true;
+						}
+					}
                     else if (sType == StructureType.TOMBSTONE)
                     {
                         //destStruct.destroy() //TODO: implement a destroy method which destroys a tombstone when land has been overtaken
-                        if (destVillage == _village)
+						setCurrentAction(ActionType.CLEARING_TOMBSTONE);
+						if (destVillage == _village)
                         {
                             _village.associate(dest);
 							setLocation(dest);
@@ -237,23 +221,45 @@ public class UnitComponent : MonoBehaviour
                         {
                             takeOverTile(dest);
                         }
-                        setCurrentAction(ActionType.CLEARING_TOMBSTONE);
-                        return true;
-                    }
-                    break;
+						successfullyMoved = true;
+					}
+					break;
             }
-        }
 
-        return false;
-    }
+			if(successfullyMoved){
+				switch (lType)
+				{
+				case LandType.MEADOW:
+					if (_unitType != UnitType.INFANTRY || _unitType != UnitType.PEASANT)
+					{
+						//setLocation(dest);
+						TrampleMeadow();                        
+						//return true;
+					}
+					break;
+				case LandType.FOREST:
+					if (_unitType != UnitType.KNIGHT)
+					{
+						//setLocation(dest);
+						GatherWood(dest);                       
+						//return true;
+					}
+					break;
+				}
+			}
+			return true;
+		}
 
+		return false;
+	}
+	
 	public void setUnitType(UnitType unitType) {
 		if(Network.isServer || Network.isClient){
 			networkView.RPC("RPCsetUnitType", RPCMode.Others, (int)unitType);
 		}
 		RPCsetUnitType((int)unitType);
 	}
-
+	
 	[RPC]
 	private void RPCsetUnitType(int unitTypeIndex) {
 		_unitType = (UnitType)unitTypeIndex;
@@ -300,11 +306,6 @@ public class UnitComponent : MonoBehaviour
 
     public static uint calculateCost(UnitType u1, UnitType u2)
     {
-        if (u1 == UnitType.CANNON || u2 == UnitType.CANNON)
-        {
-            // throw error: cannon isn't a part of upgrade hierarchy
-            return 0;
-        }
         if (u1 > u2)
         {
             throw new System.Exception("The first parameter cannot be smaller than the second.");
