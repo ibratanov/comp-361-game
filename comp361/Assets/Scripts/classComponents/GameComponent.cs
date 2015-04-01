@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameComponent : MonoBehaviour {
 	private Color[] _playerColours = {Color.red, Color.green, Color.blue, Color.yellow};
@@ -12,6 +13,7 @@ public class GameComponent : MonoBehaviour {
 	public PlayerManager _playerManager;
 	public GUIManager _guiManager; 
 	public string _currentMap;
+	public Text _settingsButtonText;
 	private MapGenerator _mapGenerator;
 
 	PlayerComponent _currentPlayer;
