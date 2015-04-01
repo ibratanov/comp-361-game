@@ -3,7 +3,7 @@ guid: 1578e1efbdeaaec4297dcaa973b9022c
 MonoImporter:
   serializedVersion: 2
   defaultReferences:
-  - _terrainGameObject: {fileID: 137900, guid: c29b761be60e9bc4394ea81d1c88d087, type: 2}
+  - _road: {fileID: 179698, guid: f6cbcfa0a8b28b44ebbbe10bd725261c, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -30,6 +30,7 @@ public class TileComponent : MonoBehaviour {
 //    private GameObject _tileGameObject;
 //	private AssetManager _assets;
 	private GUIManager _menus;
+    public GameObject _road;
 
 	readonly static uint MEADOW_REVENUE = 2;
 	readonly static uint FOREST_REVENUE = 0;
@@ -343,6 +344,7 @@ public class TileComponent : MonoBehaviour {
 
 	public void createRoad() {
         _hasRoad = true;
+        _road.SetActive(true);
 	}
 
 	public void randomizeTile() {
