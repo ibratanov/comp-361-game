@@ -455,9 +455,16 @@ public class UnitComponent : MonoBehaviour
 
     public void moveUnit(TileComponent destination)
     {
-        if (_currentAction == ActionType.READY_FOR_ORDERS)
+        GameComponent gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>();
+        UnitComponent currentUnit = gameManager.getLastSelectedUnit();
+
+        if (currentUnit == null)
         {
-            List<TileComponent> neighbours = this.GetComponent<TileComponent>().getNeighbours();
+            currentUnit = this;
+        }
+
+        if (_currentAction == ActionType.READY_FOR_ORDERS)
+        {            List<TileComponent> neighbours = this.GetComponent<TileComponent>().getNeighbours();
 
             bool isReachable = false;
 
@@ -601,8 +608,7 @@ public class UnitComponent : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        _roundsCultivating = 0;
-        _currentAction = ActionType.READY_FOR_ORDERS;
+
     }
 
     // Update is called once per frame
