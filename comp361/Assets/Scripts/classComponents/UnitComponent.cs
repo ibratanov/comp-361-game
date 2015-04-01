@@ -94,7 +94,6 @@ public class UnitComponent : MonoBehaviour
 				destination.gameObject.AddComponent<UnitComponent>();
 			}
 			UnitComponent destComponent = destination.GetComponent<UnitComponent>();
-			
 			//Copy all the info into the destination tile
 			destComponent.setCurrentAction( this.getCurrentAction() );
 			destComponent.setUnitType( this.getUnitType() );
@@ -236,7 +235,7 @@ public class UnitComponent : MonoBehaviour
 					if (_unitType != UnitType.INFANTRY || _unitType != UnitType.PEASANT)
 					{
 						//setLocation(dest);
-						TrampleMeadow();                        
+						TrampleMeadow(dest);                        
 						//return true;
 					}
 					break;
@@ -434,9 +433,11 @@ public class UnitComponent : MonoBehaviour
         }
     }
 
-    public void TrampleMeadow()
+    public void TrampleMeadow(TileComponent tile)
     {
         /* TODO */
+        tile.setLandType(LandType.GRASS);
+
     }
 
     public void GatherWood(TileComponent tile)
