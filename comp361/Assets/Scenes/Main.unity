@@ -2434,6 +2434,7 @@ MonoBehaviour:
   - {fileID: 2016029625}
   - {fileID: 342299169}
   _initZoomCameraPos: {x: 0, y: 0, z: 0}
+  _fadeSpeed: .800000012
 --- !u!4 &322718659
 Transform:
   m_ObjectHideFlags: 0
