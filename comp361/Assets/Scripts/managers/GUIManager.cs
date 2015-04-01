@@ -29,6 +29,25 @@ public class GUIManager : MonoBehaviour {
 			}
 		}
 	}
+
+	public void DisplayProfileInfo(PlayerComponent profile){
+		for(int i = 0; i < _inGamePanels.Length; ++i){
+			if(_inGamePanels[i].name.Contains("Display_Profile")){
+				GameObject infoPanel = _inGamePanels[i].transform.GetChild(1).gameObject;
+				infoPanel.transform.GetChild(0).GetComponent<Text>().text = profile.getUserName();
+				infoPanel.transform.GetChild(2).GetComponent<Text>().text = profile.getWins() + "/" + (profile.getWins() + profile.getLosses());
+				_inGamePanels[i].SetActive(true);
+			}
+		}
+	}
+
+	public void HideProfileInfo(){
+		for(int i = 0; i < _inGamePanels.Length; ++i){
+			if(_inGamePanels[i].name.Contains("Display_Profile")){
+				_inGamePanels[i].SetActive(false);
+			}
+		}
+	}
 	
 	// Update is called once per frame
 	void Update () {
