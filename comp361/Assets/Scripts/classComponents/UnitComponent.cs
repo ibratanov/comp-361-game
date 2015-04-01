@@ -94,7 +94,6 @@ public class UnitComponent : MonoBehaviour
 				destination.gameObject.AddComponent<UnitComponent>();
 			}
 			UnitComponent destComponent = destination.GetComponent<UnitComponent>();
-			
 			//Copy all the info into the destination tile
 			destComponent.setCurrentAction( this.getCurrentAction() );
 			destComponent.setUnitType( this.getUnitType() );
@@ -112,7 +111,7 @@ public class UnitComponent : MonoBehaviour
 
 			//Keep the UnitComponent selected for further actions
 			GameComponent gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>();
-			gameManager.setLastSelectedUnit(destComponent.GetComponent<UnitComponent>());
+            gameManager.setLastSelectedUnit(destComponent.GetComponent<UnitComponent>());
 		}
 
         return true;
@@ -147,16 +146,18 @@ public class UnitComponent : MonoBehaviour
 						dest.setPlayerIndex(this.GetComponent<TileComponent>().getPlayerIndex());
 						successfullyMoved = true;
 					}
+                    // destination is an empty tile in different player's village
 					else if (destVillage != null && destVillage != _village)
                     {
-                        if (_unitType == UnitType.PEASANT)
+                        if (_unitType == UnitType.PEASANT || _unitType == UnitType.CANNON)
                         {
 							return false;
-                        }
+                        } 
                         takeOverTile(dest);
                         setCurrentAction(ActionType.EXPANDING_REGION);
 						successfullyMoved = true;
 					}
+                    // destination is an empty tile in the same village as the unit currently belongs to
 					else if (destVillage != null && destVillage == _village)
                     {
 						setLocation(dest);
@@ -175,7 +176,8 @@ public class UnitComponent : MonoBehaviour
 					successfullyMoved = true;
 					break;
 				case OccupantType.VILLAGE:
-                    if (destVillage == _village || _unitType <= UnitType.INFANTRY)
+                    // destination is the village tile of another player's village
+                    if (destVillage == _village || _unitType <= UnitType.INFANTRY || _unitType == UnitType.CANNON)
                     { //TODO: check comparisons for enums
                         return false;
                     }
@@ -233,12 +235,12 @@ public class UnitComponent : MonoBehaviour
 					if (_unitType != UnitType.INFANTRY || _unitType != UnitType.PEASANT)
 					{
 						//setLocation(dest);
-						TrampleMeadow();                        
+						TrampleMeadow(dest);                        
 						//return true;
 					}
 					break;
 				case LandType.FOREST:
-					if (_unitType != UnitType.KNIGHT)
+					if (_unitType != UnitType.KNIGHT || _unitType != UnitType.CANNON)
 					{
 						//setLocation(dest);
 						GatherWood(dest);                       
@@ -431,9 +433,9 @@ public class UnitComponent : MonoBehaviour
         }
     }
 
-    public void TrampleMeadow()
+    public void TrampleMeadow(TileComponent tile)
     {
-        /* TODO */
+        tile.setLandType(LandType.GRASS);
     }
 
     public void GatherWood(TileComponent tile)
@@ -452,9 +454,16 @@ public class UnitComponent : MonoBehaviour
 
     public void moveUnit(TileComponent destination)
     {
-        if (_currentAction == ActionType.READY_FOR_ORDERS)
+        GameComponent gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>();
+        UnitComponent currentUnit = gameManager.getLastSelectedUnit();
+
+        if (currentUnit == null)
         {
-            List<TileComponent> neighbours = this.GetComponent<TileComponent>().getNeighbours();
+            currentUnit = this;
+        }
+
+        if (_currentAction == ActionType.READY_FOR_ORDERS)
+        {            List<TileComponent> neighbours = this.GetComponent<TileComponent>().getNeighbours();
 
             bool isReachable = false;
 
@@ -598,8 +607,7 @@ public class UnitComponent : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        _roundsCultivating = 0;
-        _currentAction = ActionType.READY_FOR_ORDERS;
+
     }
 
     // Update is called once per frame

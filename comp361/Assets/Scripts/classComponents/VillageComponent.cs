@@ -238,6 +238,13 @@ public class VillageComponent : MonoBehaviour {
 		{
 			// TODO: insufficient resource error
 		}
+        if (unitType == UnitType.CANNON)
+        {
+            if (_woodStock < 12)
+            {
+                // TODO: insufficient resource error
+            }
+        }
 		_goldStock = _goldStock - UnitComponent.INITIAL_COST[unitType];
 		bool hasSpace = false;
 		for (int i = 0; i < _controlledRegion.Count; i++)
