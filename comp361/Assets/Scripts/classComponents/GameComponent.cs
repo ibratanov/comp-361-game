@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GameComponent : MonoBehaviour {
 	private Color[] _playerColours = {Color.red, Color.green, Color.blue, Color.yellow};
@@ -13,6 +14,7 @@ public class GameComponent : MonoBehaviour {
 	public PlayerManager _playerManager;
 	public GUIManager _guiManager; 
 	public string _currentMap;
+	public Text _settingsButtonText;
 	private MapGenerator _mapGenerator;
 
 	int _roundCount; 
@@ -119,9 +121,14 @@ public class GameComponent : MonoBehaviour {
 	public void newGame(List<PlayerComponent> participants) {
 		_currentPlayerIndex = 0;
 		setRemainingPlayers(participants);
+
 		BeginRound();
 		StartCoroutine("delaySetPlayer");
-		//setCurrentPlayer(_currentPlayerIndex);
+		//setCurrentPlayer(_currentPlayerIndex); //this is done in delaySetPlayer()
+
+		if(Network.isServer){
+			networkView.RPC("NewGameInit", RPCMode.All);
+		}
 
 		_mapGenerator.GenerateMap();
 		//UpdateMapRegions();
@@ -141,6 +148,12 @@ public class GameComponent : MonoBehaviour {
 		*/
 
 		GenerateRegions();
+	}
+
+	[RPC]
+	private void NewGameInit(){
+		_settingsButtonText.text = _playerManager.GetPlayer(0).getUserName();
+		_guiManager.HideLoadedProfilePanel();
 	}
 
 	private void GenerateRegions(){
@@ -277,7 +290,6 @@ public class GameComponent : MonoBehaviour {
 				}
 			}
 		}
-			
 //        foreach(var player in _remainingPlayers)
 //        {
 //            player.beginTurn();
@@ -298,11 +310,12 @@ public class GameComponent : MonoBehaviour {
     public void endTurn()
     {
 		_currentPlayerIndex = (_currentPlayerIndex + 1) % _remainingPlayers.Count;
+
 		if (_lastSelectedTile != null && _lastSelectedTile.isSelected)
 		{
 			_lastSelectedTile.Deselect();
 		}
-
+		
 		if (_currentPlayerIndex == 0)
 		{
 			BeginRound();

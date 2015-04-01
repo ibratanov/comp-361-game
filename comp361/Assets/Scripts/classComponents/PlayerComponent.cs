@@ -32,6 +32,12 @@ public class PlayerComponent : MonoBehaviour {
 		_password = password;
 	}
 
+	public PlayerComponent(string username, int nWins, int nLosses){
+		_losses = nLosses;
+		_wins = nWins;
+		_userName = username;
+	}
+
 	public int getLosses() {
 		return _losses;
 	}
