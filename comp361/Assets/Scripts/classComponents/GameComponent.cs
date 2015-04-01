@@ -118,6 +118,9 @@ public class GameComponent : MonoBehaviour {
 		_currentPlayerIndex = 0;
 		setRemainingPlayers(participants);
 		setCurrentPlayer(_currentPlayerIndex);
+		if(Network.isServer){
+			networkView.RPC("NewGameInit", RPCMode.All);
+		}
 
 		_mapGenerator.GenerateMap();
 		//UpdateMapRegions();
@@ -137,6 +140,12 @@ public class GameComponent : MonoBehaviour {
 		*/
 
 		GenerateRegions();
+	}
+
+	[RPC]
+	private void NewGameInit(){
+		_settingsButtonText.text = _playerManager.GetPlayer(0).getUserName();
+		_guiManager.HideLoadedProfilePanel();
 	}
 
 	private void GenerateRegions(){

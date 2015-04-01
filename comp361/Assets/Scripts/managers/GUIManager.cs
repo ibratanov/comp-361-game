@@ -55,7 +55,7 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
-	public void HideLoadedProfileMenu(){
+	public void HideLoadedProfilePanel(){
 		for(int i = 0; i < _inGamePanels.Length; ++i){
 			if(_inGamePanels[i].name.Contains("Menu_LoadedProfiles")){
 				_inGamePanels[i].SetActive(false);
@@ -63,7 +63,7 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
-	public void DisplayLoadedProfileMenu(){
+	public void DisplayLoadedProfilePanel(){
 		for(int i = 0; i < _inGamePanels.Length; ++i){
 			if(_inGamePanels[i].name.Contains("Menu_LoadedProfiles")){
 				_inGamePanels[i].SetActive(true);
