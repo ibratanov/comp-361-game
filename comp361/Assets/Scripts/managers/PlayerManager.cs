@@ -24,7 +24,7 @@ public class PlayerManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+
 	}
 
     public List<PlayerComponent> GetPlayers()
@@ -36,8 +36,29 @@ public class PlayerManager : MonoBehaviour {
 		_players.Add(playerProfile);
 	}
 
+	public void AddPlayer(string username, int wins, int losses){
+		bool alreadyExists = false;
+		for(int i = 0; i < _players.Count; ++i){
+			if(_players[i].getUserName().Equals(username)){
+				alreadyExists = true;
+			}
+		}
+		if(!alreadyExists){
+			PlayerComponent player = new PlayerComponent(username, wins, losses);
+			AddPlayer(player);
+		}
+	}
+
 	public void RemovePlayer(PlayerComponent profile){
 		_players.Remove(profile);
+	}
+
+	public void RemovePlayer(string username){
+		for(int i = 1; i < _players.Count; ++i){
+			if(_players[i].getUserName().Equals(username)){
+				RemovePlayer(_players[i]);
+			}
+		}
 	}
 
 	public PlayerComponent GetPlayer(int index){
@@ -45,11 +66,6 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	#region New Profile Menu commands
-	public void ClearText(Text field){
-		if(field.text.Length > 0){
-			field.text = "";
-		}
-	}
 
 	/// <summary>
 	/// Sets the current username in New Profile menu.

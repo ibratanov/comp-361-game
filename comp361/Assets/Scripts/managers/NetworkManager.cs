@@ -20,33 +20,11 @@ public class NetworkManager : MonoBehaviour {
 	public GameObject _currentMenu;				//The menu that this button lives on.
 	public GameObject _connectedMenu;			//The menu that the player is redirected to after a successful connection.
 	private List<GameObject> _sessionButtons = new List<GameObject>();
+	public PlayerManager _playerManager;
+
 
 // --- INTERFACE CREATION --- //
 	#region CREATE INTERFACE
-
-	/*
-	//Create a GUI display
-	void OnGUI()
-	{
-		//If this game instance has not connect to a server nor created one yet
-		if(!Network.isClient && !Network.isServer)
-		{
-			if(GUI.Button(new Rect(100,100,250,100), "Start Server")){
-				StartServer();
-			}
-			if(GUI.Button(new Rect(100,250,250,100), "Refresh Hosts")){
-				RefreshHostList();
-			}
-			if(hostList != null){
-				for(int i = 0; i < hostList.Length; ++i){
-					if(GUI.Button(new Rect(400,100+(110*i),300,100), hostList[i].gameName)){
-						JoinServer(hostList[i]);
-					}
-				}
-			}
-		}
-	}
-	*/
 
 	void Start(){
 
@@ -71,9 +49,6 @@ public class NetworkManager : MonoBehaviour {
 					Text t = sessionButton.transform.GetChild(0).GetComponent<Text>();
 					t.text = _hostList[i].gameName;
 					_sessionButtons.Add ( sessionButton );
-//					if(GUI.Button(new Rect(400,100+(110*i),300,100), _hostList[i].gameName)){
-//						JoinServer(_hostList[i]);
-//					}
 				}
 				_refreshHostList = false;
 			}
@@ -139,6 +114,22 @@ public class NetworkManager : MonoBehaviour {
 	//Confirmation that the server has indeed been created.
 	void OnConnectedToServer(){
 		Debug.Log("Server Joined");
+		PlayerManager playerManager = GameObject.FindGameObjectWithTag("PlayerManager").GetComponent<PlayerManager>();
+		PlayerComponent player = playerManager.GetPlayer(0);
+		networkView.RPC("UpdatePlayersJoined", RPCMode.Others, player.getUserName(), player.getWins(), player.getLosses());
+	}
+
+	//Send PlayerProfile information across the network
+	[RPC]
+	public void UpdatePlayersJoined(string username, int wins, int losses){
+		_playerManager.AddPlayer(username, wins, losses);
+		if(Network.isServer){
+			List<PlayerComponent> players = _playerManager.GetPlayers();
+			for(int i = 0; i < players.Count; ++i){
+				networkView.RPC("UpdatePlayersJoined", RPCMode.Others, players[i].getUserName(), players[i].getWins(), players[i].getLosses());
+			}
+		}
+		_playerManager.UpdateProfileDisplay(false);
 	}
 
 	#endregion JOIN SERVER
@@ -152,7 +143,14 @@ public class NetworkManager : MonoBehaviour {
 		else if(Network.isClient){
 			Network.Disconnect();
 			Debug.Log("Disconnected from Server");
+			networkView.RPC ("UpdatePlayersDisconnected", RPCMode.Others, _playerManager.GetPlayer(0).getUserName());
 		}
 	}
 
+	//Send PlayerProfile information across the network
+	[RPC]
+	public void UpdatePlayersDisconnected(string username){
+		_playerManager.RemovePlayer(username);
+		_playerManager.UpdateProfileDisplay(false);
+	}
 }

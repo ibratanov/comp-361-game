@@ -14,7 +14,8 @@ public class GUIManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		for(int i = 0; i < _menus.Length; ++i){
-			if( (_menus[i].name.Contains("Menu_Title") && !_menus[i].name.Contains("Online")) || _menus[i].name.Contains("Menu_Background")){
+			if( (_menus[i].name.Contains("Menu_Title") && !_menus[i].name.Contains("Online")) 
+			   || _menus[i].name.Contains("Menu_Background")){
 				_menus[i].SetActive(true);
 			}
 			else{
@@ -30,6 +31,11 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
+	public void SetText(Text uiText, string newText){
+		uiText.text = newText;
+	}
+
+	#region TitleMenu Profile Display
 	public void DisplayProfileInfo(PlayerComponent profile){
 		for(int i = 0; i < _inGamePanels.Length; ++i){
 			if(_inGamePanels[i].name.Contains("Display_Profile")){
@@ -48,6 +54,24 @@ public class GUIManager : MonoBehaviour {
 			}
 		}
 	}
+
+	public void HideLoadedProfileMenu(){
+		for(int i = 0; i < _inGamePanels.Length; ++i){
+			if(_inGamePanels[i].name.Contains("Menu_LoadedProfiles")){
+				_inGamePanels[i].SetActive(false);
+			}
+		}
+	}
+
+	public void DisplayLoadedProfileMenu(){
+		for(int i = 0; i < _inGamePanels.Length; ++i){
+			if(_inGamePanels[i].name.Contains("Menu_LoadedProfiles")){
+				_inGamePanels[i].SetActive(true);
+			}
+		}
+	}
+
+	#endregion TitleMenu Profile Display
 	
 	// Update is called once per frame
 	void Update () {
