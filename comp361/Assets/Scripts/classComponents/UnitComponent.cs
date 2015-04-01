@@ -112,7 +112,7 @@ public class UnitComponent : MonoBehaviour
 
 			//Keep the UnitComponent selected for further actions
 			GameComponent gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>();
-			gameManager.setLastSelectedUnit(destComponent.GetComponent<UnitComponent>());
+            gameManager.setLastSelectedUnit(destComponent.GetComponent<UnitComponent>());
 		}
 
         return true;
@@ -147,16 +147,18 @@ public class UnitComponent : MonoBehaviour
 						dest.setPlayerIndex(this.GetComponent<TileComponent>().getPlayerIndex());
 						successfullyMoved = true;
 					}
+                    // destination is an empty tile in different player's village
 					else if (destVillage != null && destVillage != _village)
                     {
-                        if (_unitType == UnitType.PEASANT)
+                        if (_unitType == UnitType.PEASANT || _unitType == UnitType.CANNON)
                         {
 							return false;
-                        }
+                        } 
                         takeOverTile(dest);
                         setCurrentAction(ActionType.EXPANDING_REGION);
 						successfullyMoved = true;
 					}
+                    // destination is an empty tile in the same village as the unit currently belongs to
 					else if (destVillage != null && destVillage == _village)
                     {
 						setLocation(dest);
@@ -175,7 +177,8 @@ public class UnitComponent : MonoBehaviour
 					successfullyMoved = true;
 					break;
 				case OccupantType.VILLAGE:
-                    if (destVillage == _village || _unitType <= UnitType.INFANTRY)
+                    // destination is the village tile of another player's village
+                    if (destVillage == _village || _unitType <= UnitType.INFANTRY || _unitType == UnitType.CANNON)
                     { //TODO: check comparisons for enums
                         return false;
                     }
@@ -238,7 +241,7 @@ public class UnitComponent : MonoBehaviour
 					}
 					break;
 				case LandType.FOREST:
-					if (_unitType != UnitType.KNIGHT)
+					if (_unitType != UnitType.KNIGHT || _unitType != UnitType.CANNON)
 					{
 						//setLocation(dest);
 						GatherWood(dest);                       
