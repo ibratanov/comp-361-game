@@ -9,7 +9,7 @@ public class GUIManager : MonoBehaviour {
 	public GameObject[] _cameras; 
 	public Vector3 _initZoomCameraPos;
 
-	float _fadeSpeed = 0.8f;
+	public float _fadeSpeed = 0.8f;
 
 	// Use this for initialization
 	void Start () {
@@ -196,10 +196,12 @@ public class GUIManager : MonoBehaviour {
 	/// <param name="currentColor">Current color.</param>
 	public void DisplayTurnPanel(PlayerComponent currentPlayer, Color currentColor)
 	{
+		GameObject panel;
 		foreach (GameObject g in _inGamePanels)
 		{
 			if (g.name.Contains ("Panel_PlayerTurn"))
 			{
+				panel = g;
 				g.SetActive(true);
 				Text[] playerTexts = g.GetComponentsInChildren<Text>() as Text[];
 				foreach (Text t in playerTexts)
@@ -211,22 +213,16 @@ public class GUIManager : MonoBehaviour {
 						break;
 					}
 				}
+				StartCoroutine ("DelayStartFade", panel);
 				break;
 			}
 		}
-		StartCoroutine ("DelayStartFade");
 	}
 	
-	IEnumerator DelayStartFade()
+	IEnumerator DelayStartFade(GameObject panel)
 	{
 		yield return new WaitForSeconds(_fadeSpeed);
-		foreach (GameObject g in _inGamePanels)
-		{
-			if (g.name.Contains ("Panel_PlayerTurn"))
-			{
-				g.SetActive(false);
-			}
-		}
+		panel.SetActive(false);
 	}
 
 	/// <summary>
@@ -250,6 +246,34 @@ public class GUIManager : MonoBehaviour {
 				_cameras[0].transform.position = _initZoomCameraPos;
 				_cameras[0].SetActive (false);
 				_cameras[1].SetActive (true);
+			}
+		}
+	}
+
+	#endregion
+
+	#region EveryRound
+
+	/// <summary>
+	/// Displays the "current round" panel.
+	/// </summary>
+	/// <param name="round">Round.</param>
+	public void DisplayRoundPanel (int round)
+	{
+		GameObject panel;
+		foreach (GameObject g in _inGamePanels)
+		{
+			if (g.name.Contains ("Panel_CurrentRound"))
+			{
+				panel = g;
+				g.SetActive(true);
+				Text[] ts = g.GetComponentsInChildren<Text>() as Text[];
+				foreach (Text t in ts)
+				{
+					t.text = "Round " + round; 
+				}
+				StartCoroutine ("DelayStartFade", panel);
+				break;
 			}
 		}
 	}

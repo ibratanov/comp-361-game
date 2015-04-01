@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine.UI;
 
 public class GameComponent : MonoBehaviour {
@@ -15,6 +16,8 @@ public class GameComponent : MonoBehaviour {
 	public string _currentMap;
 	public Text _settingsButtonText;
 	private MapGenerator _mapGenerator;
+
+	int _roundCount; 
 
 	PlayerComponent _currentPlayer;
 	PlayerComponent[] _participants;
@@ -64,8 +67,9 @@ public class GameComponent : MonoBehaviour {
 	void setCurrentPlayer(int index) {
 		_currentPlayer = _remainingPlayers[index];
 		_currentColour = _playerColours [index];
-		_guiManager.UpdateGamePanels (_currentPlayer, _currentColour);
+
 		_guiManager.SwitchCameras();
+		_guiManager.UpdateGamePanels (_currentPlayer, _currentColour);
 	}
 
 	public List<PlayerComponent> getRemainingPlayers() {
@@ -117,7 +121,11 @@ public class GameComponent : MonoBehaviour {
 	public void newGame(List<PlayerComponent> participants) {
 		_currentPlayerIndex = 0;
 		setRemainingPlayers(participants);
-		setCurrentPlayer(_currentPlayerIndex);
+
+		BeginRound();
+		StartCoroutine("delaySetPlayer");
+		//setCurrentPlayer(_currentPlayerIndex); //this is done in delaySetPlayer()
+
 		if(Network.isServer){
 			networkView.RPC("NewGameInit", RPCMode.All);
 		}
@@ -238,11 +246,50 @@ public class GameComponent : MonoBehaviour {
 		else if( _currentMap.Equals("TestMap") ){
 			TestMapGeneration();
 		}
-        BeginRound();
 	}
 
-    private void BeginRound()
+    public void BeginRound()
     {
+		print ("new round");
+		_roundCount++;
+		_guiManager.DisplayRoundPanel(_roundCount);
+		StartCoroutine("delaySetPlayer");
+	
+		if (_roundCount > 1)
+		{
+			List<TileComponent> tiles = new List<TileComponent>();
+			foreach (TileComponent tc in _mapTiles)
+			{
+				// a forest has 50% chance of spawning another forest on a neighbouring tile
+				if (tc.getLandType() == LandType.FOREST)
+				{
+					if (tiles.Contains (tc))
+					{
+						continue;
+					}
+					if (Random.value < .5f)
+					{
+						tiles.Add (tc);
+						tiles.AddRange (tc.getNeighbours());
+						TileComponent randomNeighbour = tc.getNeighbours()[Random.Range (0, tc.getNeighbours().Count)];
+						
+						if (randomNeighbour.getLandType() != LandType.FOREST)
+						{
+							randomNeighbour.setLandType(LandType.FOREST);
+						}
+					}
+				}
+				if (tc.getOccupantType() == OccupantType.STRUCTURE)
+				{
+					// tombstones turn into forests
+					if (tc.GetComponent<StructureComponent>().getStructureType() == StructureType.TOMBSTONE)
+					{
+						Destroy (tc.GetComponent<StructureComponent>());
+						tc.setLandType(LandType.FOREST);
+					}
+				}
+			}
+		}
 //        foreach(var player in _remainingPlayers)
 //        {
 //            player.beginTurn();
@@ -263,15 +310,28 @@ public class GameComponent : MonoBehaviour {
     public void endTurn()
     {
 		_currentPlayerIndex = (_currentPlayerIndex + 1) % _remainingPlayers.Count;
-		if (_lastSelectedTile.isSelected)
+
+		if (_lastSelectedTile != null && _lastSelectedTile.isSelected)
 		{
 			_lastSelectedTile.Deselect();
 		}
+		
+		if (_currentPlayerIndex == 0)
+		{
+			BeginRound();
 
-		setCurrentPlayer (_currentPlayerIndex);
-
-        BeginRound();
+		}
+		else
+		{
+			setCurrentPlayer (_currentPlayerIndex);
+		}
     }
+
+	IEnumerator delaySetPlayer()
+	{
+		yield return new WaitForSeconds(_guiManager._fadeSpeed);
+		setCurrentPlayer (_currentPlayerIndex);
+	}
 
 	public void endGame() {
         /* TODO */
@@ -283,6 +343,7 @@ public class GameComponent : MonoBehaviour {
 
 	void Awake()
 	{
+		_roundCount = 0;
 //		instance = this;
 		_mapGenerator = this.GetComponent<MapGenerator>();
 	}
