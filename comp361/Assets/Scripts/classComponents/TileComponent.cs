@@ -429,7 +429,7 @@ public class TileComponent : MonoBehaviour {
 		HighlightRegion();
 
 		if(this.GetComponent<UnitComponent>()){
-			_game.setLastSelectedUnit(this.GetComponent<UnitComponent>());
+            _game.setLastSelectedUnit(this.GetComponent<UnitComponent>());			
 			PlayerComponent pc = this.GetComponent<UnitComponent>().getVillage().getPlayer();
 			if (pc.getUserName().Equals(_game.getCurrentPlayer().getUserName()))
 			{
