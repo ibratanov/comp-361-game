@@ -435,9 +435,7 @@ public class UnitComponent : MonoBehaviour
 
     public void TrampleMeadow(TileComponent tile)
     {
-        /* TODO */
         tile.setLandType(LandType.GRASS);
-
     }
 
     public void GatherWood(TileComponent tile)
