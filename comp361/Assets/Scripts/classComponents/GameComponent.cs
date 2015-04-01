@@ -13,6 +13,7 @@ public class GameComponent : MonoBehaviour {
 	public PlayerManager _playerManager;
 	public GUIManager _guiManager; 
 	public string _currentMap;
+	private MapGenerator _mapGenerator;
 
 	int _roundCount; 
 
@@ -121,77 +122,89 @@ public class GameComponent : MonoBehaviour {
 		BeginRound();
 		StartCoroutine("delaySetPlayer");
 		//setCurrentPlayer(_currentPlayerIndex);
-		
-		MapGenerator m = this.GetComponent<MapGenerator>();
-		m.GenerateMap();
-		
-		_mapTiles = m.getLandTiles();
 
+		_mapGenerator.GenerateMap();
+		//UpdateMapRegions();
+
+		/*
+		for(int i = 0; i < _mapTiles.GetLength(0); ++i){
+			for(int j = 0; j < _mapTiles.GetLength(1); ++j){
+				int randIndex = Random.Range(0, participants.Count + 1);
+
+			}
+		}
 		foreach (var tile in _mapTiles)
 		{
 			int randIndex = Random.Range(0, participants.Count + 1);
 			tile.setPlayerIndex(randIndex);
 		}
-		
+		*/
+
+		GenerateRegions();
+	}
+
+	private void GenerateRegions(){
+		if(Network.isServer){
+			networkView.RPC("RPCGenerateRegions", RPCMode.Others);
+		}
+		RPCGenerateRegions();
+	}
+
+	[RPC]
+	private void RPCGenerateRegions()
+	{
+		_mapTiles =_mapGenerator.getLandTiles();
 		foreach (var tile in _mapTiles)
 		{
-            int playerIndex = tile.getPlayerIndex();
-
-            if (playerIndex > 0)
-            {
-                var region = tile.breadthFS();
-                if (region.Count < 3)
-                {
-                    foreach (var rTile in region)
-                    {
-                        rTile.setPlayerIndex(0);
-                    }
-                }
-                else
-                {
-                    bool regionContainsVillage = false;
-                    foreach (var rTile in region)
-                    {
-                        var regOccupant = rTile.getOccupantType();
-                        if (regOccupant == OccupantType.VILLAGE)
-                        {
-                            regionContainsVillage = true;
-                        }
-                    }
-                    if (!regionContainsVillage)
-                    {
-                        TileComponent tileWithVillage = region[0];
+			int playerIndex = tile.getPlayerIndex();
+			
+			if (playerIndex > 0)
+			{
+				var region = tile.breadthFS();
+				if (region.Count < 3)
+				{
+					foreach (var rTile in region)
+					{
+						rTile.setPlayerIndex(0);
+					}
+				}
+				else
+				{
+					bool regionContainsVillage = false;
+					foreach (var rTile in region)
+					{
+						var regOccupant = rTile.getOccupantType();
+						if (regOccupant == OccupantType.VILLAGE)
+						{
+							regionContainsVillage = true;
+						}
+					}
+					if (!regionContainsVillage)
+					{
+						TileComponent tileWithVillage = region[0];
 						VillageComponent newHovel = CreateVillage(tileWithVillage, VillageType.HOVEL, _currentPlayer);
 						tileWithVillage.setOccupantType(OccupantType.VILLAGE);
 						tileWithVillage.UpdateVillageReference();
-						/*
-                        GameObject go = new GameObject();
-                        go.AddComponent<VillageComponent>().InstantiateVillage(VillageType.HOVEL, _currentPlayer);
-                        var newHovel = go.GetComponent<VillageComponent>();
-                        newHovel.setOccupyingTile(tileWithVillage);
-                        tileWithVillage.setOccupantType(OccupantType.VILLAGE);
-                        tileWithVillage.setVillage(newHovel);
-						*/
 
-                        PlayerComponent player = participants[playerIndex - 1];
-						player.add(newHovel);
+						//PlayerComponent player = participants[playerIndex - 1];
+						//player.add(newHovel);
 						newHovel.associate(tileWithVillage);
 						newHovel.addGold(7);
-                        // add enough wood to be able to upgrade to village for demo, can remove later
+						// add enough wood to be able to upgrade to village for demo, can remove later
 						newHovel.addWood(24);
-                        // add all other tiles in the bfs to this village's controlled region
-                        foreach (var controlledTile in tileWithVillage.breadthFS())
-                        {
+						// add all other tiles in the bfs to this village's controlled region
+						foreach (var controlledTile in tileWithVillage.breadthFS())
+						{
 							if (!newHovel.getControlledRegion().Contains(controlledTile))
-                            {
+							{
 								newHovel.addToControlledRegion(controlledTile);
 								controlledTile.UpdateVillageReference();
-                            }
-                        }
-                    }
-                }
-            }
-            tile.UpdateDraw();
+							}
+						}
+					}
+				}
+			}
+			tile.UpdateDraw();
 		}
 	}
 
@@ -319,6 +332,7 @@ public class GameComponent : MonoBehaviour {
 	{
 		_roundCount = 0;
 //		instance = this;
+		_mapGenerator = this.GetComponent<MapGenerator>();
 	}
 	
 }

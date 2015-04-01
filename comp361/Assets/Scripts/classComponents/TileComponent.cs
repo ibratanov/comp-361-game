@@ -94,6 +94,7 @@ public class TileComponent : MonoBehaviour {
 	[RPC]
 	private void RPCsetPlayerIndex(int playerIndex){
 		_playerIndex = playerIndex;
+		Highlight();
 	}
 
 	public LandType getLandType() {
