@@ -24,6 +24,7 @@ public class VillageComponent : MonoBehaviour {
 	VillageType _villageType;
     TileComponent _occupyingTile;
     private GUIManager _menus;
+    private int _healthLeft;
 
 	/*
 	 * TODO: Decide - may be unnecessary
@@ -117,10 +118,18 @@ public class VillageComponent : MonoBehaviour {
 		return _villageType;
 	}
 
+    public int GetHealthLeft() 
+    {
+        return _healthLeft;
+    }
+
 	/*********************
 	 *      METHODS      *
 	 ********************/
-
+    public void DecrementHealth()
+    {
+        _healthLeft -= _healthLeft;
+    }
 
     public void addToControlledRegion(TileComponent tile)
     {
@@ -422,6 +431,21 @@ public class VillageComponent : MonoBehaviour {
 		_occupyingTile = null;
 		_menus = GameObject.FindObjectOfType<GUIManager>();
 		setVillageGameObject(vType);
+        switch (vType)
+        {
+            case VillageType.CASTLE:
+                _healthLeft = 10;
+                break;
+            case VillageType.FORT:
+                _healthLeft = 5;
+                break;
+            case VillageType.HOVEL:
+                _healthLeft = 1;
+                break;
+            case VillageType.TOWN:
+                _healthLeft = 2;
+                break;
+        }
 	}
 
 	public void setVillageGameObject(VillageType vType)
