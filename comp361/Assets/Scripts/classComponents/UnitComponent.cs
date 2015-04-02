@@ -236,7 +236,7 @@ public class UnitComponent : GenericComponent
 				switch (lType)
 				{
 				case LandType.MEADOW:
-					if (!isPaved && (_unitType != UnitType.INFANTRY || _unitType != UnitType.PEASANT))
+					if (!isPaved && (_unitType != UnitType.INFANTRY && _unitType != UnitType.PEASANT))
 					{
 						//setLocation(dest);
 						TrampleMeadow(dest);                        
@@ -458,16 +458,9 @@ public class UnitComponent : GenericComponent
 
     public void moveUnit(TileComponent destination)
     {
-        GameComponent gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>();
-        UnitComponent currentUnit = gameManager.getLastSelectedUnit();
-
-        if (currentUnit == null)
-        {
-            currentUnit = this;
-        }
-
         if (_currentAction == ActionType.READY_FOR_ORDERS)
-        {            List<TileComponent> neighbours = this.GetComponent<TileComponent>().getNeighbours();
+        {   
+            List<TileComponent> neighbours = this.GetComponent<TileComponent>().getNeighbours();
 
             bool isReachable = false;
 
