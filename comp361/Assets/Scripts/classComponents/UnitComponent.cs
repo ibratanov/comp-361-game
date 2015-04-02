@@ -1,4 +1,4 @@
-﻿﻿using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Reflection;
 using Assets.Scripts.classComponents; //For copying components
@@ -384,7 +384,6 @@ public class UnitComponent : GenericComponent
 
             if (_village.getGoldStock() >= cost)
             {
-                //_unitType = newLevel;
 				setUnitType(newLevel);
                 _village.removeGold(cost);
                 return true;

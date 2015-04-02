@@ -377,20 +377,6 @@ public class VillageComponent : GenericComponent
 		}
 	}
 
-	/*
-    public void InstantiateVillage(VillageType villageType, PlayerComponent currentPlayer)
-    {
-        _goldStock = 0;
-        _woodStock = 0;
-        _player = currentPlayer;
-        _controlledRegion = new List<TileComponent>();
-        _supportingUnits = new List<UnitComponent>();
-        _villageType = villageType;
-        _occupyingTile = null;
-        _menus = GameObject.FindObjectOfType<GUIManager>();
-    }
-    */
-
 	public void Initialize(VillageType vType, PlayerComponent currentPlayer)
 	{
 		_goldStock = 0;
