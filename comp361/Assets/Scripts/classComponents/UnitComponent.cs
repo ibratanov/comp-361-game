@@ -1,4 +1,4 @@
-﻿﻿using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Reflection; //For copying components
 
@@ -383,7 +383,6 @@ public class UnitComponent : MonoBehaviour
 
             if (_village.getGoldStock() >= cost)
             {
-                //_unitType = newLevel;
 				setUnitType(newLevel);
                 _village.removeGold(cost);
                 return true;

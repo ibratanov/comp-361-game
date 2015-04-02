@@ -208,40 +208,6 @@ public class VillageComponent : MonoBehaviour {
 		return false;
 	}
 
-	/*
-	public UnitComponent hireVillager(UnitType unitType) {
-        if (_goldStock < UnitComponent.INITIAL_COST[unitType])
-        {
-            // TODO: insufficient resource error
-        }
-        _goldStock = _goldStock - UnitComponent.INITIAL_COST[unitType];
-        GameObject go = new GameObject();
-        go.AddComponent<UnitComponent>().InstantiateUnit(unitType);
-        var u = go.GetComponent<UnitComponent>();
-        u.setVillage(this);
-        bool hasSpace = false;
-        for (int i = 0; i < _controlledRegion.Count; i++)
-        {
-            if (_controlledRegion[i].getOccupantType() == OccupantType.NONE)
-            {
-                //if (unitType == UnitType.KNIGHT && _controlledRegion[i].getLandType() != LandType.MEADOW)
-                //{
-                    hasSpace = true;
-                    u.associate(_controlledRegion[i]);
-                    break;
-                //}
-            }
-        }
-       
-        if (hasSpace == false)
-        {
-            // TODO: no more space error
-        }
-        _supportingUnits.Add(u);
-        return u;
-	}
-	*/
-
 	public void hireVillager(UnitType unitType) {
 		if (_goldStock < UnitComponent.INITIAL_COST[unitType])
 		{
@@ -405,20 +371,6 @@ public class VillageComponent : MonoBehaviour {
 			addGold(revenue);
 		}
 	}
-
-	/*
-    public void InstantiateVillage(VillageType villageType, PlayerComponent currentPlayer)
-    {
-        _goldStock = 0;
-        _woodStock = 0;
-        _player = currentPlayer;
-        _controlledRegion = new List<TileComponent>();
-        _supportingUnits = new List<UnitComponent>();
-        _villageType = villageType;
-        _occupyingTile = null;
-        _menus = GameObject.FindObjectOfType<GUIManager>();
-    }
-    */
 
 	public void Initialize(VillageType vType, PlayerComponent currentPlayer)
 	{
