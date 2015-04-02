@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine.UI;
 using Assets.Scripts.classComponents;
 
+[SerializePrivateVariables]
 public class GameComponent : GenericComponent
 {
 	/*********************
@@ -15,6 +16,7 @@ public class GameComponent : GenericComponent
 	public GUIManager _guiManager; 
 	public string _currentMap;
 	public Text _settingsButtonText;
+
 	private MapGenerator _mapGenerator;
 	
 	int _roundCount; 

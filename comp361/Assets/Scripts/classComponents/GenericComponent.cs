@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.classComponents
 {
+    [Serializable]
     public class GenericComponent : MonoBehaviour
     {
 
