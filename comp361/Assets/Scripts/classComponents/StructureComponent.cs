@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts.classComponents;
 
 public enum StructureType
 {
@@ -8,7 +9,8 @@ public enum StructureType
 	WATCHTOWER
 }
 
-public class StructureComponent : MonoBehaviour {
+public class StructureComponent : GenericComponent
+{
 
 	/*********************
 	 *     ATTRIBUTES    *

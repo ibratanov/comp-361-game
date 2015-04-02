@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Assets.Scripts.classComponents;
 
 public enum PlayerStatus {
 	OFFLINE,
 	ONLINE
 }
 
-public class PlayerComponent : MonoBehaviour {
+public class PlayerComponent : GenericComponent
+{
 
 	/*********************
 	 *     ATTRIBUTES    *
