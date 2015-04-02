@@ -122,6 +122,11 @@ public class GameComponent : GenericComponent
 	{
 		_lastSelectedUnit.buildRoad();
 	}
+
+    public void fireCannonLastSelectedUnit()
+    {
+        _lastSelectedUnit.fireOnVillage(_lastSelectedTile);
+    }
 	
 	/// <summary>
 	/// Creates a new game by generating a map and assigning players to tiles.
