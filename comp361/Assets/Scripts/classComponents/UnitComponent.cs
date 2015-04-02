@@ -492,6 +492,10 @@ public class UnitComponent : MonoBehaviour
     {
         if (_unitType == UnitType.CANNON)
         {
+            if (_village.getWoodStock() < 1)
+            {
+                // TODO: throw insufficient resource error
+            }
             // add all tiles within 2 tile radius of current tile
             HashSet<TileComponent> fireableArea = new HashSet<TileComponent>();
             foreach (var neighbour in this.GetComponent<TileComponent>().getNeighbours())
@@ -520,6 +524,7 @@ public class UnitComponent : MonoBehaviour
                         // TODO: destroy village
                     }
                 }
+                _village.removeWood(1);
             }
             else
             {
