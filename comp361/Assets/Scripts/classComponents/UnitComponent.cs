@@ -10,7 +10,8 @@ public enum ActionType
     CULTIVATING_MEADOW,
     BUILDING_ROAD,
     ATTACKING,
-    EXPANDING_REGION
+    EXPANDING_REGION,
+    ALREADY_MOVED
 }
 
 public enum UnitType
@@ -229,10 +230,12 @@ public class UnitComponent : MonoBehaviour
             }
 
 			if(successfullyMoved){
+                bool isPaved = dest.hasRoad();
+
 				switch (lType)
 				{
 				case LandType.MEADOW:
-					if (_unitType != UnitType.INFANTRY || _unitType != UnitType.PEASANT)
+					if (!isPaved && (_unitType != UnitType.INFANTRY || _unitType != UnitType.PEASANT))
 					{
 						//setLocation(dest);
 						TrampleMeadow(dest);                        
@@ -479,19 +482,6 @@ public class UnitComponent : MonoBehaviour
             if (isReachable)
             {
                 bool isRelocated = setDestination(destination);
-
-                if (isRelocated)
-                {
-                    LandType landType = destination.getLandType();
-                    bool isPaved = destination.hasRoad();
-
-                    if (landType == LandType.MEADOW && _unitType >= UnitType.SOLDIER && !isPaved)
-                    {
-                        destination.setLandType(LandType.GRASS);
-                    }
-
-                    //destination.connectRegions();
-                }
             }
         }
     }
