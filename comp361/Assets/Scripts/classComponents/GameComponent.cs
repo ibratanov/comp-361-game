@@ -75,10 +75,12 @@ public class GameComponent : MonoBehaviour {
 	public List<PlayerComponent> getRemainingPlayers() {
 		return _remainingPlayers;
 	}
-
-	void setRemainingPlayers(List<PlayerComponent> remainingPlayers) {
+	
+/*	void setRemainingPlayers(List<PlayerComponent> remainingPlayers) {
 		_remainingPlayers = remainingPlayers;
 	}
+	*/
+	
 
 	/*********************
 	 *      METHODS      *
@@ -124,9 +126,7 @@ public class GameComponent : MonoBehaviour {
 	/// </summary>
 	/// <param name="participants">Participants.</param>
 	public void newGame(List<PlayerComponent> participants) {
-		_currentPlayerIndex = 0;
-		setRemainingPlayers(participants);
-
+		InitializePlayers();
 		BeginRound();
 		StartCoroutine("delaySetPlayer");
 		//setCurrentPlayer(_currentPlayerIndex); //this is done in delaySetPlayer()
@@ -153,6 +153,26 @@ public class GameComponent : MonoBehaviour {
 		*/
 
 		GenerateRegions();
+	}
+
+	//Players will increment their turns in alphabetical order to maintain network consistency 
+	//(Note, if we want to enforce randomness, int array can be converted to string and passed by RPC). Stretch goal
+	private void InitializePlayers(){
+		if(Network.isServer){
+			networkView.RPC("RPCInitializePlayers", RPCMode.Others);
+		}
+		RPCInitializePlayers();
+	}
+	
+	[RPC]
+	private void RPCInitializePlayers() {
+		_remainingPlayers = _playerManager.GetPlayers();
+		_remainingPlayers.Sort(
+			delegate(PlayerComponent p1, PlayerComponent p2) 
+			{ 
+			return p1.getUserName().CompareTo(p2.getUserName()); 
+		});
+		_currentPlayerIndex = 0;
 	}
 
 	[RPC]
