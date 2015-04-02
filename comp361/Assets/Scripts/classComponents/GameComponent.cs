@@ -119,6 +119,11 @@ public class GameComponent : MonoBehaviour {
         _lastSelectedUnit.buildRoad();
     }
 
+    public void fireOnLastSelectedTile()
+    {
+        _lastSelectedUnit.fireOnVillage(_lastSelectedTile);
+    }
+
 	/// <summary>
 	/// Creates a new game by generating a map and assigning players to tiles.
 	/// </summary>

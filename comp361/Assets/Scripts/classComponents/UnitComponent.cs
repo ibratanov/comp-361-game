@@ -453,6 +453,7 @@ public class UnitComponent : MonoBehaviour
 		TileComponent tc = this.GetComponent<TileComponent>();
 		StructureComponent tombstone = new StructureComponent(StructureType.TOMBSTONE, tc);
 		tc.setOccupyingStructure(tombstone);
+        GameObject.Destroy(this.getGameObject());
     }
 
     public void moveUnit(TileComponent destination)
@@ -482,6 +483,47 @@ public class UnitComponent : MonoBehaviour
             if (isReachable)
             {
                 bool isRelocated = setDestination(destination);
+                if (isRelocated && _unitType == UnitType.CANNON) _currentAction = ActionType.ALREADY_MOVED;
+            }
+        }
+    }
+
+    public void fireOnVillage(TileComponent target)
+    {
+        if (_unitType == UnitType.CANNON)
+        {
+            // add all tiles within 2 tile radius of current tile
+            HashSet<TileComponent> fireableArea = new HashSet<TileComponent>();
+            foreach (var neighbour in this.GetComponent<TileComponent>().getNeighbours())
+            {
+                fireableArea.Add(neighbour);
+            }
+
+            foreach (var neighbour in fireableArea)
+            {
+                fireableArea.Add(neighbour);
+            }
+            
+            if (fireableArea.Contains(target))
+            {
+                if (target.getOccupantType() == OccupantType.UNIT)
+                {
+                    // destroy unit 
+                    target.getOccupyingUnit().die();
+                }
+                if (target.getOccupantType() == OccupantType.VILLAGE)
+                {
+                    var village = target.getVillage();
+                    village.DecrementHealth();
+                    if (village.GetHealthLeft() == 0)
+                    {
+                        // TODO: destroy village
+                    }
+                }
+            }
+            else
+            {
+                // TODO: throw error, can't hit target tile
             }
         }
     }
