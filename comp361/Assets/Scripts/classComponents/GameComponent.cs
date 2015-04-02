@@ -248,6 +248,8 @@ public class GameComponent : MonoBehaviour {
 		}
 	}
 
+	#region EveryRound
+
     public void BeginRound()
     {
 		print ("new round");
@@ -257,28 +259,52 @@ public class GameComponent : MonoBehaviour {
 	
 		if (_roundCount > 1)
 		{
-			List<TileComponent> tiles = new List<TileComponent>();
-			foreach (TileComponent tc in _mapTiles)
+			TreeGrowthPhase();
+			foreach (PlayerComponent p in _remainingPlayers)
 			{
-				// a forest has 50% chance of spawning another forest on a neighbouring tile
-				if (tc.getLandType() == LandType.FOREST)
+				PlayerPhase(p);
+			}
+		}
+//        foreach(var player in _remainingPlayers)
+//        {
+//            player.beginTurn();
+//        }
+    }
+
+	public void TreeGrowthPhase()
+	{
+		List<TileComponent> tiles = new List<TileComponent>();
+		foreach (TileComponent tc in _mapTiles)
+		{
+			// a forest has 50% chance of spawning another forest on a neighbouring tile
+			if (tc.getLandType() == LandType.FOREST)
+			{
+				if (tiles.Contains (tc))
 				{
-					if (tiles.Contains (tc))
+					continue;
+				}
+				if (Random.value < .5f)
+				{
+					tiles.Add (tc);
+					tiles.AddRange (tc.getNeighbours());
+					TileComponent randomNeighbour = tc.getNeighbours()[Random.Range (0, tc.getNeighbours().Count)];
+					
+					if (randomNeighbour.getLandType() != LandType.FOREST)
 					{
-						continue;
-					}
-					if (Random.value < .5f)
-					{
-						tiles.Add (tc);
-						tiles.AddRange (tc.getNeighbours());
-						TileComponent randomNeighbour = tc.getNeighbours()[Random.Range (0, tc.getNeighbours().Count)];
-						
-						if (randomNeighbour.getLandType() != LandType.FOREST)
-						{
-							randomNeighbour.setLandType(LandType.FOREST);
-						}
+						randomNeighbour.setLandType(LandType.FOREST);
 					}
 				}
+			}
+		}
+	}
+
+	public void PlayerPhase(PlayerComponent player)
+	{
+		foreach (VillageComponent vc in player.getVillages())
+		{
+			// tombstone phase
+			foreach (TileComponent tc in vc.getControlledRegion())
+			{
 				if (tc.getOccupantType() == OccupantType.STRUCTURE)
 				{
 					// tombstones turn into forests
@@ -289,12 +315,25 @@ public class GameComponent : MonoBehaviour {
 					}
 				}
 			}
+
+			// build phase
+			vc.produceMeadows();
+			vc.produceRoads();
+
+			// income phase
+			foreach (TileComponent tc in vc.getControlledRegion ())
+			{
+				vc.addGold (tc.getRevenue());
+			}
+
+			// payment phase
+			vc.payWages ();
+
+			// move & purchase phase begin when function returns
 		}
-//        foreach(var player in _remainingPlayers)
-//        {
-//            player.beginTurn();
-//        }
-    }
+	}
+
+	#endregion
 
 
 	/// <summary>
