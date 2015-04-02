@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using Assets.Scripts.classComponents;
 
 public enum LandType { 
 	GRASS,
@@ -16,7 +17,8 @@ public enum OccupantType {
 	STRUCTURE
 }
 
-public class TileComponent : MonoBehaviour {
+public class TileComponent : GenericComponent
+{
 	readonly static Color[] PLAYER_COLOURS = {	Color.white,
 		new Color(1.0f,0.25f,0.25f), 
 		new Color(0.25f,1.0f,0.25f), 

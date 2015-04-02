@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
+using Assets.Scripts.classComponents;
 
-public class GameComponent : MonoBehaviour {
+public class GameComponent : GenericComponent
+{
 	private Color[] _playerColours = {Color.red, Color.green, Color.blue, Color.yellow};
 
 	/*********************

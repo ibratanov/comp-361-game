@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Assets.Scripts.classComponents;
 
 public enum VillageType {
 	HOVEL,
@@ -8,7 +9,8 @@ public enum VillageType {
     CASTLE
 }
 
-public class VillageComponent : MonoBehaviour {
+public class VillageComponent : GenericComponent
+{
 
 	private GameObject _villageGameObject;
 
@@ -178,7 +180,7 @@ public class VillageComponent : MonoBehaviour {
         VillageType newLevel = (VillageType)_villageType + 1;
         if ((int)newLevel > (int) VillageType.CASTLE)
         {
-            /* TODO: error message, village already at max level*/ 
+            ThrowError("Error: Village already at max level.");
             return false;
         }
         uint cost = calculateCost(_villageType, newLevel);
@@ -190,7 +192,7 @@ public class VillageComponent : MonoBehaviour {
         }
         else
         {
-            /* TODO: error message, insufficient funds */
+            ThrowError("Insufficient gold.");
             return false;
         }	
 	}
@@ -208,50 +210,18 @@ public class VillageComponent : MonoBehaviour {
 		return false;
 	}
 
-	/*
-	public UnitComponent hireVillager(UnitType unitType) {
-        if (_goldStock < UnitComponent.INITIAL_COST[unitType])
-        {
-            // TODO: insufficient resource error
-        }
-        _goldStock = _goldStock - UnitComponent.INITIAL_COST[unitType];
-        GameObject go = new GameObject();
-        go.AddComponent<UnitComponent>().InstantiateUnit(unitType);
-        var u = go.GetComponent<UnitComponent>();
-        u.setVillage(this);
-        bool hasSpace = false;
-        for (int i = 0; i < _controlledRegion.Count; i++)
-        {
-            if (_controlledRegion[i].getOccupantType() == OccupantType.NONE)
-            {
-                //if (unitType == UnitType.KNIGHT && _controlledRegion[i].getLandType() != LandType.MEADOW)
-                //{
-                    hasSpace = true;
-                    u.associate(_controlledRegion[i]);
-                    break;
-                //}
-            }
-        }
-       
-        if (hasSpace == false)
-        {
-            // TODO: no more space error
-        }
-        _supportingUnits.Add(u);
-        return u;
-	}
-	*/
-
 	public void hireVillager(UnitType unitType) {
 		if (_goldStock < UnitComponent.INITIAL_COST[unitType])
 		{
-			// TODO: insufficient resource error
+            ThrowError("Insufficient gold.");
+            return;
 		}
         if (unitType == UnitType.CANNON)
         {
             if (_woodStock < 12)
             {
-                // TODO: insufficient resource error
+                ThrowError("Insufficient wood.");
+                return;
             }
         }
 		_goldStock = _goldStock - UnitComponent.INITIAL_COST[unitType];
@@ -272,7 +242,8 @@ public class VillageComponent : MonoBehaviour {
 		
 		if (hasSpace == false)
 		{
-			// TODO: no more space error
+            ThrowError("Not enough space to hire new villager.");
+            return;
 		}
 	}
 

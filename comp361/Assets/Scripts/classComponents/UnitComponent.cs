@@ -1,6 +1,7 @@
 ﻿﻿using UnityEngine;
 using System.Collections.Generic;
-using System.Reflection; //For copying components
+using System.Reflection;
+using Assets.Scripts.classComponents; //For copying components
 
 public enum ActionType
 {
@@ -23,7 +24,7 @@ public enum UnitType
     CANNON
 }
 
-public class UnitComponent : MonoBehaviour
+public class UnitComponent : GenericComponent
 {
     public GameObject _unitGameObject;
 	private bool _isMoving;
@@ -362,7 +363,7 @@ public class UnitComponent : MonoBehaviour
                         VillageComponent enemyVillage = tile.getVillage();
 
                         if (_unitType <= UnitType.INFANTRY || _village != enemyVillage)
-                        { //TODO: check condition, should be AND?
+                        { 
                             return true;
                         }
                     }
@@ -494,7 +495,8 @@ public class UnitComponent : MonoBehaviour
         {
             if (_village.getWoodStock() < 1)
             {
-                // TODO: throw insufficient resource error
+                ThrowError("Insufficient wood.");
+                return;
             }
             // add all tiles within 2 tile radius of current tile
             HashSet<TileComponent> fireableArea = new HashSet<TileComponent>();
@@ -528,7 +530,8 @@ public class UnitComponent : MonoBehaviour
             }
             else
             {
-                // TODO: throw error, can't hit target tile
+                ThrowError("Unable to reach target tile.");
+                return;
             }
         }
     }
@@ -582,7 +585,7 @@ public class UnitComponent : MonoBehaviour
                     if (tileOccupantType == OccupantType.UNIT)
                     {
                         UnitComponent occupyingUnit = tile.getOccupyingUnit();
-                        occupyingUnit.die(); //TODO: check if this is the right die()method
+                        occupyingUnit.die(); 
 
                         StructureComponent tomb = new StructureComponent(StructureType.TOMBSTONE, tile);
                         tile.setOccupyingStructure(tomb);
