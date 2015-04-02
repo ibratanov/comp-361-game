@@ -114,6 +114,11 @@ public class GameComponent : MonoBehaviour {
         _moveStarted = false;
     }
 
+    public void buildRoadLastSelectedUnit()
+    {
+        _lastSelectedUnit.buildRoad();
+    }
+
 	/// <summary>
 	/// Creates a new game by generating a map and assigning players to tiles.
 	/// </summary>
