@@ -6,128 +6,121 @@ using Assets.Scripts.classComponents;
 
 public class GameComponent : GenericComponent
 {
-	private Color[] _playerColours = {Color.red, Color.green, Color.blue, Color.yellow};
-
 	/*********************
 	 *     ATTRIBUTES    *
 	 ********************/
-//	public static GameComponent instance;
-
+	//	public static GameComponent instance;
+	
 	public PlayerManager _playerManager;
 	public GUIManager _guiManager; 
 	public string _currentMap;
 	public Text _settingsButtonText;
 	private MapGenerator _mapGenerator;
-
+	
 	int _roundCount; 
-
+	
 	PlayerComponent _currentPlayer;
 	PlayerComponent[] _participants;
 	List<PlayerComponent> _remainingPlayers;
 	TileComponent[,] _mapTiles;
-    GameObject[,] _tileObjects;
-    TileComponent _lastSelectedTile;
-    UnitComponent _lastSelectedUnit;
-    bool _moveStarted = false;
-
+	GameObject[,] _tileObjects;
+	TileComponent _lastSelectedTile;
+	UnitComponent _lastSelectedUnit;
+	bool _moveStarted = false;
+	
 	Color _currentColour;
 	int _currentPlayerIndex;
-
+	
 	/*********************
 	 *  GETTERS/SETTERS  *
 	 ********************/
-    public bool isMoveStarted()
-    {
-        return _moveStarted;
-    }
-
+	public bool isMoveStarted()
+	{
+		return _moveStarted;
+	}
+	
 	public PlayerComponent getCurrentPlayer()
 	{
 		return _currentPlayer;
 	}
-
-    public TileComponent getLastSelectedTile()
-    {
-        return _lastSelectedTile;
-    }
-    
-    public UnitComponent getLastSelectedUnit()
-    {
-        return _lastSelectedUnit;
-    }
-
-    public void setLastSelectedTile(TileComponent lastSelectedTile)
-    {
-        _lastSelectedTile = lastSelectedTile;
-    }
-
-    public void setLastSelectedUnit(UnitComponent lastSelectedUnit)
-    {
-        _lastSelectedUnit = lastSelectedUnit;
-    }
-
+	
+	public TileComponent getLastSelectedTile()
+	{
+		return _lastSelectedTile;
+	}
+	
+	public UnitComponent getLastSelectedUnit()
+	{
+		return _lastSelectedUnit;
+	}
+	
+	public void setLastSelectedTile(TileComponent lastSelectedTile)
+	{
+		_lastSelectedTile = lastSelectedTile;
+	}
+	
+	public void setLastSelectedUnit(UnitComponent lastSelectedUnit)
+	{
+		_lastSelectedUnit = lastSelectedUnit;
+	}
+	
 	void setCurrentPlayer(int index) {
 		_currentPlayer = _remainingPlayers[index];
-		_currentColour = _playerColours [index];
-
+		_currentColour = TileComponent.PLAYER_COLOURS[index+1];
+		
 		_guiManager.SwitchCameras();
 		_guiManager.UpdateGamePanels (_currentPlayer, _currentColour);
 	}
-
+	
 	public List<PlayerComponent> getRemainingPlayers() {
 		return _remainingPlayers;
 	}
 	
-/*	void setRemainingPlayers(List<PlayerComponent> remainingPlayers) {
+	/*	void setRemainingPlayers(List<PlayerComponent> remainingPlayers) {
 		_remainingPlayers = remainingPlayers;
 	}
 	*/
 	
-
+	
 	/*********************
 	 *      METHODS      *
 	 ********************/
-
-    public void hireVillagerOnLastSelected(int unitType)
-    {
-        _lastSelectedTile.getVillage().hireVillager((UnitType) unitType);
-    }
-
-    public void upgradeLastSelectedVillage()
-    {
-        _lastSelectedTile.getVillage().upgradeVillage();
-    }
-
-    public void startMoveLastSelectedUnit()
-    {
-        _moveStarted = true;
-        //_lastSelectedTile.HighlightNeighbours();
-        //_lastSelectedTile.UpdateDraw();
-        _lastSelectedUnit.moveUnit(_lastSelectedTile);
-    }
-
-    public void moveLastSelectedUnit()
-    {
-        //_lastSelectedTile.UnhighlightNeighbours();
-        //_lastSelectedTile.UpdateDraw();
-        _lastSelectedUnit.moveUnit(_lastSelectedTile);
-    }
-
-    public void finishMoveLastSelectedUnit()
-    {
-        _moveStarted = false;
-    }
-
-    public void buildRoadLastSelectedUnit()
-    {
-        _lastSelectedUnit.buildRoad();
-    }
-
-    public void fireOnLastSelectedTile()
-    {
-        _lastSelectedUnit.fireOnVillage(_lastSelectedTile);
-    }
-
+	
+	public void hireVillagerOnLastSelected(int unitType)
+	{
+		_lastSelectedTile.getVillage().hireVillager((UnitType) unitType);
+	}
+	
+	public void upgradeLastSelectedVillage()
+	{
+		_lastSelectedTile.getVillage().upgradeVillage();
+	}
+	
+	public void startMoveLastSelectedUnit()
+	{
+		_moveStarted = true;
+		//_lastSelectedTile.HighlightNeighbours();
+		//_lastSelectedTile.UpdateDraw();
+		_lastSelectedUnit.moveUnit(_lastSelectedTile);
+	}
+	
+	public void moveLastSelectedUnit()
+	{
+		//_lastSelectedTile.UnhighlightNeighbours();
+		//_lastSelectedTile.UpdateDraw();
+		_lastSelectedUnit.moveUnit(_lastSelectedTile);
+	}
+	
+	public void finishMoveLastSelectedUnit()
+	{
+		_moveStarted = false;
+	}
+	
+	public void buildRoadLastSelectedUnit()
+	{
+		_lastSelectedUnit.buildRoad();
+	}
+	
 	/// <summary>
 	/// Creates a new game by generating a map and assigning players to tiles.
 	/// </summary>
@@ -137,31 +130,15 @@ public class GameComponent : GenericComponent
 		BeginRound();
 		StartCoroutine("delaySetPlayer");
 		//setCurrentPlayer(_currentPlayerIndex); //this is done in delaySetPlayer()
-
+		
 		if(Network.isServer){
 			networkView.RPC("NewGameInit", RPCMode.All);
 		}
-
+		
 		_mapGenerator.GenerateMap();
-		//UpdateMapRegions();
-
-		/*
-		for(int i = 0; i < _mapTiles.GetLength(0); ++i){
-			for(int j = 0; j < _mapTiles.GetLength(1); ++j){
-				int randIndex = Random.Range(0, participants.Count + 1);
-
-			}
-		}
-		foreach (var tile in _mapTiles)
-		{
-			int randIndex = Random.Range(0, participants.Count + 1);
-			tile.setPlayerIndex(randIndex);
-		}
-		*/
-
 		GenerateRegions();
 	}
-
+	
 	//Players will increment their turns in alphabetical order to maintain network consistency 
 	//(Note, if we want to enforce randomness, int array can be converted to string and passed by RPC). Stretch goal
 	private void InitializePlayers(){
@@ -181,20 +158,20 @@ public class GameComponent : GenericComponent
 		});
 		_currentPlayerIndex = 0;
 	}
-
+	
 	[RPC]
 	private void NewGameInit(){
 		_settingsButtonText.text = _playerManager.GetPlayer(0).getUserName();
 		_guiManager.HideLoadedProfilePanel();
 	}
-
+	
 	private void GenerateRegions(){
 		if(Network.isServer){
 			networkView.RPC("RPCGenerateRegions", RPCMode.Others);
 		}
 		RPCGenerateRegions();
 	}
-
+	
 	[RPC]
 	private void RPCGenerateRegions()
 	{
@@ -227,10 +204,10 @@ public class GameComponent : GenericComponent
 					if (!regionContainsVillage)
 					{
 						TileComponent tileWithVillage = region[0];
-						VillageComponent newHovel = CreateVillage(tileWithVillage, VillageType.HOVEL, _currentPlayer);
+						VillageComponent newHovel = CreateVillage(tileWithVillage, VillageType.HOVEL, _remainingPlayers[playerIndex-1]);
 						tileWithVillage.setOccupantType(OccupantType.VILLAGE);
 						tileWithVillage.UpdateVillageReference();
-
+						
 						//PlayerComponent player = participants[playerIndex - 1];
 						//player.add(newHovel);
 						newHovel.associate(tileWithVillage);
@@ -252,13 +229,13 @@ public class GameComponent : GenericComponent
 			tile.UpdateDraw();
 		}
 	}
-
+	
 	public VillageComponent CreateVillage(TileComponent tc, VillageType vType, PlayerComponent pc){
 		VillageComponent vc = tc.gameObject.AddComponent<VillageComponent>();
 		vc.Initialize(VillageType.HOVEL, pc);
 		return vc;
 	}
-
+	
 	/// <summary>
 	/// Allows menu buttons to declare which map to generate on BeginGame()
 	/// </summary>
@@ -279,16 +256,16 @@ public class GameComponent : GenericComponent
 			TestMapGeneration();
 		}
 	}
-
+	
 	#region EveryRound
-
-    public void BeginRound()
-    {
+	
+	public void BeginRound()
+	{
 		print ("new round");
 		_roundCount++;
 		_guiManager.DisplayRoundPanel(_roundCount);
 		StartCoroutine("delaySetPlayer");
-	
+		
 		if (_roundCount > 1)
 		{
 			TreeGrowthPhase();
@@ -297,12 +274,12 @@ public class GameComponent : GenericComponent
 				PlayerPhase(p);
 			}
 		}
-//        foreach(var player in _remainingPlayers)
-//        {
-//            player.beginTurn();
-//        }
-    }
-
+		//        foreach(var player in _remainingPlayers)
+		//        {
+		//            player.beginTurn();
+		//        }
+	}
+	
 	public void TreeGrowthPhase()
 	{
 		List<TileComponent> tiles = new List<TileComponent>();
@@ -329,7 +306,7 @@ public class GameComponent : GenericComponent
 			}
 		}
 	}
-
+	
 	public void PlayerPhase(PlayerComponent player)
 	{
 		foreach (VillageComponent vc in player.getVillages())
@@ -347,27 +324,27 @@ public class GameComponent : GenericComponent
 					}
 				}
 			}
-
+			
 			// build phase
 			vc.produceMeadows();
 			vc.produceRoads();
-
+			
 			// income phase
 			foreach (TileComponent tc in vc.getControlledRegion ())
 			{
 				vc.addGold (tc.getRevenue());
 			}
-
+			
 			// payment phase
 			vc.payWages ();
-
+			
 			// move & purchase phase begin when function returns
 		}
 	}
-
+	
 	#endregion
-
-
+	
+	
 	/// <summary>
 	/// Debugging map with predefined players.
 	/// </summary>
@@ -377,11 +354,11 @@ public class GameComponent : GenericComponent
 		_playerManager.AddPlayer(new PlayerComponent("Ivo", "ivo"));
 		newGame(_playerManager.GetPlayers());
 	}
-
-    public void endTurn()
-    {
+	
+	public void endTurn()
+	{
 		_currentPlayerIndex = (_currentPlayerIndex + 1) % _remainingPlayers.Count;
-
+		
 		if (_lastSelectedTile != null && _lastSelectedTile.isSelected)
 		{
 			_lastSelectedTile.Deselect();
@@ -390,33 +367,33 @@ public class GameComponent : GenericComponent
 		if (_currentPlayerIndex == 0)
 		{
 			BeginRound();
-
+			
 		}
 		else
 		{
 			setCurrentPlayer (_currentPlayerIndex);
 		}
-    }
-
+	}
+	
 	IEnumerator delaySetPlayer()
 	{
 		yield return new WaitForSeconds(_guiManager._fadeSpeed);
 		setCurrentPlayer (_currentPlayerIndex);
 	}
-
+	
 	public void endGame() {
-        /* TODO */
+		/* TODO */
 	}
-
+	
 	public void removePlayer(PlayerComponent player) {
 		_remainingPlayers.Remove(player);
 	}
-
+	
 	void Awake()
 	{
 		_roundCount = 0;
-//		instance = this;
+		//		instance = this;
 		_mapGenerator = this.GetComponent<MapGenerator>();
 	}
-	
+
 }

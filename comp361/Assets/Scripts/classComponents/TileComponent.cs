@@ -19,7 +19,7 @@ public enum OccupantType {
 
 public class TileComponent : GenericComponent
 {
-	readonly static Color[] PLAYER_COLOURS = {	Color.white,
+	readonly public static Color[] PLAYER_COLOURS = {	Color.white,
 		new Color(1.0f,0.25f,0.25f), 
 		new Color(0.25f,1.0f,0.25f), 
 		new Color(0.25f,0.25f,1.0f), 
