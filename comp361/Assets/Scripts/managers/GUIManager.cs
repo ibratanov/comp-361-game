@@ -96,6 +96,24 @@ public class GUIManager : MonoBehaviour {
         }
     }
 
+	public void setGoldStock(int stock)
+	{
+		for (int i = 0; i < _inGamePanels.Length; ++i)
+		{
+			if (_inGamePanels[i].name.Contains("Panel_Resources"))
+			{
+				_inGamePanels[i].SetActive(true);
+				for (int j = 0; j < _inGamePanels[i].transform.childCount; j++)
+				{
+					if (_inGamePanels[i].transform.GetChild(j).name.Contains("Text_GoldCount"))
+					{
+						_inGamePanels[i].transform.GetChild(j).GetComponent<Text>().text = stock.ToString();
+					}
+				}
+			}
+		}
+	}
+
 	public void DisplayInGameMenu(){
 		if(Network.isServer || Network.isClient){
 			networkView.RPC("RPCDisplayInGameMenu", RPCMode.All);

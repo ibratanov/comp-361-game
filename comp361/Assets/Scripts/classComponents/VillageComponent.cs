@@ -281,6 +281,7 @@ public class VillageComponent : MonoBehaviour {
 
 	public void addGold(uint amount) {
 		_goldStock += amount;
+		_menus.setGoldStock((int)_goldStock);
 	}
 
 	public void addWood(uint amount) {
