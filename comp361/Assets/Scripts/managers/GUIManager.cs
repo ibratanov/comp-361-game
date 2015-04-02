@@ -123,6 +123,11 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
+    public void DisplayErrorMessage(string message)
+    {
+        // find error message panel
+    }
+
 	[RPC]
 	private void RPCDisplayInGameMenu(){
 		for(int i = 0; i < _menus.Length; ++i){
