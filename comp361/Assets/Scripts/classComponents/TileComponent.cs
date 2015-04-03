@@ -429,6 +429,11 @@ public class TileComponent : GenericComponent
 				_game.getLastSelectedTile().Deselect();
 			}
 		}
+        if (_game.isFireStarted())
+        {
+            _game.fireCannonLastSelectedUnit();
+        }
+
 		_game.setLastSelectedTile(this);
 		HighlightRegion();
 		
@@ -462,6 +467,8 @@ public class TileComponent : GenericComponent
 		{
 			_game.moveLastSelectedUnit();
 		}
+
+
 		/*
         if (this._occupyingUnit != null)
         {
