@@ -187,6 +187,11 @@ public class TileComponent : GenericComponent
 		*/
 	}
 	
+    public void RemoveRoad()
+    {
+        _hasRoad = false;
+        _road.SetActive(false);
+    }
 	
 	public void setOccupyingStructure(StructureComponent occupyingStructure) {
 		if(Network.isServer || Network.isClient){

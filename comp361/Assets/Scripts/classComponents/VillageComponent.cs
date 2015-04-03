@@ -43,12 +43,29 @@ public class VillageComponent : GenericComponent
 		_controlledRegion = region;
 		_supportingUnits = units;
 		_villageType = villageType;
+        _healthLeft = getTotalHealthByType(villageType);
 	}
 	
 	/*********************
 	 *  GETTERS/SETTERS  *
 	 ********************/
 	
+    public int getTotalHealthByType(VillageType type)
+    {
+        switch (type)
+        {
+            case VillageType.HOVEL:
+                return 1;
+            case VillageType.TOWN:
+                return 2;
+            case VillageType.FORT:
+                return 5;
+            case VillageType.CASTLE:
+                return 10;
+        }
+        return -1;
+    }
+
 	public void setOccupyingTile(TileComponent tile)
 	{
 		_occupyingTile = tile;
@@ -113,6 +130,7 @@ public class VillageComponent : GenericComponent
 		AssetManager assetManager = GameObject.FindGameObjectWithTag("AssetManager").GetComponent<AssetManager>();
 		_villageGameObject = assetManager.createVillageGameObject((VillageType)villageTypeIndex, this.gameObject.transform.position);
 		_villageGameObject.transform.parent = this.transform;
+        _healthLeft = getTotalHealthByType(_villageType);
 	}
 	
 	public VillageType getVillageType() {
@@ -129,7 +147,7 @@ public class VillageComponent : GenericComponent
 	 ********************/
 	public void DecrementHealth()
 	{
-		_healthLeft -= _healthLeft;
+		_healthLeft = _healthLeft - 1;
 	}
 	
 	public void addToControlledRegion(TileComponent tile)
@@ -396,6 +414,7 @@ public class VillageComponent : GenericComponent
 		_occupyingTile = null;
 		_menus = GameObject.FindObjectOfType<GUIManager>();
 		setVillageGameObject(vType);
+        _healthLeft = getTotalHealthByType(vType);
 	}
 	
 	public void setVillageGameObject(VillageType vType)
@@ -414,6 +433,27 @@ public class VillageComponent : GenericComponent
 	{
 		return _villageGameObject;
 	}
+
+    public void DestroyVillage()
+    {
+        // call die() on all units
+        foreach (var unit in _supportingUnits)
+        {
+            unit.die();
+        }
+        
+        // set all tiles to neutral
+        foreach (var tile in _controlledRegion)
+        {
+            tile.setOccupantType(OccupantType.NONE);
+            tile.setOccupyingUnit(null);
+            tile.setOccupyingStructure(null);
+            tile.setPlayerIndex(0);
+            tile.RemoveRoad();
+        }
+        // destroy village object
+        GameObject.Destroy(_villageGameObject);
+    }
 	
 	// Use this for initialization
 	void Start () {
