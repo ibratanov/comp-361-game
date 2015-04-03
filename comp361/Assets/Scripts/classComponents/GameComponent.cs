@@ -218,7 +218,7 @@ public class GameComponent : GenericComponent
 						//PlayerComponent player = participants[playerIndex - 1];
 						//player.add(newHovel);
 						newHovel.associate(tileWithVillage);
-						newHovel.addGold(7);
+						newHovel.addGold(50);
 						// add enough wood to be able to upgrade to village for demo, can remove later
 						newHovel.addWood(24);
 						// add all other tiles in the bfs to this village's controlled region

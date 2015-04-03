@@ -230,13 +230,19 @@ public class VillageComponent : GenericComponent
 		{
 			if (_controlledRegion[i].getOccupantType() == OccupantType.NONE)
 			{
-				//if (unitType == UnitType.KNIGHT && _controlledRegion[i].getLandType() != LandType.MEADOW)
-				//{
 				hasSpace = true;
 				UnitComponent unit = CreateUnit(_controlledRegion[i], unitType);
 				_supportingUnits.Add(unit);
+
+                if (unitType != UnitType.PEASANT && unitType != UnitType.SOLDIER)
+                {
+                    unit.TrampleMeadow(unit.getLocation());
+                }
+                if (unitType != UnitType.KNIGHT && unitType != UnitType.CANNON)
+                {
+                    unit.GatherWood(unit.getLocation());
+                }
 				break;
-				//}
 			}
 		}
 		
