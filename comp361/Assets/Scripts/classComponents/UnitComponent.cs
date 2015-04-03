@@ -528,7 +528,7 @@ public class UnitComponent : GenericComponent
                     village.DecrementHealth();
                     if (village.GetHealthLeft() == 0)
                     {
-                        // TODO: destroy village
+                        village.DestroyVillage();
                     }
                 }
                 _village.removeWood(1);
