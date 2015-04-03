@@ -29,6 +29,7 @@ public class GameComponent : GenericComponent
 	TileComponent _lastSelectedTile;
 	UnitComponent _lastSelectedUnit;
 	bool _moveStarted = false;
+    bool _fireStarted = false;
 	
 	Color _currentColour;
 	int _currentPlayerIndex;
@@ -40,6 +41,11 @@ public class GameComponent : GenericComponent
 	{
 		return _moveStarted;
 	}
+
+    public bool isFireStarted()
+    {
+        return _fireStarted;
+    }
 	
 	public PlayerComponent getCurrentPlayer()
 	{
@@ -126,6 +132,12 @@ public class GameComponent : GenericComponent
     public void fireCannonLastSelectedUnit()
     {
         _lastSelectedUnit.fireOnVillage(_lastSelectedTile);
+        _fireStarted = false;
+    }
+
+    public void startFireCannon()
+    {
+        _fireStarted = true;
     }
 	
 	/// <summary>

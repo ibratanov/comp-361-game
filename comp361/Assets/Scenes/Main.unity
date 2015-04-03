@@ -7590,6 +7590,7 @@ MonoBehaviour:
   _lastSelectedTile: {fileID: 0}
   _lastSelectedUnit: {fileID: 0}
   _moveStarted: 0
+  _fireStarted: 0
   _currentColour: {r: 0, g: 0, b: 0, a: 0}
   _currentPlayerIndex: 0
 --- !u!4 &969104345
@@ -11248,6 +11249,10 @@ Prefab:
       propertyPath: m_AnchoredPosition.x
       value: 457
       objectReference: {fileID: 0}
+    - target: {fileID: 11444170, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: startFireCannon
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
   m_RootGameObject: {fileID: 322718657}
@@ -14689,7 +14694,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 969104344}
-        m_MethodName: fireCannonLastSelectedUnit
+        m_MethodName: startFireCannon
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

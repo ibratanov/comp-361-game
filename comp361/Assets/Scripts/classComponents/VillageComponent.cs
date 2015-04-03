@@ -238,7 +238,7 @@ public class VillageComponent : GenericComponent
                 {
                     unit.TrampleMeadow(unit.getLocation());
                 }
-                if (unitType != UnitType.KNIGHT && unitType != UnitType.CANNON)
+                if (unitType != UnitType.KNIGHT && unitType != UnitType.CANNON && _controlledRegion[i].getLandType() == LandType.FOREST)
                 {
                     unit.GatherWood(unit.getLocation());
                 }

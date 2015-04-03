@@ -497,9 +497,19 @@ public class UnitComponent : GenericComponent
                 fireableArea.Add(neighbour);
             }
 
+            HashSet<TileComponent> neighbourNeighbours = new HashSet<TileComponent>();
+
             foreach (var neighbour in fireableArea)
             {
-                fireableArea.Add(neighbour);
+                foreach (var neighbourNeighbour in neighbour.getNeighbours())
+                {
+                    neighbourNeighbours.Add(neighbourNeighbour);
+                }
+            }
+
+            foreach (var nn in neighbourNeighbours)
+            {
+                fireableArea.Add(nn);
             }
             
             if (fireableArea.Contains(target))
