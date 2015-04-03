@@ -429,12 +429,12 @@ public class TileComponent : GenericComponent
 				_game.getLastSelectedTile().Deselect();
 			}
 		}
+		_game.setLastSelectedTile(this);
+
         if (_game.isFireStarted())
         {
             _game.fireCannonLastSelectedUnit();
         }
-
-		_game.setLastSelectedTile(this);
 		HighlightRegion();
 		
 		if(this.GetComponent<UnitComponent>()){
