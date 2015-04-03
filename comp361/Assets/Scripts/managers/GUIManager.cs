@@ -125,7 +125,15 @@ public class GUIManager : MonoBehaviour {
 
     public void DisplayErrorMessage(string message)
     {
-        // find error message panel
+        var errorPanel = _inGamePanels[7];
+        for (int i = 0; i < errorPanel.transform.childCount; i++ )
+        {
+            if (errorPanel.transform.GetChild(i).name.Contains("ErrorMessage"))
+            {
+                errorPanel.transform.GetChild(i).GetComponent<Text>().text = message;
+            }
+        }
+        errorPanel.SetActive(true);
     }
 
 	[RPC]
