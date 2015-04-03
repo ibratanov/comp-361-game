@@ -4,9 +4,9 @@ using Assets.Scripts.classComponents;
 
 public enum StructureType
 {
-	NONE,
 	TOMBSTONE,
-	WATCHTOWER
+	WATCHTOWER,
+    NONE
 }
 
 public class StructureComponent : GenericComponent
@@ -18,6 +18,7 @@ public class StructureComponent : GenericComponent
 
 	StructureType _structureType;
 	TileComponent _location;
+    GameObject _structureGameObject;
 
 	/*********************
 	 *    CONSTRUCTOR    *
@@ -31,6 +32,31 @@ public class StructureComponent : GenericComponent
 	/*********************
 	 *  GETTERS/SETTERS  *
 	 ********************/
+
+    public void CreateStructure(StructureType st)
+    {
+        if (Network.isServer || Network.isClient)
+        {
+            networkView.RPC("RPCCreateStructure", RPCMode.Others, (int)st);
+        }
+        RPCCreateStructure((int)st);
+    }
+
+
+    [RPC]
+    private void RPCCreateStructure(int st)
+    {
+        _structureType = (StructureType)st;
+        if (_structureGameObject)
+        {
+            GameObject oldObject = _structureGameObject;
+            Destroy(oldObject);
+        }
+        AssetManager assetManager = GameObject.FindGameObjectWithTag("AssetManager").GetComponent<AssetManager>();
+        _structureGameObject = assetManager.createStructureGameObject((StructureType)st, _location.gameObject.transform.position);
+        _structureGameObject.transform.parent = _location.gameObject.transform;
+    }
+
 
 	public StructureType getStructureType() {
 		return _structureType;

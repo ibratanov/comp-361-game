@@ -20,12 +20,13 @@ public class AssetManager : MonoBehaviour {
 		return (GameObject)Instantiate(_villages[(int)vType], position, Quaternion.identity);
 	}
 
+    public GameObject createStructureGameObject(StructureType sType, Vector3 position)
+    {
+        return (GameObject)Instantiate(_structures[(int)sType], position, Quaternion.identity);
+    }
+
     public Material getVillageMaterial(VillageType vType)
     {
         return _villageMaterials[(int)vType];
     }
-
-	public GameObject createStructureGameObject(StructureType sType, Vector3 position){
-		return (GameObject)Instantiate(_structures[(int)sType], position, Quaternion.identity);
-	}
 }

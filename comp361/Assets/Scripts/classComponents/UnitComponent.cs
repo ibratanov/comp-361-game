@@ -454,6 +454,7 @@ public class UnitComponent : GenericComponent
         tc.setOccupyingUnit(null);
         tc.setOccupantType(OccupantType.NONE);
 		StructureComponent tombstone = new StructureComponent(StructureType.TOMBSTONE, tc);
+        tombstone.CreateStructure(StructureType.TOMBSTONE);
 		tc.setOccupyingStructure(tombstone);
         GameObject.Destroy(this.getGameObject());
     }
