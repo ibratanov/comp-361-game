@@ -262,6 +262,8 @@ public class VillageComponent : GenericComponent
 	public UnitComponent CreateUnit(TileComponent tc, UnitType uType){
 		UnitComponent uc = tc.gameObject.AddComponent<UnitComponent>();
 		uc.Initialize(uType);
+        tc.setOccupantType(OccupantType.UNIT);
+        tc.setOccupyingUnit(uc);
 		return uc;
 	}
 	

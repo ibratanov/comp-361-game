@@ -451,6 +451,8 @@ public class UnitComponent : GenericComponent
     public void die()
     {
 		TileComponent tc = this.GetComponent<TileComponent>();
+        tc.setOccupyingUnit(null);
+        tc.setOccupantType(OccupantType.NONE);
 		StructureComponent tombstone = new StructureComponent(StructureType.TOMBSTONE, tc);
 		tc.setOccupyingStructure(tombstone);
         GameObject.Destroy(this.getGameObject());
