@@ -134,7 +134,7 @@ public class UnitComponent : GenericComponent
 
 			bool successfullyMoved = false;
             switch (occType)
-            { //TODO: Check if switch properly checks enum equality
+            { 
                 case OccupantType.NONE:
                     if (lType == LandType.SEA || (_unitType == UnitType.KNIGHT && lType == LandType.FOREST))
                     {
