@@ -10666,7 +10666,7 @@ MonoBehaviour:
   - {fileID: 103102, guid: 9076caf9eb2eded48b668c0ef5934566, type: 2}
   - {fileID: 119074, guid: 864af7426bb87a9478ec30764f0d3d6e, type: 2}
   _structures:
-  - {fileID: 169860, guid: c72c6832cfc869b4aae43094e36caaaf, type: 2}
+  - {fileID: 159996, guid: 6649e3d2b0fdacd4ca5418bc2d6afe1e, type: 2}
   - {fileID: 141584, guid: 6827576947f9b3741bee0709f5aa9a22, type: 2}
   _villageMaterials: []
 --- !u!4 &1434276744
@@ -12057,6 +12057,10 @@ Prefab:
       propertyPath: _villagerUnits.Array.data[4]
       value: 
       objectReference: {fileID: 131678, guid: 8d7c301546ab3774394320d5551b3c20, type: 2}
+    - target: {fileID: 11495782, guid: 83d94e482f11beb47bddc447bbfd84c6, type: 2}
+      propertyPath: _structures.Array.data[0]
+      value: 
+      objectReference: {fileID: 159996, guid: 6649e3d2b0fdacd4ca5418bc2d6afe1e, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 83d94e482f11beb47bddc447bbfd84c6, type: 2}
   m_RootGameObject: {fileID: 1434276742}
