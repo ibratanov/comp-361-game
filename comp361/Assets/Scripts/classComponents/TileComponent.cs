@@ -445,8 +445,7 @@ public class TileComponent : GenericComponent
 		if(this.GetComponent<UnitComponent>()){
 			_game.setLastSelectedUnit(this.GetComponent<UnitComponent>());			
 			PlayerComponent pc = this.GetComponent<UnitComponent>().getVillage().getPlayer();
-			if (pc.getUserName().Equals(_game.getCurrentPlayer().getUserName()))
-			{
+			if( canSelect(pc) ){
 				_menus.HideVillageActions();
 				Debug.Log("Unit");
 				_menus.DisplayUnitActions();
@@ -456,7 +455,7 @@ public class TileComponent : GenericComponent
 		{
 			PlayerComponent pc = this.GetComponent<VillageComponent>().getPlayer();
 			//print ("village's player " + pc.getUserName());
-			if (pc.getUserName().Equals (_game.getCurrentPlayer().getUserName ()))
+			if ( canSelect(pc) )
 			{
 				_menus.HideUnitActions();
 				Debug.Log("Village");
@@ -472,7 +471,6 @@ public class TileComponent : GenericComponent
 		{
 			_game.moveLastSelectedUnit();
 		}
-
 
 		/*
         if (this._occupyingUnit != null)
@@ -508,7 +506,19 @@ public class TileComponent : GenericComponent
         }
         */
 	}
-	
+
+	//True if the person playing is the current player and the selected object belongs to that player
+	private bool canSelect(PlayerComponent pc){
+		//Online Game
+		if(Network.isClient || Network.isServer){
+			return pc.getUserName().Equals(_game.getCurrentPlayer().getUserName()) && pc.getUserName().Equals( _game.getUser().getUserName() );
+		}
+		//Offline Game
+		else{
+			return pc.getUserName().Equals(_game.getCurrentPlayer().getUserName());
+		}
+	}
+
 	public void Deselect(){
 		UnhighlightRegion();
 		isSelected = false;
