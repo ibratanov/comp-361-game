@@ -14,8 +14,9 @@ public class GUIManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		for(int i = 0; i < _menus.Length; ++i){
-			if( (_menus[i].name.Contains("Menu_Title") && !_menus[i].name.Contains("Online")) 
-			   || _menus[i].name.Contains("Menu_Background")){
+			if( _menus[i].name.Contains("Menu_Login_Main") 
+			   || _menus[i].name.Contains("Menu_Background")
+			   || _menus[i].name.Contains("Menu_LoadedProfiles")){
 				_menus[i].SetActive(true);
 			}
 			else{
@@ -56,17 +57,17 @@ public class GUIManager : MonoBehaviour {
 	}
 
 	public void HideLoadedProfilePanel(){
-		for(int i = 0; i < _inGamePanels.Length; ++i){
-			if(_inGamePanels[i].name.Contains("Menu_LoadedProfiles")){
-				_inGamePanels[i].SetActive(false);
+		for(int i = 0; i < _menus.Length; ++i){
+			if(_menus[i].name.Contains("Menu_LoadedProfiles")){
+				_menus[i].SetActive(false);
 			}
 		}
 	}
 
 	public void DisplayLoadedProfilePanel(){
-		for(int i = 0; i < _inGamePanels.Length; ++i){
-			if(_inGamePanels[i].name.Contains("Menu_LoadedProfiles")){
-				_inGamePanels[i].SetActive(true);
+		for(int i = 0; i < _menus.Length; ++i){
+			if(_menus[i].name.Contains("Menu_LoadedProfiles")){
+				_menus[i].SetActive(true);
 			}
 		}
 	}
