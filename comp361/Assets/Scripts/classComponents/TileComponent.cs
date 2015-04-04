@@ -41,6 +41,7 @@ public class TileComponent : GenericComponent
 	private bool _drawUpdated = true; //True when an update to the visuals need to be made. Use UpdateDraw() to turn on.
 	
 	public bool isSelected = false;
+	private int _tID = -1; //tile ID
 	
 	/*********************
 	 *     ATTRIBUTES    *
@@ -293,6 +294,14 @@ public class TileComponent : GenericComponent
 		_occupantType = OccupantType.NONE;
 		_occupyingStructure = new StructureComponent(StructureType.NONE, this);
 		_neighbours = new List<TileComponent>(6);
+	}
+
+	public void setID(int id){
+		_tID = id;
+	}
+
+	public int getID(){
+		return _tID;
 	}
 	
 	public List<TileComponent> breadthFS() {

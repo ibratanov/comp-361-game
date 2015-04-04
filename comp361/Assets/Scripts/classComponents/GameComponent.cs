@@ -38,6 +38,15 @@ public class GameComponent : GenericComponent
 	/*********************
 	 *  GETTERS/SETTERS  *
 	 ********************/
+	public TileComponent GetTileByID(int id){
+		foreach(TileComponent tile in _mapTiles){
+			if(tile.getID() == id){
+				return tile;
+			}
+		}
+		return null;
+	}
+
 	public bool isMoveStarted()
 	{
 		return _moveStarted;
@@ -102,7 +111,16 @@ public class GameComponent : GenericComponent
 	
 	public void hireVillagerOnLastSelected(int unitType)
 	{
+		if(Network.isServer||Network.isClient){
+			networkView.RPC("RPCHireVillagerOnLastSelected", RPCMode.Others, _lastSelectedTile.getID(), unitType);
+		}
 		_lastSelectedTile.getVillage().hireVillager((UnitType) unitType);
+	}
+	[RPC]
+	public void RPCHireVillagerOnLastSelected(int tileID, int unitType)
+	{
+		TileComponent tc = GetTileByID(tileID);
+		tc.getVillage().hireVillager((UnitType) unitType);
 	}
 	
 	public void upgradeLastSelectedVillage()
@@ -153,9 +171,9 @@ public class GameComponent : GenericComponent
 	public void newGame(List<PlayerComponent> participants) {
 		NewGameInit();
 		InitializePlayers();
-		BeginRound();
 		_mapGenerator.GenerateMap();
 		GenerateRegions();
+		BeginRound();
 	}
 	
 	//Players will increment their turns in alphabetical order to maintain network consistency 
@@ -298,14 +316,15 @@ public class GameComponent : GenericComponent
 	[RPC]
 	private void RPCBeginRound()
 	{
-		print ("new round");
 		_roundCount++;
 		_guiManager.DisplayRoundPanel(_roundCount);
 		StartCoroutine("delaySetPlayer");
 		
 		if (_roundCount > 1)
 		{
-			TreeGrowthPhase();
+			if(!Network.isClient){ //Random actions should only be handled by the server
+				TreeGrowthPhase();
+			}
 			foreach (PlayerComponent p in _remainingPlayers)
 			{
 				PlayerPhase(p);
@@ -394,6 +413,14 @@ public class GameComponent : GenericComponent
 	
 	public void endTurn()
 	{
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCEndTurn", RPCMode.Others);
+		}
+		RPCEndTurn();
+	}
+
+	[RPC]
+	private void RPCEndTurn(){
 		_currentPlayerIndex = (_currentPlayerIndex + 1) % _remainingPlayers.Count;
 		
 		if (_lastSelectedTile != null && _lastSelectedTile.isSelected)
@@ -403,12 +430,13 @@ public class GameComponent : GenericComponent
 		
 		if (_currentPlayerIndex == 0)
 		{
-			BeginRound();
-			
+			if(!Network.isClient){ //Only the server should call BeginRound, otherwise it'll happen twice for a client
+				BeginRound();
+			}
 		}
 		else
 		{
-			setCurrentPlayer (_currentPlayerIndex);
+			StartCoroutine("delaySetPlayer");
 		}
 	}
 	
