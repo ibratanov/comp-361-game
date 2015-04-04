@@ -19,6 +19,7 @@ public class MapGenerator : MonoBehaviour {
 	public Vector3 _tileDiagonal = new Vector3(1.5f, 0, 0.866f);
 	private TileComponent[,] _landTiles;
 	private TileComponent[,] _waterTiles;
+	private int _idCounter = 0;
 	
 	public void GenerateMap(){
 		GenerateSquareGrid( _rows, _columns, _origin, _tileHeight, _tileDiagonal);
@@ -88,6 +89,7 @@ public class MapGenerator : MonoBehaviour {
 		GameObject gameTile = (GameObject)Instantiate(_gameTile, position, Quaternion.identity);
 		//gameTile.transform.parent = this.transform;
 		_landTiles[i,j] = gameTile.GetComponent<TileComponent>();
+		_landTiles[i,j].setID(_idCounter++);
 		gameTile.transform.parent = this.transform; //Keep things organized with a parental hierarchy
 //		_landTiles[i,j].setTileGameObject(gameTile);
 		_landTiles[i,j].setLandType(LandType.GRASS);

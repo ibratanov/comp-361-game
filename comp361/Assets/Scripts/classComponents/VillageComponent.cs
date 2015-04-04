@@ -249,7 +249,8 @@ public class VillageComponent : GenericComponent
 			if (_controlledRegion[i].getOccupantType() == OccupantType.NONE)
 			{
 				hasSpace = true;
-				UnitComponent unit = CreateUnit(_controlledRegion[i], unitType);
+				CreateUnit(i, unitType);
+				/*
 				_supportingUnits.Add(unit);
 
                 if (unitType != UnitType.PEASANT && unitType != UnitType.SOLDIER)
@@ -260,6 +261,7 @@ public class VillageComponent : GenericComponent
                 {
                     unit.GatherWood(unit.getLocation());
                 }
+                */
 				break;
 			}
 		}
@@ -277,12 +279,32 @@ public class VillageComponent : GenericComponent
 	/// <returns>The unit.</returns>
 	/// <param name="tc">The tileComponent which will own this unit.</param>
 	/// <param name="uType">The type of unit to create</param>
-	public UnitComponent CreateUnit(TileComponent tc, UnitType uType){
+	public void CreateUnit(int regionIndex, UnitType uType){
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCCreateUnit", RPCMode.Others, regionIndex, (int)uType);
+		}
+		RPCCreateUnit(regionIndex, (int)uType);
+	}
+
+	[RPC]
+	public void RPCCreateUnit(int regionIndex, int uTypeIndex){
+		UnitType uType = (UnitType)uTypeIndex;
+		TileComponent tc = _controlledRegion[regionIndex];
 		UnitComponent uc = tc.gameObject.AddComponent<UnitComponent>();
 		uc.Initialize(uType);
-        tc.setOccupantType(OccupantType.UNIT);
-        tc.setOccupyingUnit(uc);
-		return uc;
+		tc.setOccupantType(OccupantType.UNIT);
+		tc.setOccupyingUnit(uc);
+
+		_supportingUnits.Add(uc);
+		
+		if (uType != UnitType.PEASANT && uType != UnitType.SOLDIER)
+		{
+			uc.TrampleMeadow(uc.getLocation());
+		}
+		if (uType != UnitType.KNIGHT && uType != UnitType.CANNON && _controlledRegion[regionIndex].getLandType() == LandType.FOREST)
+		{
+			uc.GatherWood(uc.getLocation());
+		}
 	}
 	
 	public void addGold(uint amount) {
