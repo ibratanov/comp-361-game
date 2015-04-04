@@ -127,7 +127,8 @@ public class GameComponent : GenericComponent
 	{
 		_lastSelectedTile.getVillage().upgradeVillage();
 	}
-	
+
+	/*
 	public void startMoveLastSelectedUnit()
 	{
 		_moveStarted = true;
@@ -135,12 +136,27 @@ public class GameComponent : GenericComponent
 		//_lastSelectedTile.UpdateDraw();
 		_lastSelectedUnit.moveUnit(_lastSelectedTile);
 	}
+	*/
 	
 	public void moveLastSelectedUnit()
 	{
+		_moveStarted = true;
 		//_lastSelectedTile.UnhighlightNeighbours();
 		//_lastSelectedTile.UpdateDraw();
+		if(Network.isServer || Network.isClient){
+			int tileID_current = _lastSelectedUnit.GetComponent<TileComponent>().getID();
+			int tileID_destination = _lastSelectedTile.getID();
+			networkView.RPC("RPCMoveLastSelectedUnit", RPCMode.Others, tileID_current, tileID_destination);
+		}
 		_lastSelectedUnit.moveUnit(_lastSelectedTile);
+	}
+	[RPC]
+	public void RPCMoveLastSelectedUnit(int tileID_current, int tileID_destination)
+	{
+		TileComponent tile_current = GetTileByID(tileID_current);
+		UnitComponent uc = tile_current.GetComponent<UnitComponent>();
+		TileComponent tile_destination = GetTileByID(tileID_destination);
+		uc.moveUnit(tile_destination);
 	}
 	
 	public void finishMoveLastSelectedUnit()
