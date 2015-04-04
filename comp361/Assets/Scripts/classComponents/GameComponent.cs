@@ -147,13 +147,7 @@ public class GameComponent : GenericComponent
 	public void newGame(List<PlayerComponent> participants) {
 		InitializePlayers();
 		BeginRound();
-		StartCoroutine("delaySetPlayer");
-		//setCurrentPlayer(_currentPlayerIndex); //this is done in delaySetPlayer()
-		
-		if(Network.isServer){
-			networkView.RPC("NewGameInit", RPCMode.All);
-		}
-		
+		NewGameInit();
 		_mapGenerator.GenerateMap();
 		GenerateRegions();
 	}
@@ -177,9 +171,16 @@ public class GameComponent : GenericComponent
 		});
 		_currentPlayerIndex = 0;
 	}
-	
-	[RPC]
+
 	private void NewGameInit(){
+		if(Network.isServer){
+			networkView.RPC("RPCNewGameInit", RPCMode.Others);
+		}
+		RPCNewGameInit();
+	}
+
+	[RPC]
+	private void RPCNewGameInit(){
 		_settingsButtonText.text = _playerManager.GetPlayer(0).getUserName();
 		_guiManager.HideLoadedProfilePanel();
 	}
@@ -277,8 +278,16 @@ public class GameComponent : GenericComponent
 	}
 	
 	#region EveryRound
-	
-	public void BeginRound()
+
+	public void BeginRound(){
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCBeginRound", RPCMode.Others);
+		}
+		RPCBeginRound();
+	}
+
+	[RPC]
+	private void RPCBeginRound()
 	{
 		print ("new round");
 		_roundCount++;
