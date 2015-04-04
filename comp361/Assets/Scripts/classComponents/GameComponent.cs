@@ -22,6 +22,7 @@ public class GameComponent : GenericComponent
 	int _roundCount; 
 	
 	PlayerComponent _currentPlayer;
+	PlayerComponent _user;
 	PlayerComponent[] _participants;
 	List<PlayerComponent> _remainingPlayers;
 	TileComponent[,] _mapTiles;
@@ -50,6 +51,11 @@ public class GameComponent : GenericComponent
 	public PlayerComponent getCurrentPlayer()
 	{
 		return _currentPlayer;
+	}
+
+	public PlayerComponent getUser()
+	{
+		return _user;
 	}
 	
 	public TileComponent getLastSelectedTile()
@@ -145,9 +151,9 @@ public class GameComponent : GenericComponent
 	/// </summary>
 	/// <param name="participants">Participants.</param>
 	public void newGame(List<PlayerComponent> participants) {
+		NewGameInit();
 		InitializePlayers();
 		BeginRound();
-		NewGameInit();
 		_mapGenerator.GenerateMap();
 		GenerateRegions();
 	}
@@ -164,6 +170,7 @@ public class GameComponent : GenericComponent
 	[RPC]
 	private void RPCInitializePlayers() {
 		_remainingPlayers = _playerManager.GetPlayers();
+		_user = _remainingPlayers[0];
 		_remainingPlayers.Sort(
 			delegate(PlayerComponent p1, PlayerComponent p2) 
 			{ 
@@ -181,7 +188,9 @@ public class GameComponent : GenericComponent
 
 	[RPC]
 	private void RPCNewGameInit(){
-		_settingsButtonText.text = _playerManager.GetPlayer(0).getUserName();
+		if(Network.isServer || Network.isClient){
+			_settingsButtonText.text = _playerManager.GetPlayer(0).getUserName();
+		}
 		_guiManager.HideLoadedProfilePanel();
 	}
 	
