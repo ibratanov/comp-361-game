@@ -430,6 +430,7 @@ public class VillageComponent : GenericComponent
 		_goldStock = 0;
 		_woodStock = 0;
 		_player = player;
+		_player.addVillage(this);
 		_villageType = vType;
 		_controlledRegion = new List<TileComponent>();
 		_supportingUnits = new List<UnitComponent>();

@@ -72,7 +72,7 @@ public class PlayerComponent : GenericComponent
 	 *      METHODS      *
 	 ********************/
 
-	public void add(VillageComponent village) {
+	public void addVillage(VillageComponent village) {
         _villages.Add(village);
 	}
 

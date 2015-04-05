@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using Assets.Scripts.classComponents;
+using System;
 
 public enum LandType { 
 	GRASS,
@@ -384,7 +385,6 @@ public class TileComponent : GenericComponent
 	
 	// Update is called once per frame
 	void Update() {
-		
 		//Calling Select() from any other method seems to break the prefab's connection to its materials, wrecking all the colours.
 		// Therefore, call the "UpdateDraw()" function to update the selection.
 		if(_drawUpdated){
@@ -404,9 +404,9 @@ public class TileComponent : GenericComponent
 	 *   SELECTION EVENTS  *
 	 **********************/
 	
-	
 	void OnMouseDown() {
 		//Deselect();
+
 	}
 	
 	void OnMouseUp(){
@@ -434,6 +434,7 @@ public class TileComponent : GenericComponent
 	
 	public void Select()
 	{
+		print (getLandType());
 		isSelected = true;
 		if (_game.getLastSelectedTile() != null)
 		{

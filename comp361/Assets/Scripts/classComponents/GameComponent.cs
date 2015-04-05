@@ -338,11 +338,14 @@ public class GameComponent : GenericComponent
 		
 		if (_roundCount > 1)
 		{
+			print ("begin round");
 			if(!Network.isClient){ //Random actions should only be handled by the server
+				print ("tree growth phase");
 				TreeGrowthPhase();
 			}
 			foreach (PlayerComponent p in _remainingPlayers)
 			{
+				print (p.getUserName() + "'s turn");
 				PlayerPhase(p);
 			}
 		}
@@ -381,8 +384,10 @@ public class GameComponent : GenericComponent
 	
 	public void PlayerPhase(PlayerComponent player)
 	{
+		print (player.getUserName());
 		foreach (VillageComponent vc in player.getVillages())
 		{
+			print ("loop new village");
 			// tombstone phase
 			foreach (TileComponent tc in vc.getControlledRegion())
 			{
@@ -402,16 +407,19 @@ public class GameComponent : GenericComponent
 			vc.produceRoads();
 			
 			// income phase
-			foreach (TileComponent tc in vc.getControlledRegion ())
-			{
-				vc.addGold (tc.getRevenue());
-			}
+//			foreach (TileComponent tc in vc.getControlledRegion ())
+//			{
+//				vc.addGold (tc.getRevenue());
+//			}
+			vc.updateGoldStock();
+			print (vc.getGoldStock());
 			
 			// payment phase
 			vc.payWages ();
 			
 			// move & purchase phase begin when function returns
 		}
+		print ("looped through villages");
 	}
 	
 	#endregion

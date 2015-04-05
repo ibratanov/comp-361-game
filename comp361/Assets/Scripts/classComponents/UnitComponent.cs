@@ -569,7 +569,7 @@ public class UnitComponent : GenericComponent
             {
                 VillageComponent newHovel = new VillageComponent(0, 0, enemyPlayer, region, null, VillageType.HOVEL);
 
-                enemyPlayer.add(newHovel);
+                enemyPlayer.addVillage(newHovel);
 
                 foreach (TileComponent tile in region)
                 {
