@@ -206,17 +206,72 @@ public class GUIManager : MonoBehaviour {
         }
     }
 
-	public void DisplayUnitActions(){
+	public void DisplayUnitActions(UnitType unit){
 		for(int i = 0; i < _inGamePanels.Length; ++i){
             if (_inGamePanels[i].name.Contains("Panel_Unit_Actions"))
             {
 				_inGamePanels[i].SetActive(true);
+
+				switch (unit)
+				{
+				case UnitType.INFANTRY:
+					foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
+					{
+						if (b.name.Contains("Harvest"))
+						{
+							DisableButton(b);
+						}
+						break;
+					}
+					break;
+				case UnitType.SOLDIER:
+					foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
+					{
+						if (b.name.Contains("Harvest"))
+						{
+							DisableButton(b);
+						}
+						break;
+					}
+					break;
+				case UnitType.KNIGHT:
+					foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
+					{
+						if (b.name.Contains("Harvest") || b.name.Contains ("Upgrade") || b.name.Contains("BuildRoad") || b.name.Contains ("OpenFire"))
+						{
+							DisableButton(b);
+						}
+					}
+					break;
+				default:
+					break;
+				}
 			}
 			else if (!(_inGamePanels[i].name.Contains("CurrentPlayer")))
 			{
 				_inGamePanels[i].SetActive(false);
+				foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
+				{
+					EnableButton(b);
+				}
 			}
 		}
+	}
+
+	void DisableButton(Button b)
+	{
+		b.enabled = false;
+		ColorBlock cb = b.colors;
+		cb.normalColor = Color.grey;
+		b.colors = cb;
+	}
+
+	void EnableButton(Button b)
+	{
+		b.enabled = true;
+		ColorBlock cb = b.colors;
+		cb.normalColor = Color.white;
+		b.colors = cb;
 	}
 
     public void HideUnitActions()

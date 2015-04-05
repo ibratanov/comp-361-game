@@ -467,7 +467,7 @@ public class TileComponent : GenericComponent
 			if( canSelect(pc) ){
 				_menus.HideVillageActions();
 				Debug.Log("Unit");
-				_menus.DisplayUnitActions();
+				_menus.DisplayUnitActions(this.GetComponent<UnitComponent>().getUnitType());
 			}
 		}
 		else if (this.GetComponent<VillageComponent>())
