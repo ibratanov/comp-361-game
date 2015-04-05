@@ -451,6 +451,14 @@ public class TileComponent : GenericComponent
             _game.fireCannonLastSelectedUnit();
         }
 		HighlightRegion();
+		if (_village != null)
+		{
+			if (canSelect(_village.getPlayer()))
+			{
+				_menus.setGoldStock((int)_village.getGoldStock());
+				_menus.setWoodStock((int)_village.getWoodStock());
+			}
+		}
 		
 		if(this.GetComponent<UnitComponent>()){
 			_game.setLastSelectedUnit(this.GetComponent<UnitComponent>());			
