@@ -460,9 +460,15 @@ public class TileComponent : GenericComponent
 				_menus.setWoodStock((int)_village.getWoodStock());
 			}
 		}
-		
+
+
 		if(this.GetComponent<UnitComponent>()){
-			_game.setLastSelectedUnit(this.GetComponent<UnitComponent>());			
+			_game.setLastSelectedUnit(this.GetComponent<UnitComponent>());
+
+            if (_game.isMerging())
+            {
+                _game.startMergeLastSelectedUnit(this.GetComponent<UnitComponent>());
+            }
 			PlayerComponent pc = this.GetComponent<UnitComponent>().getVillage().getPlayer();
 			if( canSelect(pc) ){
 				_menus.HideVillageActions();
