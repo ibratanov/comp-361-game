@@ -597,7 +597,11 @@ public class TileComponent : GenericComponent
 	
 	public void Highlight(){
 		int lastMaterialIndex = _terrainGameObject.renderer.materials.Length - 1;
-		_terrainGameObject.renderer.materials[lastMaterialIndex].SetColor("_Color", PLAYER_COLOURS[_playerIndex]);
+		for(int i = 0; i < _terrainGameObject.renderer.materials.Length; ++i){
+			if(_terrainGameObject.renderer.materials[i].name.Contains("surface_top")){
+				_terrainGameObject.renderer.materials[i].SetColor("_Color", PLAYER_COLOURS[_playerIndex]);
+			}
+		}
 	}
 	
 	public void Unhighlight(){
@@ -606,8 +610,11 @@ public class TileComponent : GenericComponent
 		newColour.r = Mathf.Min(colour.r + 0.5f, 1.0f);
 		newColour.g = Mathf.Min(colour.g + 0.5f, 1.0f);
 		newColour.b = Mathf.Min(colour.b + 0.5f, 1.0f);
-		int lastMaterialIndex = _terrainGameObject.renderer.materials.Length - 1;
-		_terrainGameObject.renderer.materials[lastMaterialIndex].SetColor("_Color", newColour);
+		for(int i = 0; i < _terrainGameObject.renderer.materials.Length; ++i){
+			if(_terrainGameObject.renderer.materials[i].name.Contains("surface_top")){
+				_terrainGameObject.renderer.materials[i].SetColor("_Color", newColour);
+			}
+		}
 	}
 	
 	public void HighlightNeighbours(){
