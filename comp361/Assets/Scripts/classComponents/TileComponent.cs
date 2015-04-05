@@ -358,6 +358,11 @@ public class TileComponent : GenericComponent
 			}
 		}
 	}
+
+    public void buildWatchtower()
+    {
+
+    }
 	
 	public void createRoad() {
 		_hasRoad = true;

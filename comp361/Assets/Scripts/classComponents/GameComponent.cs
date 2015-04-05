@@ -151,6 +151,11 @@ public class GameComponent : GenericComponent
         return _merging;
     }
 
+    public void buildWatchtowerLastSelectedTile()
+    {
+        _lastSelectedTile.buildWatchtower();
+    }
+
 	/*
 	public void startMoveLastSelectedUnit()
 	{
