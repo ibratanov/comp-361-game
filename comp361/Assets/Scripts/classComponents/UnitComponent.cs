@@ -572,7 +572,8 @@ public class UnitComponent : GenericComponent
 
     public void cultivateMeadow()
     {
-
+        _currentAction = ActionType.CULTIVATING_MEADOW;
+        _roundsCultivating = 2;
     }
 
     public void moveUnit(TileComponent destination)

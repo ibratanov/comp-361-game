@@ -181,7 +181,7 @@ public class GameComponent : GenericComponent
 
     public void cultivateMeadowLastSelectedUnit()
     {
-        
+        _lastSelectedUnit.cultivateMeadow();
     }
 
 	/*
