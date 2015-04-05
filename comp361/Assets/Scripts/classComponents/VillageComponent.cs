@@ -243,6 +243,7 @@ public class VillageComponent : GenericComponent
 			}
 		}
 		_goldStock = _goldStock - UnitComponent.INITIAL_COST[unitType];
+		_menus.setGoldStock((int)_goldStock);
 		bool hasSpace = false;
 		for (int i = 0; i < _controlledRegion.Count; i++)
 		{
