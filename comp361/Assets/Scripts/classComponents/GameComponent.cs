@@ -173,9 +173,9 @@ public class GameComponent : GenericComponent
         return _attacking;
     }
 
-    public void watchTowerAttackLastSelectedUnit()
+    public void watchTowerAttackLastSelectedTile()
     {
-        _lastSelectedStructure.Attack(_lastSelectedUnit);
+        _lastSelectedStructure.Attack(_lastSelectedTile);
         _attacking = false;
     }
 
