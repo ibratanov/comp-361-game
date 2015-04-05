@@ -305,6 +305,8 @@ public class VillageComponent : GenericComponent
 		{
 			uc.GatherWood(uc.getLocation());
 		}
+
+		tc.Highlight();
 	}
 	
 	public void addGold(uint amount) {
