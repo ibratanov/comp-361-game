@@ -420,7 +420,7 @@ public class TileComponent : GenericComponent
 				//                _terrainGameObject = (GameObject)Instantiate(_assets.getVillageGameObject(_village.getVillageType()), this.transform.position, Quaternion.identity);
 				//               _terrainGameObject.transform.parent = this.transform;
 			}
-			//            Highlight();
+			//Highlight();
 			_drawUpdated = false;
 		}
 	}

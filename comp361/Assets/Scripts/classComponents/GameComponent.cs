@@ -427,7 +427,7 @@ public class GameComponent : GenericComponent
 					    randomNeighbour.getOccupantType() == OccupantType.NONE)
 					{
 						randomNeighbour.setLandType(LandType.FOREST);
-						randomNeighbour.UpdateDraw();
+						randomNeighbour.Unhighlight();
 					}
 				}
 			}

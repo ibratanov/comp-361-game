@@ -250,8 +250,6 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
-<<<<<<< HEAD
-=======
     public void DisplayStructureActions()
     {
         for (int i = 0; i < _inGamePanels.Length; ++i)
@@ -273,7 +271,6 @@ public class GUIManager : MonoBehaviour {
             }
         }
     }
->>>>>>> master
 
     public void HideVillageActions()
     {
