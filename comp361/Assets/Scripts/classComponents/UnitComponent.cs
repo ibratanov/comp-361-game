@@ -613,6 +613,7 @@ public class UnitComponent : GenericComponent
             if (isReachable)
             {
                 bool isRelocated = setDestination(destination);
+				if (isRelocated) destination.connectRegions();
                 if (isRelocated && _unitType == UnitType.CANNON) _currentAction = ActionType.ALREADY_MOVED;
             }
             else

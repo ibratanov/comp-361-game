@@ -330,7 +330,7 @@ public class TileComponent : GenericComponent
 		foreach (TileComponent tile in _neighbours) {
 			VillageComponent neighbourVillage = tile.getVillage();
 			
-			if (neighbourVillage && neighbourVillage != _village && neighbourVillage.getPlayer() == _village.getPlayer()) {
+			if (neighbourVillage && neighbourVillage != _village && neighbourVillage.getPlayer() && neighbourVillage.getPlayer() == _village.getPlayer()) {
 				VillageComponent strongerVillage;
 				VillageComponent weakerVillage;
 				VillageType neighbourVillageType = neighbourVillage.getVillageType();
