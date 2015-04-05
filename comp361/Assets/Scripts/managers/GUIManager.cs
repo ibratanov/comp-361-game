@@ -87,7 +87,7 @@ public class GUIManager : MonoBehaviour {
         {
             if (_inGamePanels[i].name.Contains("Panel_Resources"))
             {
-                _inGamePanels[i].SetActive(true);
+                //_inGamePanels[i].SetActive(true);
                 for (int j = 0; j < _inGamePanels[i].transform.childCount; j++)
                 {
                     if (_inGamePanels[i].transform.GetChild(j).name.Contains("Text_WoodCount"))
@@ -105,7 +105,7 @@ public class GUIManager : MonoBehaviour {
 		{
 			if (_inGamePanels[i].name.Contains("Panel_Resources"))
 			{
-				_inGamePanels[i].SetActive(true);
+				//_inGamePanels[i].SetActive(true);
 				for (int j = 0; j < _inGamePanels[i].transform.childCount; j++)
 				{
 					if (_inGamePanels[i].transform.GetChild(j).name.Contains("Text_GoldCount"))
