@@ -10,6 +10,7 @@ public class GUIManager : MonoBehaviour {
 	public Vector3 _initZoomCameraPos;
 
 	public float _fadeSpeed = 0.8f;
+    public float _errorFadeSpeed = 1.5f;
 
 	public ColorBlock _standardButtonColors;
 
@@ -191,7 +192,7 @@ public class GUIManager : MonoBehaviour {
 
     IEnumerator delayErrorDisappear()
     {
-        yield return new WaitForSeconds(_fadeSpeed);
+        yield return new WaitForSeconds(_errorFadeSpeed);
         DisappearErrorMessage();
     }
 

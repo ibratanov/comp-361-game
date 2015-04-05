@@ -570,6 +570,11 @@ public class UnitComponent : GenericComponent
         GameObject.Destroy(this.getGameObject());
     }
 
+    public void cultivateMeadow()
+    {
+
+    }
+
     public void moveUnit(TileComponent destination)
     {
         if (_currentAction == ActionType.READY_FOR_ORDERS)

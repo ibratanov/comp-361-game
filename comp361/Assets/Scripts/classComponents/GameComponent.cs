@@ -179,6 +179,11 @@ public class GameComponent : GenericComponent
         _attacking = false;
     }
 
+    public void cultivateMeadowLastSelectedUnit()
+    {
+        
+    }
+
 	/*
 	public void startMoveLastSelectedUnit()
 	{
