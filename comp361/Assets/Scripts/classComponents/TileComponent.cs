@@ -128,6 +128,10 @@ public class TileComponent : GenericComponent
 	public VillageComponent getVillage() {
 		return _village;
 	}
+
+	public void setVillage(VillageComponent newVillage) {
+		_village = newVillage;
+	}
 	
 	//Updates the reference to the VillageComponent that controls the region
 	public void UpdateVillageReference() {
