@@ -1249,7 +1249,7 @@ MonoBehaviour:
   _joinAvailablePanel: {fileID: 124624595}
   _joinButtonPrefab: {fileID: 163384, guid: b24364c508982894eb15b02ff4a038ee, type: 2}
   _currentMenu: {fileID: 124624595}
-  _connectedMenu: {fileID: 0}
+  _connectedMenu: {fileID: 680386879}
   _playerManager: {fileID: 1679761668}
 --- !u!4 &137016180
 Transform:
