@@ -366,7 +366,8 @@ public class TileComponent : GenericComponent
             if (_village.getWoodStock() >= 5)
             {
                 _village.removeWood(5);
-                StructureComponent tower = new StructureComponent(StructureType.WATCHTOWER, this);
+                StructureComponent tower = _terrainGameObject.AddComponent<StructureComponent>();
+                tower.setLocation(this);
                 tower.CreateStructure(StructureType.WATCHTOWER);
                 _occupantType = OccupantType.STRUCTURE;
                 _occupyingStructure = tower;
@@ -519,15 +520,21 @@ public class TileComponent : GenericComponent
 				_menus.setWoodStock((int)_village.getWoodStock());
 			}
 		}
-        else if (this.GetComponent<StructureComponent>())
+        else if (this._occupyingStructure != null)
         {
-            StructureComponent sc = this.GetComponent<StructureComponent>();
+            StructureComponent sc = this._occupyingStructure;
             _game.setLastSelectedStructure(sc);
+            if (sc.getStructureType() == StructureType.WATCHTOWER)
+            {
+                _menus.DisplayStructureActions();
+                _menus.HideVillageActions();
+                _menus.HideUnitActions();
+            }
         }
-		else
-		{
-			Debug.Log("None");
-		}
+        else
+        {
+            Debug.Log("None");
+        }
 		if (_game.isMoveStarted())
 		{
 			_game.moveLastSelectedUnit();
