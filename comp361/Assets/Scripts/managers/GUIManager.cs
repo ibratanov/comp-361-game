@@ -214,48 +214,6 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
-	public void DisplayVillageActions(VillageComponent village){
-		for(int i = 0; i < _inGamePanels.Length; ++i){
-			if(_inGamePanels[i].name.Contains("Panel_Village_Actions")){
-				_inGamePanels[i].SetActive(true);
-
-				if (village.getVillageType() == VillageType.CASTLE || village.getWoodStock() < 8)
-				{
-					foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
-					{
-						if (b.name.Contains("Upgrade"))
-						{
-							DisableButton(b);
-							break;
-						}
-					}
-				}
-				else if (village.getVillageType() == VillageType.FORT)
-				{
-					if (village.getWoodStock() < 12)
-					{
-						foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
-						{
-							if (b.name.Contains("Upgrade"))
-							{
-								DisableButton(b);
-								break;
-							}
-						}
-					}
-				}
-			}
-			else if (!(_inGamePanels[i].name.Contains("CurrentPlayer")))
-			{
-				_inGamePanels[i].SetActive(false);
-				foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
-				{
-					EnableButton(b);
-				}
-			}
-		}
-	}
-
     public void DisplayStructureActions()
     {
         for (int i = 0; i < _inGamePanels.Length; ++i)
@@ -277,6 +235,48 @@ public class GUIManager : MonoBehaviour {
             }
         }
     }
+	
+	public void DisplayVillageActions(VillageComponent village){
+		for(int i = 0; i < _inGamePanels.Length; ++i){
+			if(_inGamePanels[i].name.Contains("Panel_Village_Actions")){
+				_inGamePanels[i].SetActive(true);
+
+				foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
+				{
+					if (b.name.Contains ("Upgrade"))
+					{
+						if (village.getVillageType() == VillageType.CASTLE || village.getWoodStock() < 8 ||
+						    (village.getVillageType() == VillageType.FORT && village.getWoodStock() < 12))
+						{
+							DisableButton(b);
+						}
+					}
+					else if (b.name.Contains ("Hire"))
+					{
+						if (village.getGoldStock() < 10)
+						{
+							DisableButton(b);
+						}
+					}
+					else if (b.name.Contains ("Watchtower"))
+					{
+						if (village.getVillageType() == VillageType.HOVEL || village.getWoodStock() < 5)
+						{
+							DisableButton(b);
+						}
+					}
+				}
+			}
+			else if (!(_inGamePanels[i].name.Contains("CurrentPlayer")))
+			{
+				_inGamePanels[i].SetActive(false);
+				foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
+				{
+					EnableButton(b);
+				}
+			}
+		}
+	}
 
     public void HideVillageActions()
     {
