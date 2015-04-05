@@ -9,6 +9,11 @@ namespace Assets.Scripts.classComponents
     [Serializable]
     public class GenericComponent : MonoBehaviour
     {
+        public GenericComponent()
+        {
+
+        }
+
 
         public void ThrowError(String message)
         {

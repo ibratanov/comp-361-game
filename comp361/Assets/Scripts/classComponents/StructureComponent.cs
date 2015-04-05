@@ -24,9 +24,10 @@ public class StructureComponent : GenericComponent
 	 *    CONSTRUCTOR    *
 	 ********************/
 
-	public StructureComponent (StructureType structureType, TileComponent location) {
+	public StructureComponent (StructureType structureType, TileComponent location)  {
 		_structureType = structureType;
 		_location = location;
+        _structureGameObject = new GameObject();
 	}
 
 	/*********************
@@ -75,6 +76,36 @@ public class StructureComponent : GenericComponent
 	{
 		_location = location;
 	}
+
+    public void Attack(TileComponent tc)
+    {
+        if (tc.getOccupantType() != OccupantType.UNIT)
+        {
+            ThrowError("There is no unit to attack on this tile.");
+        }
+        else
+        {
+            var uc = tc.getOccupyingUnit();
+            if (_location.getNeighbours().Contains(uc.getLocation()))
+            {
+                if (uc.getUnitType() == UnitType.PEASANT)
+                {
+                    uc.die();
+                }
+                else
+                {
+                    ThrowError("You cannot attack this unit with a watchtower.");
+                }
+            }
+            else
+            {
+                ThrowError("This unit is too far away to attack.");
+            }
+        }
+        
+
+
+    }
 
 	/*********************
 	 *      METHODS      *

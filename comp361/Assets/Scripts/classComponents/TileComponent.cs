@@ -358,6 +358,31 @@ public class TileComponent : GenericComponent
 			}
 		}
 	}
+
+    public void buildWatchtower()
+    {
+        if (_occupantType == OccupantType.NONE)
+        {
+            if (_village.getWoodStock() >= 5)
+            {
+                _village.removeWood(5);
+                StructureComponent tower = _terrainGameObject.AddComponent<StructureComponent>();
+                tower.setLocation(this);
+                tower.CreateStructure(StructureType.WATCHTOWER);
+                _occupantType = OccupantType.STRUCTURE;
+                _occupyingStructure = tower;
+            }
+            else
+            {
+                ThrowError("Insufficient wood.");
+            }
+
+        }
+        else
+        {
+            ThrowError("You cannot build a watchtower here because something else is already occupying this tile.");
+        }
+    }
 	
 	public void createRoad() {
 		_hasRoad = true;
@@ -460,9 +485,21 @@ public class TileComponent : GenericComponent
 				_menus.setWoodStock((int)_village.getWoodStock());
 			}
 		}
-		
+
+        if (_game.isAttacking())
+        {
+            _game.watchTowerAttackLastSelectedTile();
+        }
 		if(this.GetComponent<UnitComponent>()){
-			_game.setLastSelectedUnit(this.GetComponent<UnitComponent>());			
+
+            if (_game.isMerging())
+            {
+                _game.startMergeLastSelectedUnit(this.GetComponent<UnitComponent>());
+            }
+
+			_game.setLastSelectedUnit(this.GetComponent<UnitComponent>());
+
+
 			PlayerComponent pc = this.GetComponent<UnitComponent>().getVillage().getPlayer();
 			if( canSelect(pc) ){
 				_menus.HideVillageActions();
@@ -483,10 +520,21 @@ public class TileComponent : GenericComponent
 				_menus.setWoodStock((int)_village.getWoodStock());
 			}
 		}
-		else
-		{
-			Debug.Log("None");
-		}
+        else if (this._occupyingStructure != null)
+        {
+            StructureComponent sc = this._occupyingStructure;
+            _game.setLastSelectedStructure(sc);
+            if (sc.getStructureType() == StructureType.WATCHTOWER)
+            {
+                _menus.DisplayStructureActions();
+                _menus.HideVillageActions();
+                _menus.HideUnitActions();
+            }
+        }
+        else
+        {
+            Debug.Log("None");
+        }
 		if (_game.isMoveStarted())
 		{
 			_game.moveLastSelectedUnit();
@@ -556,7 +604,11 @@ public class TileComponent : GenericComponent
 	
 	public void Highlight(){
 		int lastMaterialIndex = _terrainGameObject.renderer.materials.Length - 1;
-		_terrainGameObject.renderer.materials[lastMaterialIndex].SetColor("_Color", PLAYER_COLOURS[_playerIndex]);
+		for(int i = 0; i < _terrainGameObject.renderer.materials.Length; ++i){
+			if(_terrainGameObject.renderer.materials[i].name.Contains("surface_top")){
+				_terrainGameObject.renderer.materials[i].SetColor("_Color", PLAYER_COLOURS[_playerIndex]);
+			}
+		}
 	}
 	
 	public void Unhighlight(){
@@ -565,8 +617,11 @@ public class TileComponent : GenericComponent
 		newColour.r = Mathf.Min(colour.r + 0.5f, 1.0f);
 		newColour.g = Mathf.Min(colour.g + 0.5f, 1.0f);
 		newColour.b = Mathf.Min(colour.b + 0.5f, 1.0f);
-		int lastMaterialIndex = _terrainGameObject.renderer.materials.Length - 1;
-		_terrainGameObject.renderer.materials[lastMaterialIndex].SetColor("_Color", newColour);
+		for(int i = 0; i < _terrainGameObject.renderer.materials.Length; ++i){
+			if(_terrainGameObject.renderer.materials[i].name.Contains("surface_top")){
+				_terrainGameObject.renderer.materials[i].SetColor("_Color", newColour);
+			}
+		}
 	}
 	
 	public void HighlightNeighbours(){

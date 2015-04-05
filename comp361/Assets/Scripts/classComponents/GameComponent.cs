@@ -29,8 +29,12 @@ public class GameComponent : GenericComponent
 	GameObject[,] _tileObjects;
 	TileComponent _lastSelectedTile;
 	UnitComponent _lastSelectedUnit;
+    StructureComponent _lastSelectedStructure;
+    UnitComponent _unitToMerge;
 	bool _moveStarted = false;
     bool _fireStarted = false;
+    bool _merging = false;
+    bool _attacking = false;
 	
 	Color _currentColour;
 	int _currentPlayerIndex;
@@ -86,7 +90,12 @@ public class GameComponent : GenericComponent
 	{
 		_lastSelectedUnit = lastSelectedUnit;
 	}
-	
+
+    public void setLastSelectedStructure(StructureComponent lastSelectedStructure)
+    {
+        _lastSelectedStructure = lastSelectedStructure;
+    }
+
 	void setCurrentPlayer(int index) {
 		_currentPlayer = _remainingPlayers[index];
 		_currentColour = TileComponent.PLAYER_COLOURS[index+1];
@@ -98,7 +107,7 @@ public class GameComponent : GenericComponent
 	public List<PlayerComponent> getRemainingPlayers() {
 		return _remainingPlayers;
 	}
-	
+
 	/*	void setRemainingPlayers(List<PlayerComponent> remainingPlayers) {
 		_remainingPlayers = remainingPlayers;
 	}
@@ -127,6 +136,48 @@ public class GameComponent : GenericComponent
 	{
 		_lastSelectedTile.getVillage().upgradeVillage();
 	}
+
+    public void upgradeLastSelectedUnit(int unitType)
+    {
+        _lastSelectedUnit.upgradeUnit((UnitType)unitType);
+    }
+
+    public void startMergeLastSelectedUnit(UnitComponent uc)
+    {
+        _lastSelectedUnit.CombineUnit(uc);
+        _merging = false;
+    }
+
+    public void setMerge()
+    {
+        _merging = true;
+    }
+
+    public bool isMerging()
+    {
+        return _merging;
+    }
+
+    public void buildWatchtowerLastSelectedTile()
+    {
+        _lastSelectedTile.buildWatchtower();
+    }
+
+    public void startAttacking()
+    {
+        _attacking = true;
+    }
+
+    public bool isAttacking()
+    {
+        return _attacking;
+    }
+
+    public void watchTowerAttackLastSelectedTile()
+    {
+        _lastSelectedStructure.Attack(_lastSelectedTile);
+        _attacking = false;
+    }
 
 	/*
 	public void startMoveLastSelectedUnit()
