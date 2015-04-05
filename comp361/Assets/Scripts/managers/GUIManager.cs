@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class GUIManager : MonoBehaviour {
 	public GameObject[] _menus;
 	public GameObject[] _inGamePanels;
+	public GameObject[] _actionPanels; // panels that are in the bottom-right corner
 
 	public GameObject[] _cameras; 
 	public Vector3 _initZoomCameraPos;
@@ -215,6 +216,27 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
+	#region ActionPanels
+
+	public void HideOtherActionPanels(string s)
+	{
+		if (s == string.Empty)
+		{
+			foreach (GameObject g in _actionPanels)
+			{
+				g.SetActive(false);
+			}
+			return;
+		}
+		foreach (GameObject g in _actionPanels)
+		{
+			if (!g.name.Contains (s))
+			{
+				g.SetActive(false);
+			}
+		}
+	}
+
     public void DisplayStructureActions()
     {
         for (int i = 0; i < _inGamePanels.Length; ++i)
@@ -222,6 +244,8 @@ public class GUIManager : MonoBehaviour {
             if (_inGamePanels[i].name.Contains("Panel_Structure_Actions"))
             {
                 _inGamePanels[i].SetActive(true);
+				HideOtherActionPanels("Structure_Actions");
+				break;
             }
         }
     }
@@ -241,6 +265,7 @@ public class GUIManager : MonoBehaviour {
 		for(int i = 0; i < _inGamePanels.Length; ++i){
 			if(_inGamePanels[i].name.Contains("Panel_Village_Actions")){
 				_inGamePanels[i].SetActive(true);
+				HideOtherActionPanels("Village_Actions");
 
 				foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
 				{
@@ -335,6 +360,8 @@ public class GUIManager : MonoBehaviour {
 					break;
 				}
 				_inGamePanels[i].SetActive(true);
+				HideOtherActionPanels("Unit_Actions");
+
 			}
 			else if (!(_inGamePanels[i].name.Contains("CurrentPlayer")))
 			{
@@ -342,6 +369,8 @@ public class GUIManager : MonoBehaviour {
 			}
 		}
 	}
+
+	#endregion
 
     public void HideUnitActions()
     {

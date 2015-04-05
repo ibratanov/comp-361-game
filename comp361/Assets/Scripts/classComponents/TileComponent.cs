@@ -596,6 +596,7 @@ public class TileComponent : GenericComponent
 		isSelected = false;
 		_menus.HideUnitActions();
 		_menus.HideVillageActions ();
+		_menus.HideOtherActionPanels(string.Empty);
 	}
 	
 	/*****************************
