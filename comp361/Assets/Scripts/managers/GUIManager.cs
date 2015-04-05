@@ -79,6 +79,8 @@ public class GUIManager : MonoBehaviour {
 
 	}
 
+	#region ResourcesPanel
+
     public void setWoodStock(int stock)
     {
         for (int i = 0; i < _inGamePanels.Length; ++i)
@@ -115,6 +117,30 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
+	public void hideResourcesPanel()
+	{
+		foreach (GameObject panel in _inGamePanels)
+		{
+			if (panel.name.Contains("Resources"))
+			{
+				panel.SetActive(false);
+			}
+		}
+	}
+
+	public void showResourcesPanel()
+	{
+		foreach (GameObject panel in _inGamePanels)
+		{
+			if (panel.name.Contains("Resources"))
+			{
+				panel.SetActive(true);
+			}
+		}
+	}
+
+	#endregion 
+
 	public void DisplayInGameMenu(){
 		if(Network.isServer || Network.isClient){
 			networkView.RPC("RPCDisplayInGameMenu", RPCMode.All);
@@ -142,6 +168,13 @@ public class GUIManager : MonoBehaviour {
 		for(int i = 0; i < _menus.Length; ++i){
 			if(_menus[i].name.Contains("Menu_InGame")){
 				_menus[i].SetActive(true);
+				foreach (GameObject panel in _inGamePanels)
+				{
+					if (panel.name.Contains("Resources"))
+				    {
+						panel.SetActive(false);
+					}
+				}
 			}
 			else{
 				_menus[i].SetActive(false);

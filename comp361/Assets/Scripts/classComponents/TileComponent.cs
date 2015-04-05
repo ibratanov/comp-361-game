@@ -455,6 +455,7 @@ public class TileComponent : GenericComponent
 		{
 			if (canSelect(_village.getPlayer()))
 			{
+				_menus.showResourcesPanel();
 				_menus.setGoldStock((int)_village.getGoldStock());
 				_menus.setWoodStock((int)_village.getWoodStock());
 			}
@@ -538,6 +539,10 @@ public class TileComponent : GenericComponent
 	}
 
 	public void Deselect(){
+		if (_village != null)
+		{
+			_menus.hideResourcesPanel();
+		}
 		UnhighlightRegion();
 		isSelected = false;
 		_menus.HideUnitActions();
