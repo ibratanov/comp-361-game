@@ -478,7 +478,7 @@ public class TileComponent : GenericComponent
 			{
 				_menus.HideUnitActions();
 				Debug.Log("Village");
-				_menus.DisplayVillageActions();
+				_menus.DisplayVillageActions(this.GetComponent<VillageComponent>());
 				_menus.showResourcesPanel();
 				_menus.setWoodStock((int)_village.getWoodStock());
 			}

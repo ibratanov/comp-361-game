@@ -212,10 +212,36 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
-	public void DisplayVillageActions(){
+	public void DisplayVillageActions(VillageComponent village){
 		for(int i = 0; i < _inGamePanels.Length; ++i){
 			if(_inGamePanels[i].name.Contains("Panel_Village_Actions")){
 				_inGamePanels[i].SetActive(true);
+
+				if (village.getVillageType() == VillageType.CASTLE || village.getWoodStock() < 8)
+				{
+					foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
+					{
+						if (b.name.Contains("Upgrade"))
+						{
+							DisableButton(b);
+							break;
+						}
+					}
+				}
+				else if (village.getVillageType() == VillageType.FORT)
+				{
+					if (village.getWoodStock() < 12)
+					{
+						foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
+						{
+							if (b.name.Contains("Upgrade"))
+							{
+								DisableButton(b);
+								break;
+							}
+						}
+					}
+				}
 			}
 			else if (!(_inGamePanels[i].name.Contains("CurrentPlayer")))
 			{
@@ -223,6 +249,7 @@ public class GUIManager : MonoBehaviour {
 			}
 		}
 	}
+
 
     public void HideVillageActions()
     {
@@ -232,6 +259,10 @@ public class GUIManager : MonoBehaviour {
                 _inGamePanels[i].name.Contains("Panel_Upgrade_Village"))
             {
                 _inGamePanels[i].SetActive(false);
+				foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
+				{
+					EnableButton(b);
+				}
             }
         }
     }
@@ -288,22 +319,6 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
-	void DisableButton(Button b)
-	{
-		b.enabled = false;
-		ColorBlock cb = b.colors;
-		cb.normalColor = Color.grey;
-		b.colors = cb;
-	}
-
-	void EnableButton(Button b)
-	{
-		b.enabled = true;
-		ColorBlock cb = b.colors;
-		cb.normalColor = Color.white;
-		b.colors = cb;
-	}
-
     public void HideUnitActions()
     {
         for (int i = 0; i < _inGamePanels.Length; ++i)
@@ -315,7 +330,23 @@ public class GUIManager : MonoBehaviour {
         }
     }
 
-	#region EndTurn
+	void DisableButton(Button b)
+	{
+		b.enabled = false;
+		ColorBlock cb = b.colors;
+		cb.normalColor = Color.grey;
+		b.colors = cb;
+	}
+	
+	void EnableButton(Button b)
+	{
+		b.enabled = true;
+		ColorBlock cb = b.colors;
+		cb.normalColor = Color.white;
+		b.colors = cb;
+	}
+
+	#region EndTurn 
 
 	public void UpdateGamePanels(PlayerComponent currentPlayer, Color currentColor)
 	{

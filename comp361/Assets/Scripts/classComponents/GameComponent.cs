@@ -370,9 +370,13 @@ public class GameComponent : GenericComponent
 					tiles.AddRange (tc.getNeighbours());
 					TileComponent randomNeighbour = tc.getNeighbours()[Random.Range (0, tc.getNeighbours().Count)];
 					
-					if (randomNeighbour.getLandType() != LandType.FOREST)
+					if (randomNeighbour.getLandType() != LandType.FOREST &&
+					    !randomNeighbour.hasRoad() &&
+					    randomNeighbour.getOccupyingStructure() == null &&
+					    randomNeighbour.getOccupantType() == OccupantType.NONE)
 					{
 						randomNeighbour.setLandType(LandType.FOREST);
+						randomNeighbour.UpdateDraw();
 					}
 				}
 			}
@@ -393,6 +397,7 @@ public class GameComponent : GenericComponent
 					{
 						Destroy (tc.GetComponent<StructureComponent>());
 						tc.setLandType(LandType.FOREST);
+						tc.UpdateDraw();
 					}
 				}
 			}
