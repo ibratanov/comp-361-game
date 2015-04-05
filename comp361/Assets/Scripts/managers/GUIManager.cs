@@ -224,6 +224,28 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
+    public void DisplayStructureActions()
+    {
+        for (int i = 0; i < _inGamePanels.Length; ++i)
+        {
+            if (_inGamePanels[i].name.Contains("Panel_Structure_Actions"))
+            {
+                _inGamePanels[i].SetActive(true);
+            }
+        }
+    }
+
+    public void HideStructureActions()
+    {
+        for (int i = 0; i < _inGamePanels.Length; ++i)
+        {
+            if (_inGamePanels[i].name.Contains("Panel_Structure_Actions"))
+            {
+                _inGamePanels[i].SetActive(false);
+            }
+        }
+    }
+
     public void HideVillageActions()
     {
         for (int i = 0; i < _inGamePanels.Length; ++i)

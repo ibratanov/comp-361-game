@@ -24,9 +24,10 @@ public class StructureComponent : GenericComponent
 	 *    CONSTRUCTOR    *
 	 ********************/
 
-	public StructureComponent (StructureType structureType, TileComponent location) {
+	public StructureComponent (StructureType structureType, TileComponent location)  {
 		_structureType = structureType;
 		_location = location;
+        _structureGameObject = new GameObject();
 	}
 
 	/*********************
