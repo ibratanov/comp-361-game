@@ -77,23 +77,33 @@ public class StructureComponent : GenericComponent
 		_location = location;
 	}
 
-    public void Attack(UnitComponent uc)
+    public void Attack(TileComponent tc)
     {
-        if (_location.getNeighbours().Contains(uc.getLocation()))
+        if (tc.getOccupantType() != OccupantType.UNIT)
         {
-            if (uc.getUnitType() == UnitType.PEASANT)
-            {
-                uc.die();
-            }
-            else
-            {
-                ThrowError("You cannot attack this unit with a watchtower.");
-            }
+            ThrowError("There is no unit to attack on this tile.");
         }
         else
         {
-            ThrowError("This unit is too far away to attack.");
+            var uc = tc.getOccupyingUnit();
+            if (_location.getNeighbours().Contains(uc.getLocation()))
+            {
+                if (uc.getUnitType() == UnitType.PEASANT)
+                {
+                    uc.die();
+                }
+                else
+                {
+                    ThrowError("You cannot attack this unit with a watchtower.");
+                }
+            }
+            else
+            {
+                ThrowError("This unit is too far away to attack.");
+            }
         }
+        
+
 
     }
 

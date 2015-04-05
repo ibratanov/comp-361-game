@@ -486,7 +486,10 @@ public class TileComponent : GenericComponent
 			}
 		}
 
-
+        if (_game.isAttacking())
+        {
+            _game.watchTowerAttackLastSelectedTile();
+        }
 		if(this.GetComponent<UnitComponent>()){
 
             if (_game.isMerging())
@@ -496,10 +499,7 @@ public class TileComponent : GenericComponent
 
 			_game.setLastSelectedUnit(this.GetComponent<UnitComponent>());
 
-            if (_game.isAttacking())
-            {
-                _game.watchTowerAttackLastSelectedUnit();
-            }
+
 			PlayerComponent pc = this.GetComponent<UnitComponent>().getVillage().getPlayer();
 			if( canSelect(pc) ){
 				_menus.HideVillageActions();
