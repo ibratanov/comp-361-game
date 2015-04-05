@@ -361,7 +361,26 @@ public class TileComponent : GenericComponent
 
     public void buildWatchtower()
     {
+        if (_occupantType == OccupantType.NONE)
+        {
+            if (_village.getWoodStock() >= 5)
+            {
+                _village.removeWood(5);
+                StructureComponent tower = new StructureComponent(StructureType.WATCHTOWER, this);
+                tower.CreateStructure(StructureType.WATCHTOWER);
+                _occupantType = OccupantType.STRUCTURE;
+                _occupyingStructure = tower;
+            }
+            else
+            {
+                ThrowError("Insufficient wood.");
+            }
 
+        }
+        else
+        {
+            ThrowError("You cannot build a watchtower here because something else is already occupying this tile.");
+        }
     }
 	
 	public void createRoad() {
