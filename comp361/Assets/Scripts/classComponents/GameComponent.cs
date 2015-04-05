@@ -472,6 +472,15 @@ public class GameComponent : GenericComponent
 	}
 	
 	#endregion
+
+	#region CheckPanelUpdates
+
+	public void checkVillageActions()
+	{
+		_guiManager.DisplayVillageActions(_lastSelectedTile.GetComponent<VillageComponent>());
+	}
+
+	#endregion
 	
 	
 	/// <summary>

@@ -11,6 +11,8 @@ public class GUIManager : MonoBehaviour {
 
 	public float _fadeSpeed = 0.8f;
 
+	public ColorBlock _standardButtonColors;
+
 	// Use this for initialization
 	void Start () {
 		for(int i = 0; i < _menus.Length; ++i){
@@ -246,6 +248,10 @@ public class GUIManager : MonoBehaviour {
 			else if (!(_inGamePanels[i].name.Contains("CurrentPlayer")))
 			{
 				_inGamePanels[i].SetActive(false);
+				foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
+				{
+					EnableButton(b);
+				}
 			}
 		}
 	}
@@ -279,11 +285,11 @@ public class GUIManager : MonoBehaviour {
             if (_inGamePanels[i].name.Contains("Panel_Village_Actions") || _inGamePanels[i].name.Contains("Panel_HireUnit_Village") ||
                 _inGamePanels[i].name.Contains("Panel_Upgrade_Village"))
             {
-                _inGamePanels[i].SetActive(false);
 				foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
 				{
 					EnableButton(b);
 				}
+                _inGamePanels[i].SetActive(false);
             }
         }
     }
@@ -292,8 +298,6 @@ public class GUIManager : MonoBehaviour {
 		for(int i = 0; i < _inGamePanels.Length; ++i){
             if (_inGamePanels[i].name.Contains("Panel_Unit_Actions"))
             {
-				_inGamePanels[i].SetActive(true);
-
 				switch (unit)
 				{
 				case UnitType.INFANTRY:
@@ -301,6 +305,7 @@ public class GUIManager : MonoBehaviour {
 					{
 						if (b.name.Contains("Harvest"))
 						{
+
 							DisableButton(b);
 						}
 						break;
@@ -328,14 +333,11 @@ public class GUIManager : MonoBehaviour {
 				default:
 					break;
 				}
+				_inGamePanels[i].SetActive(true);
 			}
 			else if (!(_inGamePanels[i].name.Contains("CurrentPlayer")))
 			{
 				_inGamePanels[i].SetActive(false);
-				foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
-				{
-					EnableButton(b);
-				}
 			}
 		}
 	}
@@ -346,6 +348,10 @@ public class GUIManager : MonoBehaviour {
         {
             if (_inGamePanels[i].name.Contains("Panel_Unit_Actions"))
             {
+				foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
+				{
+					EnableButton(b);
+				}
                 _inGamePanels[i].SetActive(false);
             }
         }
@@ -353,18 +359,18 @@ public class GUIManager : MonoBehaviour {
 
 	void DisableButton(Button b)
 	{
-		b.enabled = false;
 		ColorBlock cb = b.colors;
 		cb.normalColor = Color.grey;
+		cb.pressedColor = Color.grey;
+		cb.highlightedColor = Color.grey;
 		b.colors = cb;
+		b.interactable = false;
 	}
 	
 	void EnableButton(Button b)
 	{
-		b.enabled = true;
-		ColorBlock cb = b.colors;
-		cb.normalColor = Color.white;
-		b.colors = cb;
+		b.interactable = true;
+		b.colors = _standardButtonColors;
 	}
 
 	#region EndTurn 
