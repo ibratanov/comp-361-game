@@ -76,6 +76,26 @@ public class StructureComponent : GenericComponent
 		_location = location;
 	}
 
+    public void Attack(UnitComponent uc)
+    {
+        if (_location.getNeighbours().Contains(uc.getLocation()))
+        {
+            if (uc.getUnitType() == UnitType.PEASANT)
+            {
+                uc.die();
+            }
+            else
+            {
+                ThrowError("You cannot attack this unit with a watchtower.");
+            }
+        }
+        else
+        {
+            ThrowError("This unit is too far away to attack.");
+        }
+
+    }
+
 	/*********************
 	 *      METHODS      *
 	 ********************/

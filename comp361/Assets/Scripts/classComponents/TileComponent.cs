@@ -495,6 +495,10 @@ public class TileComponent : GenericComponent
 
 			_game.setLastSelectedUnit(this.GetComponent<UnitComponent>());
 
+            if (_game.isAttacking())
+            {
+                _game.watchTowerAttackLastSelectedUnit();
+            }
 			PlayerComponent pc = this.GetComponent<UnitComponent>().getVillage().getPlayer();
 			if( canSelect(pc) ){
 				_menus.HideVillageActions();
@@ -515,6 +519,11 @@ public class TileComponent : GenericComponent
 				_menus.setWoodStock((int)_village.getWoodStock());
 			}
 		}
+        else if (this.GetComponent<StructureComponent>())
+        {
+            StructureComponent sc = this.GetComponent<StructureComponent>();
+            _game.setLastSelectedStructure(sc);
+        }
 		else
 		{
 			Debug.Log("None");
