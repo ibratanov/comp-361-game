@@ -98,7 +98,7 @@ public class GameComponent : GenericComponent
 	public List<PlayerComponent> getRemainingPlayers() {
 		return _remainingPlayers;
 	}
-	
+
 	/*	void setRemainingPlayers(List<PlayerComponent> remainingPlayers) {
 		_remainingPlayers = remainingPlayers;
 	}
@@ -127,6 +127,11 @@ public class GameComponent : GenericComponent
 	{
 		_lastSelectedTile.getVillage().upgradeVillage();
 	}
+
+    public void upgradeLastSelectedUnit(int unitType)
+    {
+        _lastSelectedUnit.upgradeUnit((UnitType)unitType);
+    }
 
 	/*
 	public void startMoveLastSelectedUnit()

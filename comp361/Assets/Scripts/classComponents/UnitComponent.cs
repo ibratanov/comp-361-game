@@ -269,6 +269,9 @@ public class UnitComponent : GenericComponent
 	[RPC]
 	private void RPCsetUnitType(int unitTypeIndex) {
 		_unitType = (UnitType)unitTypeIndex;
+        // set GameComponent to new unit type
+        AssetManager am = GameObject.FindObjectOfType<AssetManager>();
+        _unitGameObject = (GameObject) Instantiate(am._villagerUnits[unitTypeIndex], this._unitGameObject.transform.position, Quaternion.identity);
 	}
 
 	public void createUnit(UnitType unitType) {
@@ -374,6 +377,64 @@ public class UnitComponent : GenericComponent
         return false;
     }
 
+    public void CombineUnit(UnitComponent uc)
+    {
+        // peasant + peasant = infantry
+        // peasant + infantry = soldier
+        // peasant + soldier = knight
+        // infantry + infantry = knight
+        if (_unitType == UnitType.PEASANT)
+        {
+            if (uc.getUnitType() == UnitType.PEASANT)
+            {
+                
+                // infantry
+            }
+            if (uc.getUnitType() == UnitType.INFANTRY)
+            {
+                // soldier
+            }
+            if (uc.getUnitType() == UnitType.SOLDIER)
+            {
+                // knight
+            }
+        }
+        if (_unitType == UnitType.INFANTRY)
+        {
+            if (uc.getUnitType() == UnitType.INFANTRY)
+            {
+                // knight
+            }
+        }
+
+
+        if (_unitType == UnitType.PEASANT)
+        {
+            if (uc.getUnitType() == UnitType.PEASANT)
+            {
+                // infantry
+            }
+        }
+        if (_unitType == UnitType.INFANTRY)
+        {
+            if (uc.getUnitType() == UnitType.PEASANT)
+            {
+                // soldier
+            }
+            if (uc.getUnitType() == UnitType.INFANTRY)
+            {
+                // knight
+            }
+        }
+        if (_unitType == UnitType.SOLDIER)
+        {
+            if (uc.getUnitType() == UnitType.PEASANT)
+            {
+                // knight
+            }
+        }
+    }
+
     public bool upgradeUnit(UnitType newLevel)
     {
         if (newLevel == UnitType.CANNON) return false;
@@ -387,6 +448,10 @@ public class UnitComponent : GenericComponent
 				setUnitType(newLevel);
                 _village.removeGold(cost);
                 return true;
+            }
+            else
+            {
+                ThrowError("Insufficient gold.");
             }
         }
 
