@@ -152,7 +152,16 @@ public class GUIManager : MonoBehaviour {
 
     public void DisplayErrorMessage(string message)
     {
-        var errorPanel = _inGamePanels[7];
+        var errorPanel = new GameObject();
+
+        for (int i = 0; i < _inGamePanels.Length; ++i)
+        {
+            if (_inGamePanels[i].name.Contains("Panel_ErrorMessage"))
+            {
+                errorPanel = _inGamePanels[i];
+            }
+        }
+
         for (int i = 0; i < errorPanel.transform.childCount; i++ )
         {
             if (errorPanel.transform.GetChild(i).name.Contains("ErrorMessage"))
@@ -161,6 +170,27 @@ public class GUIManager : MonoBehaviour {
             }
         }
         errorPanel.SetActive(true);
+        StartCoroutine("delayErrorDisappear");
+    }
+
+    public void DisappearErrorMessage()
+    {
+        var errorPanel = new GameObject();
+
+        for (int i = 0; i < _inGamePanels.Length; ++i)
+        {
+            if (_inGamePanels[i].name.Contains("Panel_ErrorMessage"))
+            {
+                errorPanel = _inGamePanels[i];
+            }
+        }
+        errorPanel.SetActive(false);
+    }
+
+    IEnumerator delayErrorDisappear()
+    {
+        yield return new WaitForSeconds(_fadeSpeed);
+        DisappearErrorMessage();
     }
 
 	[RPC]
