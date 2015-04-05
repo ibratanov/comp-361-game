@@ -468,6 +468,10 @@ public class UnitComponent : GenericComponent
     {
         if (newLevel == UnitType.CANNON) return false;
         if (this._unitType == UnitType.CANNON) return false;
+        else
+        {
+            ThrowError("Cannons cannot be upgraded.");
+        }
         if (newLevel >= _unitType)
         {
             uint cost = calculateCost(_unitType, newLevel);
@@ -483,6 +487,10 @@ public class UnitComponent : GenericComponent
                 ThrowError("Insufficient gold.");
                 return false;
             }
+        }
+        else
+        {
+            ThrowError("Invalid upgrade type.");
         }
 
         return false;
@@ -584,6 +592,14 @@ public class UnitComponent : GenericComponent
                 bool isRelocated = setDestination(destination);
                 if (isRelocated && _unitType == UnitType.CANNON) _currentAction = ActionType.ALREADY_MOVED;
             }
+            else
+            {
+                ThrowError("The unit cannot reach the destination tile.");
+            }
+        }
+        else
+        {
+            ThrowError("The unit cannot move any more in this turn.");
         }
     }
 
