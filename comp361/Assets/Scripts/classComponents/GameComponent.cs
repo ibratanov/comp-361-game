@@ -29,8 +29,10 @@ public class GameComponent : GenericComponent
 	GameObject[,] _tileObjects;
 	TileComponent _lastSelectedTile;
 	UnitComponent _lastSelectedUnit;
+    UnitComponent _unitToMerge;
 	bool _moveStarted = false;
     bool _fireStarted = false;
+    bool _merging = false;
 	
 	Color _currentColour;
 	int _currentPlayerIndex;
@@ -131,6 +133,22 @@ public class GameComponent : GenericComponent
     public void upgradeLastSelectedUnit(int unitType)
     {
         _lastSelectedUnit.upgradeUnit((UnitType)unitType);
+    }
+
+    public void startMergeLastSelectedUnit(UnitComponent uc)
+    {
+        _lastSelectedUnit.CombineUnit(uc);
+        _merging = false;
+    }
+
+    public void setMerge()
+    {
+        _merging = true;
+    }
+
+    public bool isMerging()
+    {
+        return _merging;
     }
 
 	/*

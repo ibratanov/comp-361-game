@@ -379,6 +379,11 @@ public class UnitComponent : GenericComponent
 
     public void CombineUnit(UnitComponent uc)
     {
+        if (this.Equals(uc))
+        {
+            ThrowError("You cannot combine a unit with itself.");
+            return;
+        }
         // peasant + peasant = infantry
         // peasant + infantry = soldier
         // peasant + soldier = knight
@@ -387,16 +392,24 @@ public class UnitComponent : GenericComponent
         {
             if (uc.getUnitType() == UnitType.PEASANT)
             {
-                
                 // infantry
+                uc.destroy();
+                setUnitType(UnitType.INFANTRY);
+                return;
             }
             if (uc.getUnitType() == UnitType.INFANTRY)
             {
                 // soldier
+                uc.destroy();
+                setUnitType(UnitType.SOLDIER);
+                return;
             }
             if (uc.getUnitType() == UnitType.SOLDIER)
             {
                 // knight
+                uc.destroy();
+                setUnitType(UnitType.KNIGHT);
+                return;
             }
         }
         if (_unitType == UnitType.INFANTRY)
@@ -404,6 +417,9 @@ public class UnitComponent : GenericComponent
             if (uc.getUnitType() == UnitType.INFANTRY)
             {
                 // knight
+                uc.destroy();
+                setUnitType(UnitType.KNIGHT);
+                return;
             }
         }
 
@@ -413,6 +429,9 @@ public class UnitComponent : GenericComponent
             if (uc.getUnitType() == UnitType.PEASANT)
             {
                 // infantry
+                uc.destroy();
+                setUnitType(UnitType.INFANTRY);
+                return;
             }
         }
         if (_unitType == UnitType.INFANTRY)
@@ -420,10 +439,16 @@ public class UnitComponent : GenericComponent
             if (uc.getUnitType() == UnitType.PEASANT)
             {
                 // soldier
+                uc.destroy();
+                setUnitType(UnitType.SOLDIER);
+                return;
             }
             if (uc.getUnitType() == UnitType.INFANTRY)
             {
                 // knight
+                uc.destroy();
+                setUnitType(UnitType.KNIGHT);
+                return;
             }
         }
         if (_unitType == UnitType.SOLDIER)
@@ -431,8 +456,12 @@ public class UnitComponent : GenericComponent
             if (uc.getUnitType() == UnitType.PEASANT)
             {
                 // knight
+                uc.destroy();
+                setUnitType(UnitType.KNIGHT);
+                return;
             }
         }
+        ThrowError("The two units cannot be merged.");
     }
 
     public bool upgradeUnit(UnitType newLevel)
@@ -452,6 +481,7 @@ public class UnitComponent : GenericComponent
             else
             {
                 ThrowError("Insufficient gold.");
+                return false;
             }
         }
 
@@ -517,10 +547,18 @@ public class UnitComponent : GenericComponent
     {
 		TileComponent tc = this.GetComponent<TileComponent>();
         tc.setOccupyingUnit(null);
-        tc.setOccupantType(OccupantType.NONE);
+        tc.setOccupantType(OccupantType.STRUCTURE);
 		StructureComponent tombstone = new StructureComponent(StructureType.TOMBSTONE, tc);
         tombstone.CreateStructure(StructureType.TOMBSTONE);
 		tc.setOccupyingStructure(tombstone);
+        GameObject.Destroy(this.getGameObject());
+    }
+
+    public void destroy()
+    {
+        TileComponent tc = this.GetComponent<TileComponent>();
+        tc.setOccupyingUnit(null);
+        tc.setOccupantType(OccupantType.NONE);
         GameObject.Destroy(this.getGameObject());
     }
 
