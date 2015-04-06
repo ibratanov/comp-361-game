@@ -49,8 +49,8 @@ public class NetworkManager : MonoBehaviour {
 					Text t = sessionButton.transform.GetChild(0).GetComponent<Text>();
 					t.text = _hostList[i].gameName;
 					_sessionButtons.Add ( sessionButton );
+					_refreshHostList = false;
 				}
-				_refreshHostList = false;
 			}
 		}
 	}
@@ -88,6 +88,10 @@ public class NetworkManager : MonoBehaviour {
 	public void RefreshHostList(){
 		MasterServer.RequestHostList(_projectName);
 		Debug.Log(MasterServer.PollHostList().Length);
+		foreach(GameObject button in _sessionButtons){
+			Destroy(button);
+		}
+		_sessionButtons.Clear();
 	}
 
 	//Event triggered on Master Server
