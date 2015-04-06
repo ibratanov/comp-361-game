@@ -99,7 +99,10 @@ public class PlayerComponent : GenericComponent
 	}
 
 	public void remove(VillageComponent village) {
+		village.gameObject.GetComponent<TileComponent>().setOccupantType (OccupantType.NONE);
 		_villages.Remove(village);
+		Destroy (village.getVillageGameObject ());
+		Destroy (village);
 		// TODO: Do we need to handle the whole region removal as well?
 	}
 
