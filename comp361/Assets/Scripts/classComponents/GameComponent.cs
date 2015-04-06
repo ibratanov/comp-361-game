@@ -532,9 +532,9 @@ public class GameComponent : GenericComponent
 		yield return new WaitForSeconds(_guiManager._fadeSpeed);
 		setCurrentPlayer (_currentPlayerIndex);
 	}
-	
+
 	public void endGame() {
-		/* TODO */
+		Application.Quit();
 	}
 	
 	public void removePlayer(PlayerComponent player) {
