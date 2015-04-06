@@ -449,8 +449,10 @@ public class GameComponent : GenericComponent
 					// tombstones turn into forests
 					if (tc.getOccupyingStructure().getStructureType() == StructureType.TOMBSTONE)
 					{
-                        Destroy(tc.getOccupyingStructure());
+                        tc.getOccupyingStructure().DestroyStructureGameObject();
 						tc.setLandType(LandType.FOREST);
+                        tc.setOccupyingStructure(null);
+                        tc.setOccupantType(OccupantType.NONE);
 						tc.UpdateDraw();
 					}
 				}

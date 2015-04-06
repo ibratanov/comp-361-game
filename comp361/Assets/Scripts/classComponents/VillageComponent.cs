@@ -365,7 +365,7 @@ public class VillageComponent : GenericComponent
 		foreach (UnitComponent unit in _supportingUnits) {
 			unit.die();
 		}
-		_supportingUnits = null;
+		_supportingUnits = new List<UnitComponent>();
 	}
 	
 	public void mergeWith(VillageComponent village) {
@@ -377,23 +377,30 @@ public class VillageComponent : GenericComponent
 	}
 	
 	public void produceMeadows() {
-		foreach (UnitComponent unit in _supportingUnits) {
-			ActionType currentAction = unit.getCurrentAction();
-			
-			if (currentAction == ActionType.CULTIVATING_MEADOW) {
-				unit.cultivate();
-			}
-		}
+            foreach (UnitComponent unit in _supportingUnits)
+            {
+                ActionType currentAction = unit.getCurrentAction();
+
+                if (currentAction == ActionType.CULTIVATING_MEADOW)
+                {
+                    unit.cultivate();
+                }
+            }
+
 	}
 	
 	public void produceRoads() {
-		foreach (UnitComponent unit in _supportingUnits) {
-			ActionType currentAction = unit.getCurrentAction();
-			
-			if (currentAction == ActionType.BUILDING_ROAD) {
-				unit.buildRoad();
-			}
-		}
+
+            foreach (UnitComponent unit in _supportingUnits)
+            {
+                ActionType currentAction = unit.getCurrentAction();
+
+                if (currentAction == ActionType.BUILDING_ROAD)
+                {
+                    unit.buildRoad();
+                }
+            }
+
 	}
 	
 	public void removeGold(uint amount) {
@@ -467,6 +474,9 @@ public class VillageComponent : GenericComponent
         {
             unit.die();
         }
+
+        // clear supporting units list
+        _supportingUnits = new List<UnitComponent>();
         
         // set all tiles to neutral
         foreach (var tile in _controlledRegion)
