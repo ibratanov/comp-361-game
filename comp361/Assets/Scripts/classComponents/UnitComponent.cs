@@ -171,11 +171,11 @@ public class UnitComponent : GenericComponent
                     {
                         return false;
                     }
-                    UnitComponent destUnit = dest.getOccupyingUnit();
-                    //destUnit.dieInBattle(); //TODO: implement a method which kills the unit on the newly invaded tile.
-                    takeOverTile(dest);
-                    setCurrentAction(ActionType.ATTACKING);
-					successfullyMoved = true;
+                    //UnitComponent destUnit = dest.getOccupyingUnit();
+                    //destUnit.die();
+                    //takeOverTile(dest);
+                    //setCurrentAction(ActionType.ATTACKING);
+                    //successfullyMoved = true;
 					break;
 				case OccupantType.VILLAGE:
                     // destination is the village tile of another player's village
@@ -255,6 +255,13 @@ public class UnitComponent : GenericComponent
 			}
 			return true;
 		}
+        else
+        {
+            UnitComponent destUnit = dest.getOccupyingUnit();
+            destUnit.die();
+            takeOverTile(dest);
+            setCurrentAction(ActionType.ATTACKING);
+        }
 
 		return false;
 	}
@@ -734,7 +741,7 @@ public class UnitComponent : GenericComponent
                     {
                         VillageComponent village = tile.getVillage();
                         enemyPlayer.remove(village);
-                        // TODO: KILL VILLAGE
+                        village.DestroyVillage();
                         village = null;
 
                         tile.setOccupyingStructure(null);

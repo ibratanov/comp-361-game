@@ -3808,7 +3808,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 969104344}
         m_MethodName: cultivateMeadowLastSelectedUnit
@@ -5097,6 +5097,14 @@ Prefab:
     - target: {fileID: 11443976, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      objectReference: {fileID: 0}
+    - target: {fileID: 11443976, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11444058, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: startMoveLastSelectedUnit
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
@@ -8409,7 +8417,7 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 969104344}
-        m_MethodName: moveLastSelectedUnit
+        m_MethodName: startMoveLastSelectedUnit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
