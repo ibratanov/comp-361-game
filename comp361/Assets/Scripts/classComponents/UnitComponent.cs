@@ -246,8 +246,8 @@ public class UnitComponent : GenericComponent
 				case LandType.FOREST:
 					if (_unitType != UnitType.KNIGHT || _unitType != UnitType.CANNON)
 					{
-						//setLocation(dest);
-						GatherWood(dest);                       
+						GatherWood(dest);
+                        setLocation(dest);
 						//return true;
 					}
 					break;
