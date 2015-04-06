@@ -109,7 +109,7 @@ public class UnitComponent : GenericComponent
 
 			//Update the visible object's location
 			//_unitGameObject.transform.position = destination.gameObject.transform.position; //Use this only if you want them to snap to the new position
-			//_isMoving = true;
+			_isMoving = true;
 
 			//Keep the UnitComponent selected for further actions
 			GameComponent gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>();
@@ -268,10 +268,22 @@ public class UnitComponent : GenericComponent
 	
 	[RPC]
 	private void RPCsetUnitType(int unitTypeIndex) {
+		/*
 		_unitType = (UnitType)unitTypeIndex;
         // set GameComponent to new unit type
-        AssetManager am = GameObject.FindObjectOfType<AssetManager>();
+        AssetManager am = GameObject.FindGameObjectWithTag("AssetManager").GetComponent<AssetManager>();
+		am.get
         _unitGameObject = (GameObject) Instantiate(am._villagerUnits[unitTypeIndex], this._unitGameObject.transform.position, Quaternion.identity);
+*/
+		_unitType = (UnitType)unitTypeIndex;
+/*		if(_unitGameObject){
+			GameObject oldObject = _unitGameObject;
+			Destroy(oldObject);
+		}
+		AssetManager assetManager = GameObject.FindGameObjectWithTag("AssetManager").GetComponent<AssetManager>();
+		_unitGameObject = assetManager.createUnitGameObject((UnitType)unitTypeIndex, this.gameObject.transform.position);
+		_unitGameObject.transform.parent = this.transform;
+		*/
 	}
 
 	public void createUnit(UnitType unitType) {
