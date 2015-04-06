@@ -184,15 +184,12 @@ public class GameComponent : GenericComponent
         _lastSelectedUnit.cultivateMeadow();
     }
 
-	/*
-	public void startMoveLastSelectedUnit()
-	{
-		_moveStarted = true;
-		//_lastSelectedTile.HighlightNeighbours();
-		//_lastSelectedTile.UpdateDraw();
-		_lastSelectedUnit.moveUnit(_lastSelectedTile);
-	}
-	*/
+
+    public void startMoveLastSelectedUnit()
+    {
+        _moveStarted = true;
+    }
+
 	
 	public void moveLastSelectedUnit()
 	{
@@ -450,9 +447,9 @@ public class GameComponent : GenericComponent
 				if (tc.getOccupantType() == OccupantType.STRUCTURE)
 				{
 					// tombstones turn into forests
-					if (tc.GetComponent<StructureComponent>().getStructureType() == StructureType.TOMBSTONE)
+					if (tc.getOccupyingStructure().getStructureType() == StructureType.TOMBSTONE)
 					{
-						Destroy (tc.GetComponent<StructureComponent>());
+                        Destroy(tc.getOccupyingStructure());
 						tc.setLandType(LandType.FOREST);
 						tc.UpdateDraw();
 					}
