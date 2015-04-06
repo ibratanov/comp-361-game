@@ -98,7 +98,7 @@ public class UnitComponent : GenericComponent
 			UnitComponent destComponent = destination.GetComponent<UnitComponent>();
 			//Copy all the info into the destination tile
 			destComponent.setCurrentAction( this.getCurrentAction() );
-			destComponent.setUnitType( this.getUnitType() );
+			destComponent.setUnitType( this.getUnitType(), false );
 			destComponent.setVillage( this.getVillage() );
 			destComponent.setGameObject( this.getGameObject() );
 			destination.setOccupantType(OccupantType.UNIT);
@@ -259,31 +259,25 @@ public class UnitComponent : GenericComponent
 		return false;
 	}
 	
-	public void setUnitType(UnitType unitType) {
+	public void setUnitType(UnitType unitType, bool updateAppearance) {
 		if(Network.isServer || Network.isClient){
-			networkView.RPC("RPCsetUnitType", RPCMode.Others, (int)unitType);
+			networkView.RPC("RPCsetUnitType", RPCMode.Others, (int)unitType, updateAppearance);
 		}
-		RPCsetUnitType((int)unitType);
+		RPCsetUnitType((int)unitType, updateAppearance);
 	}
 	
 	[RPC]
-	private void RPCsetUnitType(int unitTypeIndex) {
-		/*
+	private void RPCsetUnitType(int unitTypeIndex, bool updateAppearance) {
 		_unitType = (UnitType)unitTypeIndex;
-        // set GameComponent to new unit type
-        AssetManager am = GameObject.FindGameObjectWithTag("AssetManager").GetComponent<AssetManager>();
-		am.get
-        _unitGameObject = (GameObject) Instantiate(am._villagerUnits[unitTypeIndex], this._unitGameObject.transform.position, Quaternion.identity);
-*/
-		_unitType = (UnitType)unitTypeIndex;
-/*		if(_unitGameObject){
-			GameObject oldObject = _unitGameObject;
-			Destroy(oldObject);
+		if(updateAppearance){
+			if(_unitGameObject){
+				GameObject oldObject = _unitGameObject;
+				Destroy(oldObject);
+			}
+			AssetManager assetManager = GameObject.FindGameObjectWithTag("AssetManager").GetComponent<AssetManager>();
+			_unitGameObject = assetManager.createUnitGameObject((UnitType)unitTypeIndex, this.gameObject.transform.position);
+			_unitGameObject.transform.parent = this.transform;
 		}
-		AssetManager assetManager = GameObject.FindGameObjectWithTag("AssetManager").GetComponent<AssetManager>();
-		_unitGameObject = assetManager.createUnitGameObject((UnitType)unitTypeIndex, this.gameObject.transform.position);
-		_unitGameObject.transform.parent = this.transform;
-		*/
 	}
 
 	public void createUnit(UnitType unitType) {
@@ -406,21 +400,21 @@ public class UnitComponent : GenericComponent
             {
                 // infantry
                 uc.destroy();
-                setUnitType(UnitType.INFANTRY);
+                setUnitType(UnitType.INFANTRY, true);
                 return;
             }
             if (uc.getUnitType() == UnitType.INFANTRY)
             {
                 // soldier
                 uc.destroy();
-                setUnitType(UnitType.SOLDIER);
+                setUnitType(UnitType.SOLDIER, true);
                 return;
             }
             if (uc.getUnitType() == UnitType.SOLDIER)
             {
                 // knight
                 uc.destroy();
-                setUnitType(UnitType.KNIGHT);
+                setUnitType(UnitType.KNIGHT, true);
                 return;
             }
         }
@@ -430,7 +424,7 @@ public class UnitComponent : GenericComponent
             {
                 // knight
                 uc.destroy();
-                setUnitType(UnitType.KNIGHT);
+                setUnitType(UnitType.KNIGHT, true);
                 return;
             }
         }
@@ -442,7 +436,7 @@ public class UnitComponent : GenericComponent
             {
                 // infantry
                 uc.destroy();
-                setUnitType(UnitType.INFANTRY);
+                setUnitType(UnitType.INFANTRY, true);
                 return;
             }
         }
@@ -452,14 +446,14 @@ public class UnitComponent : GenericComponent
             {
                 // soldier
                 uc.destroy();
-                setUnitType(UnitType.SOLDIER);
+                setUnitType(UnitType.SOLDIER, true);
                 return;
             }
             if (uc.getUnitType() == UnitType.INFANTRY)
             {
                 // knight
                 uc.destroy();
-                setUnitType(UnitType.KNIGHT);
+                setUnitType(UnitType.KNIGHT, true);
                 return;
             }
         }
@@ -469,7 +463,7 @@ public class UnitComponent : GenericComponent
             {
                 // knight
                 uc.destroy();
-                setUnitType(UnitType.KNIGHT);
+                setUnitType(UnitType.KNIGHT, true);
                 return;
             }
         }
@@ -490,7 +484,7 @@ public class UnitComponent : GenericComponent
 
             if (_village.getGoldStock() >= cost)
             {
-				setUnitType(newLevel);
+				setUnitType(newLevel, true);
                 _village.removeGold(cost);
                 return true;
             }
