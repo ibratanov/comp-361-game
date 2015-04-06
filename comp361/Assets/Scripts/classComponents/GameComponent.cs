@@ -352,6 +352,7 @@ public class GameComponent : GenericComponent
 	public VillageComponent CreateVillage(TileComponent tc, VillageType vType, PlayerComponent pc){
 		VillageComponent vc = tc.gameObject.AddComponent<VillageComponent>();
 		vc.Initialize(VillageType.HOVEL, pc);
+		tc.setLandType(LandType.GRASS);
 		return vc;
 	}
 	
