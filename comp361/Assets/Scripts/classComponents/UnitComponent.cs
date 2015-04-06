@@ -142,7 +142,8 @@ public class UnitComponent : GenericComponent
                     }
                     else if (destVillage == null)
                     {
-                        _village.associate(dest);
+                        //_village.associate(dest);
+						dest.setVillage(_village); //temp - test out
 						setCurrentAction(ActionType.EXPANDING_REGION);
 						setLocation(dest);
 						dest.setPlayerIndex(this.GetComponent<TileComponent>().getPlayerIndex());

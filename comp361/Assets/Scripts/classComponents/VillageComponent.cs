@@ -321,7 +321,8 @@ public class VillageComponent : GenericComponent
 	}
 	
 	public void associate(List<TileComponent> tiles) {
-		foreach (TileComponent tile in tiles) {
+		List<TileComponent> tilesCopy = new List<TileComponent>(tiles);
+		foreach (TileComponent tile in tilesCopy) {
 			associate(tile);
 		}
 	}
@@ -339,7 +340,8 @@ public class VillageComponent : GenericComponent
 	}
 	
 	public void associate(List<UnitComponent> units) {
-		foreach (UnitComponent unit in units) {
+		List<UnitComponent> unitsCopy = new List<UnitComponent>(units);
+		foreach (UnitComponent unit in unitsCopy) {
 			associate(unit);
 		}
 	}

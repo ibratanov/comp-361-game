@@ -333,8 +333,8 @@ public class TileComponent : GenericComponent
 	public void connectRegions() {
 		foreach (TileComponent tile in _neighbours) {
 			VillageComponent neighbourVillage = tile.getVillage();
-			
-			if (neighbourVillage && neighbourVillage != _village && neighbourVillage.getPlayer() && neighbourVillage.getPlayer() == _village.getPlayer()) {
+
+			if (neighbourVillage && neighbourVillage != _village && tile.getPlayerIndex() == this.getPlayerIndex()) {
 				VillageComponent strongerVillage;
 				VillageComponent weakerVillage;
 				VillageType neighbourVillageType = neighbourVillage.getVillageType();
