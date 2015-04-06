@@ -142,7 +142,8 @@ public class UnitComponent : GenericComponent
                     }
                     else if (destVillage == null)
                     {
-                        _village.associate(dest);
+                        //_village.associate(dest);
+						dest.setVillage(_village); //temp - test out
 						setCurrentAction(ActionType.EXPANDING_REGION);
 						setLocation(dest);
 						dest.setPlayerIndex(this.GetComponent<TileComponent>().getPlayerIndex());
@@ -613,6 +614,7 @@ public class UnitComponent : GenericComponent
             if (isReachable)
             {
                 bool isRelocated = setDestination(destination);
+				if (isRelocated) destination.connectRegions();
                 if (isRelocated && _unitType == UnitType.CANNON) _currentAction = ActionType.ALREADY_MOVED;
             }
             else

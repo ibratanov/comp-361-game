@@ -128,6 +128,10 @@ public class TileComponent : GenericComponent
 	public VillageComponent getVillage() {
 		return _village;
 	}
+
+	public void setVillage(VillageComponent newVillage) {
+		_village = newVillage;
+	}
 	
 	//Updates the reference to the VillageComponent that controls the region
 	public void UpdateVillageReference() {
@@ -329,8 +333,8 @@ public class TileComponent : GenericComponent
 	public void connectRegions() {
 		foreach (TileComponent tile in _neighbours) {
 			VillageComponent neighbourVillage = tile.getVillage();
-			
-			if (neighbourVillage && neighbourVillage != _village && neighbourVillage.getPlayer() == _village.getPlayer()) {
+
+			if (neighbourVillage && neighbourVillage != _village && tile.getPlayerIndex() == this.getPlayerIndex()) {
 				VillageComponent strongerVillage;
 				VillageComponent weakerVillage;
 				VillageType neighbourVillageType = neighbourVillage.getVillageType();
