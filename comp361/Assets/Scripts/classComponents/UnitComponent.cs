@@ -511,6 +511,10 @@ public class UnitComponent : GenericComponent
                 }
             }
         }
+        else
+        {
+            ThrowError("Only a peasant can build a road.");
+        }
     }
 
 
