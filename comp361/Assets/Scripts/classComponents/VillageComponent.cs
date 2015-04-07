@@ -109,7 +109,10 @@ public class VillageComponent : GenericComponent
 	public List<UnitComponent> getSupportingUnits() {
 		return _supportingUnits;
 	}
-	
+
+	public void setSupportingUnits(List<UnitComponent> list) {
+		_supportingUnits = list;
+	}
 	
 	public void setVillageType(VillageType villageType) {
 		if(Network.isServer || Network.isClient){

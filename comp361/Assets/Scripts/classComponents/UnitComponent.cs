@@ -96,12 +96,19 @@ public class UnitComponent : GenericComponent
 				destination.gameObject.AddComponent<UnitComponent>();
 			}
 			UnitComponent destComponent = destination.GetComponent<UnitComponent>();
+
+			//Make sure the old Unit is removed and the new copy is added to the list of supporting units
+			List<UnitComponent> units = _village.getSupportingUnits();
+			units.Remove(this);
+			units.Add(destComponent);
+
 			//Copy all the info into the destination tile
 			destComponent.setCurrentAction( this.getCurrentAction() );
 			destComponent.setUnitType( this.getUnitType(), false );
 			destComponent.setVillage( this.getVillage() );
 			destComponent.setGameObject( this.getGameObject() );
 			destination.setOccupantType(OccupantType.UNIT);
+			//destination.setOccupyingUnit(this);
 
 			//Remove the association from the previous tile
 			Destroy(this.gameObject.GetComponent<UnitComponent>());
