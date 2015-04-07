@@ -468,17 +468,18 @@ public class GameComponent : GenericComponent
 			// payment phase
 			vc.payWages ();
 			
-			// move & purchase phase begin when function returns
+			//Reset the ActionType for each unit based on its current ActionType
 			List<UnitComponent> units = vc.getSupportingUnits ();
-
 			foreach (UnitComponent unit in units) {
-				//if (unit.getCurrentAction() == ActionType.EXPANDING_REGION) {
+
+				if (unit.getCurrentAction() == ActionType.EXPANDING_REGION || unit.getCurrentAction() == ActionType.GATHERING_WOOD) {
 					unit.setCurrentAction(ActionType.READY_FOR_ORDERS);
-					unit.getCurrentAction();
-				//}
+				} else if (unit.getCurrentAction() == ActionType.ATTACKING) {
+				//TODO: reset for other ActionTypes
+				}
 			}
 
-			vc.setSupportingUnits(units);
+			// move & purchase phase begin when function returns
 		}
 	}
 	
