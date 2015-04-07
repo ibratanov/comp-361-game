@@ -439,40 +439,46 @@ public class GameComponent : GenericComponent
 	
 	public void PlayerPhase(PlayerComponent player)
 	{
-		foreach (VillageComponent vc in player.getVillages())
-		{
+		foreach (VillageComponent vc in player.getVillages()) {
 			// tombstone phase
-			foreach (TileComponent tc in vc.getControlledRegion())
-			{
-				if (tc.getOccupantType() == OccupantType.STRUCTURE)
-				{
+			foreach (TileComponent tc in vc.getControlledRegion()) {
+				if (tc.getOccupantType () == OccupantType.STRUCTURE) {
 					// tombstones turn into forests
-					if (tc.getOccupyingStructure().getStructureType() == StructureType.TOMBSTONE)
-					{
-                        tc.getOccupyingStructure().DestroyStructureGameObject();
-						tc.setLandType(LandType.FOREST);
-                        tc.setOccupyingStructure(null);
-                        tc.setOccupantType(OccupantType.NONE);
-						tc.UpdateDraw();
+					if (tc.getOccupyingStructure ().getStructureType () == StructureType.TOMBSTONE) {
+						tc.getOccupyingStructure ().DestroyStructureGameObject ();
+						tc.setLandType (LandType.FOREST);
+						tc.setOccupyingStructure (null);
+						tc.setOccupantType (OccupantType.NONE);
+						tc.UpdateDraw ();
 					}
 				}
 			}
 			
 			// build phase
-			vc.produceMeadows();
-			vc.produceRoads();
+			vc.produceMeadows ();
+			vc.produceRoads ();
 			
 			// income phase
 //			foreach (TileComponent tc in vc.getControlledRegion ())
 //			{
 //				vc.addGold (tc.getRevenue());
 //			}
-			vc.updateGoldStock();
+			vc.updateGoldStock ();
 
 			// payment phase
 			vc.payWages ();
 			
 			// move & purchase phase begin when function returns
+			List<UnitComponent> units = vc.getSupportingUnits ();
+
+			foreach (UnitComponent unit in units) {
+				//if (unit.getCurrentAction() == ActionType.EXPANDING_REGION) {
+					unit.setCurrentAction(ActionType.READY_FOR_ORDERS);
+					unit.getCurrentAction();
+				//}
+			}
+
+			vc.setSupportingUnits(units);
 		}
 	}
 	
