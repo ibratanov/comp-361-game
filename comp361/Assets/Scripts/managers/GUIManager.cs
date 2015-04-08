@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class GUIManager : MonoBehaviour {
+	private bool _canClickGame = true;
+
 	public GameObject[] _menus;
 	public GameObject[] _inGamePanels;
 	public GameObject[] _actionPanels; // panels that are in the bottom-right corner
@@ -81,6 +83,14 @@ public class GUIManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+	}
+
+	public bool getCanClickGame() {
+		return _canClickGame;
+	}
+
+	public void setCanClickGame(bool canClickGame) {
+		_canClickGame = canClickGame;
 	}
 
 	#region ResourcesPanel
