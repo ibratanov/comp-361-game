@@ -644,10 +644,27 @@ public class UnitComponent : GenericComponent
                             ThrowError("An enemy unit is guarding this tile.");
                         }
                     }
+                    if (t.getOccupantType() == OccupantType.STRUCTURE)
+                    {
+                        if (t.getOccupyingStructure().getStructureType() == StructureType.WATCHTOWER && _unitType <= UnitType.INFANTRY)
+                        {
+                            tileInvaded = false;
+                            ThrowError("An enemy watch tower is guarding this tile.");
+                        }
+                    }
                 }
                 break;
             case OccupantType.STRUCTURE:
                 // if unit is a soldier or knight, kill structure, give tile to this unit's village
+                if (_unitType == UnitType.SOLDIER || _unitType == UnitType.KNIGHT)
+                {
+                    tileInvaded = true;
+                    dest.getOccupyingStructure().die();
+                }
+                else
+                {
+                    ThrowError("Your unit is not stronger than the watch tower.");
+                }
                 break;
             case OccupantType.UNIT:
                 // if unit's level < current unit's level, kill unit, give tile to this unit's village
@@ -663,7 +680,11 @@ public class UnitComponent : GenericComponent
                 break;
             case OccupantType.VILLAGE:
                 // if unit is a soldier or knight, turn village tile to meadow of this unit's color
-                    // if >=3 tiles left, randomly regenerate new village on remaining tiles
+                if (_unitType == UnitType.SOLDIER || _unitType == UnitType.KNIGHT)
+                {
+                    tileInvaded = true;
+                    dest.TurnVillageToMeadow(this.GetComponent<TileComponent>().getPlayerIndex());
+                }
                 break;
         }
 
@@ -688,8 +709,74 @@ public class UnitComponent : GenericComponent
             _village.addWood(previousVillage.getWoodStock());
             previousVillage.DestroyVillage();
         }
+        else if (!destroyVillage)
+        {
+            // if >=3 tiles left, randomly regenerate new village on remaining tiles
+            // find all components of land belonging to opposing player, regenerate village randomly on one
+            List<TileComponent> firstArea = _village.getControlledRegion()[0].breadthFS();
+            foreach (var t in firstArea)
+            {
+                if (_village.getControlledRegion().Contains(t))
+                {
+                    _village.getControlledRegion().Remove(t);
+                }
+            }
 
+            remainingVillage(firstArea, this.GetComponent<TileComponent>().getPlayerIndex());
 
+            // if controlled region isn't empty, there's a second area
+            List<TileComponent> secondArea = new List<TileComponent>();
+            if (_village.getControlledRegion().Count != 0)
+            {
+                secondArea = _village.getControlledRegion()[0].breadthFS();
+            }
+
+            remainingVillage(secondArea, this.GetComponent<TileComponent>().getPlayerIndex());
+
+        }
+
+    }
+
+    private void remainingVillage(List<TileComponent> area, int playerIndex)
+    {
+        if (area.Count < 3)
+        {
+            if (area[0].getVillage() != null)
+            {
+                VillageComponent firstVillage = area[0].getVillage();
+                _village.addGold(firstVillage.getGoldStock());
+                _village.addWood(firstVillage.getWoodStock());
+                firstVillage.DestroyVillage();
+            }
+            else
+            {
+                foreach (var t in area)
+                {
+                    t.setPlayerIndex(0);
+                }
+            }
+        }
+        else
+        {
+            if (area[0].getVillage() == null)
+            {
+                VillageComponent newHovel = GameObject.FindObjectOfType<GameComponent>().CreateVillage(area[0], VillageType.HOVEL, GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers()[playerIndex]);
+                area[0].setOccupantType(OccupantType.VILLAGE);
+                area[0].UpdateVillageReference();
+
+                //PlayerComponent player = participants[playerIndex - 1];
+                //player.add(newHovel);
+                newHovel.associate(area[0]);
+                newHovel.addGold(50);
+                // add enough wood to be able to upgrade to village for demo, can remove later
+                newHovel.addWood(24);
+                foreach (var t in area)
+                {
+                    // set all villages on tiles
+                    t.setVillage(newHovel);
+                }
+            }
+        }
     }
     public GameObject getGameObject()
     {
