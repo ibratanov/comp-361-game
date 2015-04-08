@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using Assets.Scripts.classComponents;
 
+using System;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+
 public enum PlayerStatus {
 	OFFLINE,
 	ONLINE
@@ -106,7 +110,44 @@ public class PlayerComponent : GenericComponent
 		// TODO: Do we need to handle the whole region removal as well?
 	}
 
-
+	//reference: http://zerosalife.github.io/blog/2014/08/09/persistent-data-in-unity/
+	public void Save(string username) {
+		BinaryFormatter bf = new BinaryFormatter();
+		FileStream file = File.Open("./profiles/" + username + "Info.dat", FileMode.OpenOrCreate);
+		
+		PlayerData data = new PlayerData();
+		data.losses = _losses;
+		data.wins = _wins;
+		data.userName = _userName;
+		int[] villageTileIDs = new int[_villages.Count];
+		for(int i = 0; i < _villages.Count; ++i){
+			villageTileIDs[i] = _villages[i].GetComponent<TileComponent>().getID();
+		}
+		data.villageTileIDs = villageTileIDs;
+		
+		bf.Serialize(file, data);
+		file.Close();
+	}
+	
+	public void Load(string username) {
+		if(File.Exists("./profiles/" + username + "Info.dat")) {
+			BinaryFormatter bf = new BinaryFormatter();
+			FileStream file = File.Open("./profiles/" + username + "Info.dat", FileMode.Open);
+			PlayerData data = (PlayerData)bf.Deserialize(file);
+			file.Close();
+			
+			_losses = data.losses;
+			_wins = data.wins;
+			_userName = data.userName;
+			int[] villageTileIDs = data.villageTileIDs;
+			_villages.Clear();
+			for(int i = 0; i < _villages.Count; ++i){
+				GameComponent game = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>();
+				VillageComponent village = game.GetTileByID(villageTileIDs[i]).GetComponent<VillageComponent>();
+				_villages.Add(village);
+			}
+		}
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -115,4 +156,13 @@ public class PlayerComponent : GenericComponent
 	// Update is called once per frame
 	void Update () {
 	}
+}
+
+[Serializable]
+class PlayerData {
+	// Add new variables for loading and saving here.
+	public int losses;
+	public int wins;
+	public string userName;
+	public int[] villageTileIDs;
 }

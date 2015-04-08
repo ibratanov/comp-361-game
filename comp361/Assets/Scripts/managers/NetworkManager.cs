@@ -42,8 +42,9 @@ public class NetworkManager : MonoBehaviour {
 					sessionButton.transform.SetParent( _joinAvailablePanel.transform );
 					sessionButton.GetComponent<RectTransform>().anchoredPosition3D = _joinButtonPrefab.GetComponent<RectTransform>().anchoredPosition3D + (Vector3.up * buttonOffset * i);
 					Button b = sessionButton.GetComponent<Button>();
+					int hostIndex = i;
 					b.onClick.AddListener(() => {
-						JoinServer(_hostList[0]); 
+						JoinServer(_hostList[hostIndex]); 
 						_currentMenu.SetActive(false);
 						_connectedMenu.SetActive(true);
 						_refreshHostList = false;
