@@ -423,10 +423,10 @@ public class TileComponent : GenericComponent
     {
         if (_village != null)
         {
+            GameObject.Destroy(_village.getVillageGameObject());
             _landType = LandType.MEADOW;
             _playerIndex = playerIndex;
             _village = null;
-            Destroy(_village.getVillageGameObject());
             foreach (var t in breadthFS())
             {
                 t.setVillage(null);
