@@ -31,6 +31,7 @@ public class GameComponent : GenericComponent
 	UnitComponent _lastSelectedUnit;
     StructureComponent _lastSelectedStructure;
     UnitComponent _unitToMerge;
+    UnitComponent _unitToMove;
 	bool _moveStarted = false;
     bool _fireStarted = false;
     bool _merging = false;
@@ -188,6 +189,7 @@ public class GameComponent : GenericComponent
     public void startMoveLastSelectedUnit()
     {
         _moveStarted = true;
+        _unitToMove = _lastSelectedUnit;
     }
 
 	
@@ -201,7 +203,7 @@ public class GameComponent : GenericComponent
 			int tileID_destination = _lastSelectedTile.getID();
 			networkView.RPC("RPCMoveLastSelectedUnit", RPCMode.Others, tileID_current, tileID_destination);
 		}
-		_lastSelectedUnit.moveUnit(_lastSelectedTile);
+		_unitToMove.moveUnit(_lastSelectedTile);
 	}
 	[RPC]
 	public void RPCMoveLastSelectedUnit(int tileID_current, int tileID_destination)

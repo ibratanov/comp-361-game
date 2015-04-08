@@ -490,9 +490,12 @@ public class TileComponent : GenericComponent
 	public void Select()
 	{
 		print (getLandType());
-        print(_tID);
 		isSelected = true;
-		if (_game.getLastSelectedTile() != null)
+        if (_game.getLastSelectedTile() == null)
+        {
+            _game.setLastSelectedTile(this);
+        }
+		else
 		{
 			List<TileComponent> region = this.breadthFS();
 			if (!region.Contains(_game.getLastSelectedTile()))
