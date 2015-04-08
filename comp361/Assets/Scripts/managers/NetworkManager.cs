@@ -8,8 +8,8 @@ public class NetworkManager : MonoBehaviour {
 
 	//Server creation
 	private const string _projectName = "Comp361_RITAGame"; //Should be unique to this project
-	private const string _roomName = "testRoom"; //Can be any name (possible suggestion: player name)
-	private const int _maxPlayers = 4;
+	private string _roomName = "testRoom"; //Can be any name (possible suggestion: player name)
+	private const int _maxPlayers = 6;
 	private const int _portNumber = 25602;
 
 	//Server joining
@@ -22,7 +22,9 @@ public class NetworkManager : MonoBehaviour {
 	private List<GameObject> _sessionButtons = new List<GameObject>();
 	public PlayerManager _playerManager;
 
-
+	public void SetRoomNameToFirstPlayer(){
+		_roomName = _playerManager.GetPlayer(0).getUserName();
+	}
 // --- INTERFACE CREATION --- //
 	#region CREATE INTERFACE
 
@@ -40,8 +42,9 @@ public class NetworkManager : MonoBehaviour {
 					sessionButton.transform.SetParent( _joinAvailablePanel.transform );
 					sessionButton.GetComponent<RectTransform>().anchoredPosition3D = _joinButtonPrefab.GetComponent<RectTransform>().anchoredPosition3D + (Vector3.up * buttonOffset * i);
 					Button b = sessionButton.GetComponent<Button>();
+					int hostIndex = i;
 					b.onClick.AddListener(() => {
-						JoinServer(_hostList[0]); 
+						JoinServer(_hostList[hostIndex]); 
 						_currentMenu.SetActive(false);
 						_connectedMenu.SetActive(true);
 						_refreshHostList = false;

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
+using System.IO;
 
 public class GUIManager : MonoBehaviour {
 	private bool _canClickGame = true;
@@ -9,6 +11,12 @@ public class GUIManager : MonoBehaviour {
 	public GameObject[] _inGamePanels;
 	public GameObject[] _actionPanels; // panels that are in the bottom-right corner
 
+	//Loading a profile
+	public GameObject _availableProfilesPanel;
+	public GameObject _loadProfileButtonPrefab;
+	private List<GameObject> _loadProfileButtons = new List<GameObject>();
+	private PlayerManager _playerManager;
+	
 	public GameObject[] _cameras; 
 	public Vector3 _initZoomCameraPos;
 
@@ -19,16 +27,50 @@ public class GUIManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		_playerManager = GameObject.FindGameObjectWithTag("PlayerManager").GetComponent<PlayerManager>();
 		for(int i = 0; i < _menus.Length; ++i){
 			if( _menus[i].name.Contains("Menu_Login_Main") 
 			   || _menus[i].name.Contains("Menu_Background")
-			   || _menus[i].name.Contains("Menu_LoadedProfiles")){
+			   || _menus[i].name.Contains("Menu_AvailableProfiles")){
 				_menus[i].SetActive(true);
 			}
 			else{
 				_menus[i].SetActive(false);
 			}
 		}
+
+		DirectoryInfo dInfo = new DirectoryInfo("./profiles/");
+		FileInfo[] fInfo = dInfo.GetFiles();
+		float buttonOffset = 50.0f;
+		for(int i = 0; i < fInfo.Length; ++i){
+			FileInfo file = fInfo[i];
+			GameObject loadProfileButton = (GameObject)Instantiate(_loadProfileButtonPrefab, _loadProfileButtonPrefab.GetComponent<RectTransform>().position, Quaternion.identity);
+			loadProfileButton.transform.SetParent( _availableProfilesPanel.transform );
+			loadProfileButton.GetComponent<RectTransform>().anchoredPosition3D = _loadProfileButtonPrefab.GetComponent<RectTransform>().anchoredPosition3D - (Vector3.up * buttonOffset * i);
+			Text t = loadProfileButton.transform.GetChild(0).GetComponent<Text>();
+			t.text = file.Name.Split(new string[]{"Info.dat"}, System.StringSplitOptions.None)[0];
+			Debug.Log(t.text);
+			Button b = loadProfileButton.GetComponent<Button>();
+			string username = t.text;
+			b.onClick.AddListener(() => { 
+				for(int j = 0; j < _menus.Length; ++j){
+					if( _menus[j].name.Equals("Menu_Title") 
+					   || _menus[j].name.Contains("Menu_Background")
+					   || _menus[j].name.Contains("Menu_LoadedProfiles")){
+						_menus[j].SetActive(true);
+					}
+					else{
+						_menus[j].SetActive(false);
+					}
+				}
+				PlayerComponent player = new PlayerComponent("blank", 0, 0);
+				player.Load(username);
+				_playerManager.AddPlayer(player);
+				_playerManager.UpdateProfileDisplay(false);
+			});
+			_loadProfileButtons.Add ( loadProfileButton );
+		}
+		
 		foreach (GameObject g in _cameras)
 		{
 			if (g.name.Contains ("zoom"))
