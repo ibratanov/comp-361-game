@@ -329,6 +329,27 @@ public class VillageComponent : GenericComponent
 			associate(tile);
 		}
 	}
+
+    public void RemoveTile(TileComponent tile)
+    {
+        foreach (var t in _controlledRegion)
+        {
+            if (t.getID() == tile.getID())
+            {
+                _controlledRegion.Remove(t);
+                break;
+            }
+        }
+
+    }
+
+    public void RemoveSupportingUnit(UnitComponent unit)
+    {
+        if (_supportingUnits.Contains(unit))
+        {
+            _supportingUnits.Remove(unit);
+        }
+    }
 	
 	public void associate(TileComponent tile) {
 		VillageComponent formerVillage = tile.getVillage();
