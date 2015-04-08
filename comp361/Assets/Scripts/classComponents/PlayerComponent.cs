@@ -151,6 +151,11 @@ public class PlayerComponent : GenericComponent
 
 	// Use this for initialization
 	void Start () {
+		string directory = "./profiles";
+		if(!Directory.Exists(directory))//if it doesn't, create it
+		{    
+			Directory.CreateDirectory(directory);
+		}
 	}
 	
 	// Update is called once per frame
