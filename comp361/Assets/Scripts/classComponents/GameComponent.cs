@@ -582,7 +582,7 @@ public class GameComponent : GenericComponent
 	public void Save(string mapName) {
 		BinaryFormatter bf = new BinaryFormatter();
 		FileStream file = File.Open(_mapDirectory + mapName + "Info.dat", FileMode.OpenOrCreate);
-
+		
 		int i = 0;
 		MapData mapData = new MapData();
 		//--- PlayerInfo ---//
@@ -596,7 +596,7 @@ public class GameComponent : GenericComponent
 			mapData.remainingPlayers[i] = _remainingPlayers[i].getUserName();
 		}
 		mapData.currentPlayerIndex = _currentPlayerIndex;
-
+		
 		//--- TileInfo ---//
 		mapData.tiles = new TileData[_mapTiles.GetLength(0)*_mapTiles.GetLength(1)];
 		i = 0;
@@ -604,7 +604,10 @@ public class GameComponent : GenericComponent
 		List<UnitComponent> savedUnits = new List<UnitComponent>();
 		List<StructureComponent> savedStructures = new List<StructureComponent>();
 		foreach(TileComponent tile in _mapTiles){
-			mapData.tiles[i].globalPosition = tile.transform.position;
+			mapData.tiles[i] = new TileData();
+			mapData.tiles[i].x = tile.transform.position.x;
+			mapData.tiles[i].y = tile.transform.position.y;
+			mapData.tiles[i].z = tile.transform.position.z;
 			mapData.tiles[i].tileID = tile.getID();
 			mapData.tiles[i].playerIndex = tile.getPlayerIndex();
 			mapData.tiles[i].hasRoad = tile.hasRoad();
@@ -615,8 +618,8 @@ public class GameComponent : GenericComponent
 			for(int j = 0; j < neighbours.Count; ++j){
 				mapData.tiles[i].neighbourIDs[j] = neighbours[j].getID();
 			}
-			mapData.tiles[i].homeVillageID = tile.getVillage().GetComponent<TileComponent>().getID();
-
+			//			mapData.tiles[i].homeVillageID = tile.getVillage().GetComponent<TileComponent>().getID();
+			
 			switch(tile.getOccupantType()){
 			case(OccupantType.VILLAGE):
 				savedVillages.Add(tile.GetComponent<VillageComponent>());
@@ -630,13 +633,14 @@ public class GameComponent : GenericComponent
 			}
 			++i;
 		}
-
+		
 		//--- VillageInfo ---//
 		mapData.villages = new VillageData[savedVillages.Count];
 		for(i = 0; i < mapData.villages.Length; ++i){
 			VillageComponent village = savedVillages[i];
-			mapData.villages[i].occupyingTileID = village.getOccupyingTile().getID();
-			mapData.villages[i].playerIndex = village.getOccupyingTile().getPlayerIndex();
+			mapData.villages[i] = new VillageData();
+			//			mapData.villages[i].occupyingTileID = village.getOccupyingTile().getID();
+			//			mapData.villages[i].playerIndex = village.getOccupyingTile().getPlayerIndex();
 			mapData.villages[i].goldStock = village.getGoldStock();
 			mapData.villages[i].woodStock = village.getWoodStock();
 			List<TileComponent> region = village.getControlledRegion();
@@ -647,34 +651,36 @@ public class GameComponent : GenericComponent
 			List<UnitComponent> support = village.getSupportingUnits();
 			mapData.villages[i].supportingUnitIDs = new int[support.Count];
 			for(int j = 0; j < support.Count; ++j){
-				mapData.villages[i].supportingUnitIDs[j] = support[j].GetComponent<TileComponent>().getID();
+				//				mapData.villages[i].supportingUnitIDs[j] = support[j].GetComponent<TileComponent>().getID();
 			}
 			mapData.villages[i].villageType = (int)village.getVillageType();
 			mapData.villages[i].remainingHealth = village.GetHealthLeft();
 		}
-
+		
 		//--- UnitInfo ---//
 		mapData.units = new UnitData[savedUnits.Count];
 		for(i = 0; i < mapData.units.Length; ++i){
 			UnitComponent unit = savedUnits[i];
-			mapData.units[i].occupyingTileID = unit.GetComponent<TileComponent>().getID();
-			mapData.units[i].playerIndex = unit.GetComponent<TileComponent>().getPlayerIndex();
+			mapData.units[i] = new UnitData();
+			//			mapData.units[i].occupyingTileID = unit.GetComponent<TileComponent>().getID();
+			//			mapData.units[i].playerIndex = unit.GetComponent<TileComponent>().getPlayerIndex();
 			mapData.units[i].roundsCultivating = unit.getRoundsCultivating();
 			mapData.units[i].upkeep = unit.getUpkeep();
 			mapData.units[i].currentAction = (int)unit.getCurrentAction();
 			mapData.units[i].unitType = (int)unit.getUnitType();
-			mapData.units[i].homeVillageTileID = unit.getVillage().GetComponent<TileComponent>().getID();
+			//			mapData.units[i].homeVillageTileID = unit.getVillage().GetComponent<TileComponent>().getID();
 		}
 		
 		//--- StructureInfo ---//
 		mapData.structures = new StructureData[savedStructures.Count];
 		for(i = 0; i < mapData.structures.Length; ++i){
 			StructureComponent structure = savedStructures[i];
-			mapData.structures[i].occupyingTileID = structure.GetComponent<TileComponent>().getID();
+			mapData.structures[i] = new StructureData();
+			//			mapData.structures[i].occupyingTileID = structure.GetComponent<TileComponent>().getID();
 			mapData.structures[i].playerIndex = structure.GetComponent<TileComponent>().getPlayerIndex();
 			mapData.structures[i].structureType = (int)structure.getStructureType();
 		}
-
+		
 		bf.Serialize(file, mapData);
 		file.Close();
 	}
@@ -685,7 +691,8 @@ public class GameComponent : GenericComponent
 			FileStream file = File.Open(_mapDirectory + mapName + "Info.dat", FileMode.Open);
 			MapData mapData = (MapData)bf.Deserialize(file);
 			file.Close();
-
+			
+			//Copy mapData back into newly created tile components here//
 		}
 	}
 }
@@ -706,7 +713,7 @@ class MapData {
 [Serializable]
 class TileData {
 	// Add new variables for loading and saving here.
-	public Vector3 globalPosition;
+	public float x,y,z;
 	public int tileID;
 	public int playerIndex;
 	public bool hasRoad;
