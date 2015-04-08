@@ -40,7 +40,7 @@ public class NetworkManager : MonoBehaviour {
 				for(int i = 0; i < _hostList.Length; ++i){
 					GameObject sessionButton = (GameObject)Instantiate(_joinButtonPrefab, _joinButtonPrefab.GetComponent<RectTransform>().position, Quaternion.identity);
 					sessionButton.transform.SetParent( _joinAvailablePanel.transform );
-					sessionButton.GetComponent<RectTransform>().anchoredPosition3D = _joinButtonPrefab.GetComponent<RectTransform>().anchoredPosition3D + (Vector3.up * buttonOffset * i);
+					sessionButton.GetComponent<RectTransform>().anchoredPosition3D = _joinButtonPrefab.GetComponent<RectTransform>().anchoredPosition3D + (Vector3.up * buttonOffset * (i+1));
 					Button b = sessionButton.GetComponent<Button>();
 					int hostIndex = i;
 					b.onClick.AddListener(() => {
@@ -55,11 +55,27 @@ public class NetworkManager : MonoBehaviour {
 					_refreshHostList = false;
 				}
 			}
+			/*
+			sessionButton = (GameObject)Instantiate(_joinButtonPrefab, _joinButtonPrefab.GetComponent<RectTransform>().position, Quaternion.identity);
+			sessionButton.transform.SetParent( _joinAvailablePanel.transform );
+			sessionButton.GetComponent<RectTransform>().anchoredPosition3D = _joinButtonPrefab.GetComponent<RectTransform>().anchoredPosition3D;
+			b = sessionButton.GetComponent<Button>();
+			b.onClick.AddListener(() => {
+				Network.Connect("127.0.0.1", _portNumber);
+				_currentMenu.SetActive(false);
+				_connectedMenu.SetActive(true);
+				_refreshHostList = false;
+			});
+			t = sessionButton.transform.GetChild(0).GetComponent<Text>();
+			t.text = "LAN";
+			_sessionButtons.Add ( sessionButton );
+			*/
 		}
 	}
-
+	
 	public void StartRefreshingHostList(){
 		_refreshHostList = true;
+		Disconnect();
 	}
 
 	public void StopRefreshingHostList(){
