@@ -504,7 +504,7 @@ public class GameComponent : GenericComponent
 		_playerManager.AddPlayer(new PlayerComponent("Ivo", "ivo"));
 		newGame(_playerManager.GetPlayers());
 	}
-	
+
 	public void endTurn()
 	{
 		if(Network.isServer || Network.isClient){
@@ -541,7 +541,17 @@ public class GameComponent : GenericComponent
 	}
 
 	public void endGame() {
-		Application.Quit();
+		foreach (TileComponent tile in _mapTiles) {
+			Destroy(tile.gameObject);
+		}
+
+		PlayerComponent player = _remainingPlayers[0];
+		_remainingPlayers.Clear();
+		_remainingPlayers.Add(player);
+
+		List<PlayerComponent> players = _playerManager.GetPlayers();
+		players.Clear();
+		players.Add(player);
 	}
 	
 	public void removePlayer(PlayerComponent player) {
