@@ -82,6 +82,14 @@ public class StructureComponent : GenericComponent
         Destroy(_structureGameObject);
     }
 
+    public void die()
+    {
+        TileComponent tc = this.GetComponent<TileComponent>();
+        tc.setOccupyingStructure(null);
+        tc.setOccupantType(OccupantType.NONE);
+        GameObject.Destroy(_structureGameObject);
+    }
+
     public void Attack(TileComponent tc)
     {
         if (tc.getOccupantType() != OccupantType.UNIT)

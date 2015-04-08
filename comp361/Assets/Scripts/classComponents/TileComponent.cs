@@ -419,9 +419,21 @@ public class TileComponent : GenericComponent
         _road.SetActive(true);
 	}
 	
-	public void randomizeTile() {
-		/* TODO */
-	}
+	public void TurnVillageToMeadow(int playerIndex)
+    {
+        if (_village != null)
+        {
+            _landType = LandType.MEADOW;
+            _playerIndex = playerIndex;
+            _village = null;
+            Destroy(_village.getVillageGameObject());
+            foreach (var t in breadthFS())
+            {
+                t.setVillage(null);
+            }
+            UpdateDraw();
+        }
+    }
 	
 	/*********************
 	 *   UNITY METHODS   *
