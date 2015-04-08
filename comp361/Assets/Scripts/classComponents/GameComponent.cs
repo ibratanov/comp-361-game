@@ -208,6 +208,7 @@ public class GameComponent : GenericComponent
 			networkView.RPC("RPCMoveLastSelectedUnit", RPCMode.Others, tileID_current, tileID_destination);
 		}
 		_unitToMove.moveUnit(_lastSelectedTile);
+        _moveStarted = false;
 	}
 	[RPC]
 	public void RPCMoveLastSelectedUnit(int tileID_current, int tileID_destination)
