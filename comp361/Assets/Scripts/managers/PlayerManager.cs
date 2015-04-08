@@ -88,6 +88,7 @@ public class PlayerManager : MonoBehaviour {
 		if(_inputUsername && _inputUsername.text.Length > 0){
 			PlayerComponent newPlayer = new PlayerComponent(_inputUsername.text, 0, 0);
 			_players.Add (newPlayer);
+			newPlayer.Save(newPlayer.getUserName());
 			Debug.Log ("New player added:" + newPlayer.getUserName());
 			//Clear the temporary information
 			_inputUsername = null;
