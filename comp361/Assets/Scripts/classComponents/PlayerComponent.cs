@@ -13,7 +13,7 @@ public enum PlayerStatus {
 
 public class PlayerComponent : GenericComponent
 {
-
+	string _directory = "./profiles/";
 	/*********************
 	 *     ATTRIBUTES    *
 	 ********************/
@@ -113,7 +113,7 @@ public class PlayerComponent : GenericComponent
 	//reference: http://zerosalife.github.io/blog/2014/08/09/persistent-data-in-unity/
 	public void Save(string username) {
 		BinaryFormatter bf = new BinaryFormatter();
-		FileStream file = File.Open("./profiles/" + username + "Info.dat", FileMode.OpenOrCreate);
+		FileStream file = File.Open(_directory + username + "Info.dat", FileMode.OpenOrCreate);
 		
 		PlayerData data = new PlayerData();
 		data.losses = _losses;
@@ -130,9 +130,9 @@ public class PlayerComponent : GenericComponent
 	}
 	
 	public void Load(string username) {
-		if(File.Exists("./profiles/" + username + "Info.dat")) {
+		if(File.Exists(_directory + username + "Info.dat")) {
 			BinaryFormatter bf = new BinaryFormatter();
-			FileStream file = File.Open("./profiles/" + username + "Info.dat", FileMode.Open);
+			FileStream file = File.Open(_directory + username + "Info.dat", FileMode.Open);
 			PlayerData data = (PlayerData)bf.Deserialize(file);
 			file.Close();
 			
@@ -151,11 +151,7 @@ public class PlayerComponent : GenericComponent
 
 	// Use this for initialization
 	void Start () {
-		string directory = "./profiles";
-		if(!Directory.Exists(directory))//if it doesn't, create it
-		{    
-			Directory.CreateDirectory(directory);
-		}
+
 	}
 	
 	// Update is called once per frame
