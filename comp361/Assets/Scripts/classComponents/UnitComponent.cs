@@ -712,28 +712,62 @@ public class UnitComponent : GenericComponent
         else
         {
             // if >=3 tiles left, randomly regenerate new village on remaining tiles
-            // find all components of land belonging to opposing player, regenerate village randomly on one
-            List<TileComponent> firstArea = _village.getControlledRegion()[0].breadthFS();
-            foreach (var t in firstArea)
+            List<TileComponent> totalArea = new List<TileComponent>();
+            foreach (var t in previousVillage.getControlledRegion())
             {
-                if (_village.getControlledRegion().Contains(t))
-                {
-                    _village.getControlledRegion().Remove(t);
-                }
+                totalArea.Add(t);
             }
-
-            remainingVillage(firstArea, this.GetComponent<TileComponent>().getPlayerIndex());
+            // find all components of land belonging to opposing player, regenerate village randomly on one
+            List<TileComponent> firstArea = previousVillage.getControlledRegion()[0].breadthFS();
 
             // if controlled region isn't empty, there's a second area
             List<TileComponent> secondArea = new List<TileComponent>();
-            if (_village.getControlledRegion().Count != 0)
+            foreach (var t in firstArea)
             {
-                secondArea = _village.getControlledRegion()[0].breadthFS();
+                if (totalArea.Contains(t))
+                {
+                    totalArea.Remove(t);
+                }
             }
-
-            if (secondArea.Count > 0)
+            if (firstArea.Count < 3)
             {
-                remainingVillage(secondArea, this.GetComponent<TileComponent>().getPlayerIndex());
+                if (firstArea[0].getVillage() != null)
+                {
+                    VillageComponent firstVillage = firstArea[0].getVillage();
+                    GameObject.Destroy(firstVillage.getVillageGameObject());
+                }
+                foreach (var t in firstArea)
+                {
+                    t.setPlayerIndex(0);
+                    t.setVillage(null);
+                }
+            }
+            else
+            {
+                foreach (var t in firstArea)
+                {
+                    if (t.getVillage() == null)
+                    {
+
+                    }
+                }
+            }
+            if (totalArea.Count < 3)
+            {
+                if (totalArea[0].getVillage() != null)
+                {
+                    VillageComponent firstVillage = totalArea[0].getVillage();
+                    GameObject.Destroy(firstVillage);
+                }
+                foreach (var t in totalArea)
+                {
+                    t.setPlayerIndex(0);
+                    t.setVillage(null);
+                }
+            }
+            else
+            {
+
             }
 
 
