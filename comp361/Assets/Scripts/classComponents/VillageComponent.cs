@@ -514,6 +514,7 @@ public class VillageComponent : GenericComponent
             tile.RemoveRoad();
         }
         // destroy village object
+        _player.remove(this);
         GameObject.Destroy(_villageGameObject);
     }
 	

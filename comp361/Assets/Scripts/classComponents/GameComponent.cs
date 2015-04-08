@@ -199,7 +199,7 @@ public class GameComponent : GenericComponent
 		//_lastSelectedTile.UnhighlightNeighbours();
 		//_lastSelectedTile.UpdateDraw();
 		if(Network.isServer || Network.isClient){
-			int tileID_current = _lastSelectedUnit.GetComponent<TileComponent>().getID();
+            int tileID_current = _unitToMove.GetComponent<TileComponent>().getID();
 			int tileID_destination = _lastSelectedTile.getID();
 			networkView.RPC("RPCMoveLastSelectedUnit", RPCMode.Others, tileID_current, tileID_destination);
 		}
