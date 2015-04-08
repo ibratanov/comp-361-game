@@ -515,6 +515,7 @@ public class GameComponent : GenericComponent
 
 	[RPC]
 	private void RPCEndTurn(){
+        _moveStarted = false;
 		_currentPlayerIndex = (_currentPlayerIndex + 1) % _remainingPlayers.Count;
 		
 		if (_lastSelectedTile != null && _lastSelectedTile.isSelected)

@@ -308,7 +308,33 @@ public class TileComponent : GenericComponent
 	public int getID(){
 		return _tID;
 	}
-	
+
+    public HashSet<TileComponent> getTwoHexRadius()
+    {
+        HashSet<TileComponent> fireableArea = new HashSet<TileComponent>();
+        foreach (var neighbour in this.getNeighbours())
+        {
+            fireableArea.Add(neighbour);
+        }
+
+        HashSet<TileComponent> neighbourNeighbours = new HashSet<TileComponent>();
+
+        foreach (var neighbour in fireableArea)
+        {
+            foreach (var neighbourNeighbour in neighbour.getNeighbours())
+            {
+                neighbourNeighbours.Add(neighbourNeighbour);
+            }
+        }
+
+        foreach (var nn in neighbourNeighbours)
+        {
+            fireableArea.Add(nn);
+        }
+        fireableArea.Remove(this);
+        return fireableArea;
+    }
+
 	public List<TileComponent> breadthFS() {
 		List<TileComponent> regionTiles = new List<TileComponent>();
 		Queue<TileComponent> q = new Queue<TileComponent>();
@@ -461,17 +487,17 @@ public class TileComponent : GenericComponent
 		_drawUpdated = true;
 	}
 	
-	public void Select() {
-		if (_menus.getCanClickGame()) {
-
-			print(getLandType());
-			isSelected = true;
-
-			if (_game.getLastSelectedTile() != null) {
-				List<TileComponent> region = this.breadthFS();
-				if (!region.Contains(_game.getLastSelectedTile())) {
-					_game.getLastSelectedTile().Deselect();
-				}
+	public void Select()
+	{
+		print (getLandType());
+        print(_tID);
+		isSelected = true;
+		if (_game.getLastSelectedTile() != null)
+		{
+			List<TileComponent> region = this.breadthFS();
+			if (!region.Contains(_game.getLastSelectedTile()))
+			{
+				_game.getLastSelectedTile().Deselect();
 			}
 
 			_game.setLastSelectedTile(this);

@@ -133,8 +133,8 @@ public class UnitComponent : GenericComponent
          * setLocation above is actually a setter.
          */
         bool contested = isContested(dest);
-        if (!contested)
-        {
+        //if (!contested)
+        //{
             OccupantType occType = dest.getOccupantType();
             LandType lType = dest.getLandType();
             VillageComponent destVillage = dest.getVillage();
@@ -163,7 +163,8 @@ public class UnitComponent : GenericComponent
                         {
 							return false;
                         } 
-                        takeOverTile(dest);
+                        //takeOverTile(dest);
+                        takeOverTilev2(dest);
                         setCurrentAction(ActionType.EXPANDING_REGION);
 						successfullyMoved = true;
 					}
@@ -179,6 +180,9 @@ public class UnitComponent : GenericComponent
                     {
                         return false;
                     }
+                    takeOverTilev2(dest);
+                    setCurrentAction(ActionType.EXPANDING_REGION);
+					successfullyMoved = true;
                     //UnitComponent destUnit = dest.getOccupyingUnit();
                     //destUnit.die();
                     //takeOverTile(dest);
@@ -193,7 +197,7 @@ public class UnitComponent : GenericComponent
                     }
                     else if (_unitType >= UnitType.SOLDIER)
                     {
-                        takeOverTile(dest);
+                        takeOverTilev2(dest);
                         setCurrentAction(ActionType.ATTACKING);
 						successfullyMoved = true;
 					}
@@ -215,7 +219,7 @@ public class UnitComponent : GenericComponent
                         else if (_unitType >= UnitType.SOLDIER)
                         {
                             //destStruct.destroy() //TODO: implement a destroy method which destroys an enemy's structure upon invasion
-                            takeOverTile(dest);
+                            takeOverTilev2(dest);
                             setCurrentAction(ActionType.ATTACKING);
 							successfullyMoved = true;
 						}
@@ -262,18 +266,12 @@ public class UnitComponent : GenericComponent
 				}
 			}
 			return true;
-		}
-        else
-        {
-            UnitComponent destUnit = dest.getOccupyingUnit();
-            destUnit.die();
-            takeOverTile(dest);
-            setCurrentAction(ActionType.ATTACKING);
-        }
+		//}
 
-		return false;
+		//return false;
 	}
-	
+
+
 	public void setUnitType(UnitType unitType, bool updateAppearance) {
 		if(Network.isServer || Network.isClient){
 			networkView.RPC("RPCsetUnitType", RPCMode.Others, (int)unitType, updateAppearance);
@@ -578,7 +576,8 @@ public class UnitComponent : GenericComponent
 
     public void die()
     {
-		TileComponent tc = this.GetComponent<TileComponent>();
+        _village.RemoveSupportingUnit(this);
+        TileComponent tc = this.GetComponent<TileComponent>();
         tc.setOccupyingUnit(null);
         tc.setOccupantType(OccupantType.STRUCTURE);
 		StructureComponent tombstone = new StructureComponent(StructureType.TOMBSTONE, tc);
@@ -606,12 +605,13 @@ public class UnitComponent : GenericComponent
         if (_currentAction == ActionType.READY_FOR_ORDERS)
         {   
             List<TileComponent> neighbours = this.GetComponent<TileComponent>().getNeighbours();
+            int id = this.GetComponent<TileComponent>().getID();
 
             bool isReachable = false;
 
             foreach (TileComponent tile in neighbours)
             {
-                if (tile == destination)
+                if (tile.getID() == destination.getID())
                 {
                     isReachable = true;
                     break;
@@ -645,26 +645,7 @@ public class UnitComponent : GenericComponent
                 return;
             }
             // add all tiles within 2 tile radius of current tile
-            HashSet<TileComponent> fireableArea = new HashSet<TileComponent>();
-            foreach (var neighbour in this.GetComponent<TileComponent>().getNeighbours())
-            {
-                fireableArea.Add(neighbour);
-            }
-
-            HashSet<TileComponent> neighbourNeighbours = new HashSet<TileComponent>();
-
-            foreach (var neighbour in fireableArea)
-            {
-                foreach (var neighbourNeighbour in neighbour.getNeighbours())
-                {
-                    neighbourNeighbours.Add(neighbourNeighbour);
-                }
-            }
-
-            foreach (var nn in neighbourNeighbours)
-            {
-                fireableArea.Add(nn);
-            }
+            HashSet<TileComponent> fireableArea = this.GetComponent<TileComponent>().getTwoHexRadius();
             
             if (fireableArea.Contains(target))
             {
@@ -691,6 +672,80 @@ public class UnitComponent : GenericComponent
             }
         }
     }
+
+
+    public void takeOverTilev2(TileComponent dest)
+    {
+        // get current village of tile
+        VillageComponent previousVillage = dest.getVillage();
+
+        bool tileInvaded = false;
+        bool destroyVillage = false;
+
+        // get what's occupying the tile
+        switch (dest.getOccupantType())
+        {
+            case OccupantType.NONE:
+                // if not protected by a stronger unit in a 1 hex radius, give tile to this unit's village
+                tileInvaded = true;
+                foreach (var t in this.GetComponent<TileComponent>().getTwoHexRadius())
+                {
+                    if (t.getOccupantType() == OccupantType.UNIT)
+                    {
+                        if (t.getOccupyingUnit().getUnitType() != UnitType.CANNON && t.getOccupyingUnit().getUnitType() >= _unitType)
+                        {
+                            tileInvaded = false;
+                            ThrowError("An enemy unit is guarding this tile.");
+                        }
+                    }
+                }
+                break;
+            case OccupantType.STRUCTURE:
+                // if unit is a soldier or knight, kill structure, give tile to this unit's village
+                break;
+            case OccupantType.UNIT:
+                // if unit's level < current unit's level, kill unit, give tile to this unit's village
+                if (dest.getOccupyingUnit().getUnitType() < _unitType)
+                {
+                    tileInvaded = true;
+                    dest.getOccupyingUnit().die();
+                }
+                else
+                {
+                    ThrowError("Your unit is not stronger than the opposing unit.");
+                }
+                break;
+            case OccupantType.VILLAGE:
+                // if unit is a soldier or knight, turn village tile to meadow of this unit's color
+                    // if >=3 tiles left, randomly regenerate new village on remaining tiles
+                break;
+        }
+
+        if (tileInvaded)
+        {
+            // give tile to this unit's village
+            _village.addToControlledRegion(dest);
+            dest.setPlayerIndex(this.GetComponent<TileComponent>().getPlayerIndex());
+            previousVillage.RemoveTile(dest);
+            if (previousVillage.getControlledRegion().Count < 3)
+            {
+                destroyVillage = true;
+            }
+            setLocation(dest);
+        }
+
+        // if less than 3 tiles left, destroy village
+        if (destroyVillage)
+        {
+            // give resources to this village
+            _village.addGold(previousVillage.getGoldStock());
+            _village.addWood(previousVillage.getWoodStock());
+            previousVillage.DestroyVillage();
+        }
+
+
+    }
+
 
     public void takeOverTile(TileComponent destination)
     {
