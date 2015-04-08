@@ -16,6 +16,7 @@ public class GUIManager : MonoBehaviour {
 	public GameObject _loadProfileButtonPrefab;
 	private List<GameObject> _loadProfileButtons = new List<GameObject>();
 	private PlayerManager _playerManager;
+	private string _profileDirectory = "./profiles/";
 	
 	public GameObject[] _cameras; 
 	public Vector3 _initZoomCameraPos;
@@ -39,7 +40,12 @@ public class GUIManager : MonoBehaviour {
 			}
 		}
 
-		DirectoryInfo dInfo = new DirectoryInfo("./profiles/");
+
+		if(!Directory.Exists(_profileDirectory))//if it doesn't, create it
+		{    
+			Directory.CreateDirectory(_profileDirectory);
+		}
+		DirectoryInfo dInfo = new DirectoryInfo(_profileDirectory);
 		FileInfo[] fInfo = dInfo.GetFiles();
 		float buttonOffset = 50.0f;
 		for(int i = 0; i < fInfo.Length; ++i){
