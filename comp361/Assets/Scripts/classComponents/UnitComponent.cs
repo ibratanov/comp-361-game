@@ -132,9 +132,6 @@ public class UnitComponent : GenericComponent
          * Implementation of setLocation Seq. Diagr.
          * setLocation above is actually a setter.
          */
-        bool contested = isContested(dest);
-        //if (!contested)
-        //{
             OccupantType occType = dest.getOccupantType();
             LandType lType = dest.getLandType();
             VillageComponent destVillage = dest.getVillage();
@@ -164,7 +161,7 @@ public class UnitComponent : GenericComponent
 							return false;
                         } 
                         //takeOverTile(dest);
-                        takeOverTilev2(dest);
+                        takeOverTile(dest);
                         setCurrentAction(ActionType.EXPANDING_REGION);
 						successfullyMoved = true;
 					}
@@ -180,7 +177,7 @@ public class UnitComponent : GenericComponent
                     {
                         return false;
                     }
-                    takeOverTilev2(dest);
+                    takeOverTile(dest);
                     setCurrentAction(ActionType.EXPANDING_REGION);
 					successfullyMoved = true;
                     //UnitComponent destUnit = dest.getOccupyingUnit();
@@ -197,7 +194,7 @@ public class UnitComponent : GenericComponent
                     }
                     else if (_unitType >= UnitType.SOLDIER)
                     {
-                        takeOverTilev2(dest);
+                        takeOverTile(dest);
                         setCurrentAction(ActionType.ATTACKING);
 						successfullyMoved = true;
 					}
@@ -219,7 +216,7 @@ public class UnitComponent : GenericComponent
                         else if (_unitType >= UnitType.SOLDIER)
                         {
                             //destStruct.destroy() //TODO: implement a destroy method which destroys an enemy's structure upon invasion
-                            takeOverTilev2(dest);
+                            takeOverTile(dest);
                             setCurrentAction(ActionType.ATTACKING);
 							successfullyMoved = true;
 						}
@@ -266,9 +263,6 @@ public class UnitComponent : GenericComponent
 				}
 			}
 			return true;
-		//}
-
-		//return false;
 	}
 
 
@@ -348,54 +342,6 @@ public class UnitComponent : GenericComponent
 
         return cost;
     }
-
-    public bool isContested(TileComponent destination)
-    {
-        List<TileComponent> neighbours = destination.getNeighbours();
-        neighbours.Add(destination);
-
-        foreach (TileComponent tile in neighbours)
-        {
-            UnitComponent enemyUnit = tile.getOccupyingUnit();
-
-            if (enemyUnit)
-            {
-                VillageComponent enemyVillage = enemyUnit.getVillage();
-
-                if (enemyVillage != _village)
-                {
-                    UnitType enemyUnitType = enemyUnit.getUnitType();
-
-                    if (_unitType <= enemyUnitType)
-                    {
-                        return true;
-                    }
-                }
-            }
-            else
-            {
-                StructureComponent enemyStructure = tile.getOccupyingStructure();
-
-                if (enemyStructure)
-                {
-                    StructureType enemyStructureType = enemyStructure.getStructureType();
-
-                    if (enemyStructureType == StructureType.WATCHTOWER)
-                    {
-                        VillageComponent enemyVillage = tile.getVillage();
-
-                        if (_unitType <= UnitType.INFANTRY || _village != enemyVillage)
-                        { 
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
     public void CombineUnit(UnitComponent uc)
     {
         if (this.Equals(uc))
@@ -674,7 +620,7 @@ public class UnitComponent : GenericComponent
     }
 
 
-    public void takeOverTilev2(TileComponent dest)
+    public void takeOverTile(TileComponent dest)
     {
         // get current village of tile
         VillageComponent previousVillage = dest.getVillage();
@@ -745,100 +691,6 @@ public class UnitComponent : GenericComponent
 
 
     }
-
-
-    public void takeOverTile(TileComponent destination)
-    {
-        VillageComponent enemyVillage = destination.getVillage();
-        PlayerComponent enemyPlayer = enemyVillage.getPlayer();
-        OccupantType destinationOccupantType = destination.getOccupantType();
-
-        if (destinationOccupantType == OccupantType.VILLAGE)
-        {
-            _village.addGold(enemyVillage.getGoldStock());
-            _village.addWood(enemyVillage.getWoodStock());
-            enemyPlayer.remove(enemyVillage);
-        }
-
-        _village.associate(destination);
-		setLocation(destination);
-
-        List<TileComponent> neighbours = destination.getNeighbours();
-
-        bool isVillageDestroyed = false;
-
-        foreach (TileComponent neighbour in neighbours)
-        {
-            List<TileComponent> region = neighbour.breadthFS();
-
-            if (region.Count >= 3 && !TileComponent.containsVillage(region))
-            {
-                VillageComponent newHovel = new VillageComponent(0, 0, enemyPlayer, region, null, VillageType.HOVEL);
-
-                enemyPlayer.addVillage(newHovel);
-
-                foreach (TileComponent tile in region)
-                {
-                    newHovel.associate(tile);
-
-                    if (tile.getOccupantType() == OccupantType.UNIT)
-                    {
-                        newHovel.associate(tile.getOccupyingUnit());
-                    }
-                }
-            }
-            else
-            {
-                foreach (TileComponent tile in region)
-                {
-                    OccupantType tileOccupantType = tile.getOccupantType();
-
-                    if (tileOccupantType == OccupantType.UNIT)
-                    {
-                        UnitComponent occupyingUnit = tile.getOccupyingUnit();
-                        occupyingUnit.die(); 
-
-                        StructureComponent tomb = new StructureComponent(StructureType.TOMBSTONE, tile);
-                        tile.setOccupyingStructure(tomb);
-                    }
-                    else if (tileOccupantType == OccupantType.VILLAGE)
-                    {
-                        VillageComponent village = tile.getVillage();
-                        enemyPlayer.remove(village);
-                        village.DestroyVillage();
-                        village = null;
-
-                        tile.setOccupyingStructure(null);
-
-                        isVillageDestroyed = true;
-                    }
-                }
-            }
-        }
-
-        if (isVillageDestroyed)
-        {
-            List<VillageComponent> enemyVillages = enemyPlayer.getVillages();
-
-            GameComponent game = enemyPlayer.getGame();
-            List<PlayerComponent> players = game.getRemainingPlayers();
-
-            if (enemyVillages.Count == 0)
-            {
-                enemyPlayer.incrementLosses();
-                game.removePlayer(enemyPlayer);
-
-                players = game.getRemainingPlayers();
-            }
-
-            if (players.Count == 1)
-            {
-                players[0].incrementWins();
-                game.endGame();
-            }
-        }
-    }
-
     public GameObject getGameObject()
     {
         return _unitGameObject;
