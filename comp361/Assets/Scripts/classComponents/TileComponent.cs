@@ -461,122 +461,114 @@ public class TileComponent : GenericComponent
 		_drawUpdated = true;
 	}
 	
-	public void Select()
-	{
-		print (getLandType());
-		isSelected = true;
-		if (_game.getLastSelectedTile() != null)
-		{
-			List<TileComponent> region = this.breadthFS();
-			if (!region.Contains(_game.getLastSelectedTile()))
+	public void Select() {
+		if (_menus.getCanClickGame()) {
+
+			print(getLandType());
+			isSelected = true;
+
+			if (_game.getLastSelectedTile() != null) {
+				List<TileComponent> region = this.breadthFS();
+				if (!region.Contains(_game.getLastSelectedTile())) {
+					_game.getLastSelectedTile().Deselect();
+				}
+			}
+
+			_game.setLastSelectedTile(this);
+
+			if (_game.isFireStarted()) {
+				_game.fireCannonLastSelectedUnit();
+			}
+
+			HighlightRegion();
+
+			if (_village != null) {
+				if (canSelect(_village.getPlayer())) {
+					_menus.showResourcesPanel();
+					_menus.setGoldStock((int)_village.getGoldStock());
+					_menus.setWoodStock((int)_village.getWoodStock());
+				}
+			}
+
+			if (_game.isAttacking()) {
+				_game.watchTowerAttackLastSelectedTile();
+			}
+
+			if (this.GetComponent<UnitComponent>()) {
+
+				if (_game.isMerging()) {
+					_game.startMergeLastSelectedUnit(this.GetComponent<UnitComponent>());
+				}
+
+				_game.setLastSelectedUnit(this.GetComponent<UnitComponent>());
+
+
+				PlayerComponent pc = this.GetComponent<UnitComponent>().getVillage().getPlayer();
+				if (canSelect(pc)) {
+					_menus.HideVillageActions();
+					Debug.Log("Unit");
+					_menus.DisplayUnitActions(this.GetComponent<UnitComponent>().getUnitType());
+				}
+			} else if (this.GetComponent<VillageComponent>()) {
+				PlayerComponent pc = this.GetComponent<VillageComponent>().getPlayer();
+				//print ("village's player " + pc.getUserName());
+				if (canSelect(pc)) {
+					_menus.HideUnitActions();
+					Debug.Log("Village");
+					_menus.DisplayVillageActions(this.GetComponent<VillageComponent>());
+					_menus.showResourcesPanel();
+					_menus.setWoodStock((int)_village.getWoodStock());
+				}
+			} else if (this._occupyingStructure != null) {
+				StructureComponent sc = this._occupyingStructure;
+				_game.setLastSelectedStructure(sc);
+				if (sc.getStructureType() == StructureType.WATCHTOWER) {
+					_menus.DisplayStructureActions();
+					_menus.HideVillageActions();
+					_menus.HideUnitActions();
+				}
+			} else {
+				Debug.Log("None");
+			}
+
+			if (_game.isMoveStarted()) {
+				_game.moveLastSelectedUnit();
+			}
+
+			/*
+			if (this._occupyingUnit != null)
 			{
-				_game.getLastSelectedTile().Deselect();
+				_game.setLastSelectedUnit(this._occupyingUnit);
 			}
-		}
-		_game.setLastSelectedTile(this);
-
-        if (_game.isFireStarted())
-        {
-            _game.fireCannonLastSelectedUnit();
-        }
-		HighlightRegion();
-		if (_village != null)
-		{
-			if (canSelect(_village.getPlayer()))
+			if (_occupantType == OccupantType.UNIT)
 			{
-				_menus.showResourcesPanel();
-				_menus.setGoldStock((int)_village.getGoldStock());
-				_menus.setWoodStock((int)_village.getWoodStock());
+				if (this._occupyingUnit.getVillage().getPlayer() == GameComponent.ins.getCurrentPlayer())
+				{
+					_menus.HideVillageActions();
+					Debug.Log("Unit");
+					_menus.DisplayUnitActions();
+				}
 			}
-		}
-
-        if (_game.isAttacking())
-        {
-            _game.watchTowerAttackLastSelectedTile();
-        }
-		if(this.GetComponent<UnitComponent>()){
-
-            if (_game.isMerging())
-            {
-                _game.startMergeLastSelectedUnit(this.GetComponent<UnitComponent>());
-            }
-
-			_game.setLastSelectedUnit(this.GetComponent<UnitComponent>());
-
-
-			PlayerComponent pc = this.GetComponent<UnitComponent>().getVillage().getPlayer();
-			if( canSelect(pc) ){
-				_menus.HideVillageActions();
-				Debug.Log("Unit");
-				_menus.DisplayUnitActions(this.GetComponent<UnitComponent>().getUnitType());
-			}
-		}
-		else if (this.GetComponent<VillageComponent>())
-		{
-			PlayerComponent pc = this.GetComponent<VillageComponent>().getPlayer();
-			//print ("village's player " + pc.getUserName());
-			if ( canSelect(pc) )
+			else if (_occupantType == OccupantType.VILLAGE)
 			{
-				_menus.HideUnitActions();
-				Debug.Log("Village");
-				_menus.DisplayVillageActions(this.GetComponent<VillageComponent>());
-				_menus.showResourcesPanel();
-				_menus.setWoodStock((int)_village.getWoodStock());
+				if (_village.getPlayer() == GameComponent.ins.getCurrentPlayer())
+				{
+					_menus.HideUnitActions();
+					Debug.Log("Village");
+					_menus.DisplayVillageActions();
+					_menus.setWoodStock((int)_village.getWoodStock());
+				}
 			}
-		}
-        else if (this._occupyingStructure != null)
-        {
-            StructureComponent sc = this._occupyingStructure;
-            _game.setLastSelectedStructure(sc);
-            if (sc.getStructureType() == StructureType.WATCHTOWER)
-            {
-                _menus.DisplayStructureActions();
-                _menus.HideVillageActions();
-                _menus.HideUnitActions();
-            }
-        }
-        else
-        {
-            Debug.Log("None");
-        }
-		if (_game.isMoveStarted())
-		{
-			_game.moveLastSelectedUnit();
-		}
-
-		/*
-        if (this._occupyingUnit != null)
-        {
-            _game.setLastSelectedUnit(this._occupyingUnit);
-        }
-        if (_occupantType == OccupantType.UNIT)
-        {
-			if (this._occupyingUnit.getVillage().getPlayer() == GameComponent.ins.getCurrentPlayer())
+			else
 			{
-				_menus.HideVillageActions();
-	            Debug.Log("Unit");
-	            _menus.DisplayUnitActions();
+				Debug.Log("None");
 			}
-        }
-        else if (_occupantType == OccupantType.VILLAGE)
-        {
-			if (_village.getPlayer() == GameComponent.ins.getCurrentPlayer())
+			if (_game.isMoveStarted())
 			{
-				_menus.HideUnitActions();
-				Debug.Log("Village");
-				_menus.DisplayVillageActions();
-				_menus.setWoodStock((int)_village.getWoodStock());
+				_game.moveLastSelectedUnit();
 			}
-        }
-        else
-        {
-            Debug.Log("None");
-        }
-        if (_game.isMoveStarted())
-        {
-            _game.moveLastSelectedUnit();
-        }
-        */
+			*/
+		}
 	}
 
 	//True if the person playing is the current player and the selected object belongs to that player
