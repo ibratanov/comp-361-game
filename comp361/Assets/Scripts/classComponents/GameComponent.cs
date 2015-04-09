@@ -23,6 +23,7 @@ public class GameComponent : GenericComponent
 
 	private MapGenerator _mapGenerator;
 	private MapData _mapData;
+	private bool _isNewGame = true;
 	
 	int _roundCount; 
 	
@@ -55,6 +56,10 @@ public class GameComponent : GenericComponent
 			}
 		}
 		return null;
+	}
+
+	public void isNewMap(bool isNew){
+		_isNewGame = isNew;
 	}
 
 	public bool isMoveStarted()
@@ -259,14 +264,22 @@ public class GameComponent : GenericComponent
 		Load(mapName); //Get the mapData (server only)
 		
 		//Remove players that have been loaded but aren't actually participating in the current map
-		foreach(PlayerComponent participant in _playerManager.GetPlayers()){
+		foreach(PlayerComponent participant in _playerManager.GetPlayers()){ //Iterate over each player loaded before game started
 			bool matchFound = false;
+			bool isValidPlayer = true;
 			for(int i = 0; i < _mapData.players.Length; ++i){
-				if( _playerManager.GetPlayer(_mapData.players[i]).Equals(participant.getUserName()) ){
-					matchFound = true;
+				PlayerComponent player = _playerManager.GetPlayer(_mapData.players[i]); //Iterate over the players in the save file
+				if(player != null){
+					if( player.getUserName().Equals(participant.getUserName()) ){
+						matchFound = true;
+					}
+					isValidPlayer = true;
+				}
+				else{
+					isValidPlayer = false;
 				}
 			}
-			if(!matchFound){
+			if(!matchFound && isValidPlayer){
 				removePlayer(participant); //(networked)
 			}
 		}
@@ -274,6 +287,7 @@ public class GameComponent : GenericComponent
 		
 		//--- TileInfo ---//
 		_mapGenerator.GenerateLoadedMap(_mapData); //Create the tile objects and components (networked)
+
 		UpdateGeneratedMap(); //get the TileComponents that were just generated(networked)
 		//--- create the villages, units, and structures (networked) ---//
 		foreach(VillageData village in _mapData.villages){
@@ -288,6 +302,32 @@ public class GameComponent : GenericComponent
 		}
 		BeginRound();
 		*/
+	}
+
+	[RPC]
+	private void generateNeighboursFromMapData(int i, int j, int neighbourID1, int neighbourID2, int neighbourID3, int neighbourID4, int neighbourID5, int neighbourID6)
+	{
+		List<TileComponent> n = new List<TileComponent>();
+		if(neighbourID1 > -1){
+			n.Add( GetTileByID(neighbourID1) );
+		}
+		if(neighbourID2 > -1){
+			n.Add( GetTileByID(neighbourID2) );
+		}
+		if(neighbourID3 > -1){
+			n.Add( GetTileByID(neighbourID3) );
+		}
+		if(neighbourID4 > -1){
+			n.Add( GetTileByID(neighbourID4) );
+		}
+		if(neighbourID5 > -1){
+			n.Add( GetTileByID(neighbourID5) );
+		}
+		if(neighbourID6 > -1){
+			n.Add( GetTileByID(neighbourID6) );
+		}
+		_mapTiles[i,j].setNeighbours(n);
+		_mapTiles[i,j].Unhighlight();
 	}
 
 	//Players will increment their turns in alphabetical order to maintain network consistency 
@@ -421,6 +461,19 @@ public class GameComponent : GenericComponent
 	[RPC]
 	private void RPCUpdateGeneratedMap(){
 		_mapTiles =_mapGenerator.getLandTiles();
+		//--- Connect each tile to its neighbour ---//
+		int k = 0;
+		for (int i = 0; i < _mapData.width; ++i)
+		{
+			for (int j = 0; j < _mapData.height; ++j)
+			{
+				if(Network.isServer){
+					networkView.RPC("generateNeighboursFromMapData", RPCMode.Others, i, j, _mapData.tiles[k].neighbourIDs[0], _mapData.tiles[k].neighbourIDs[1], _mapData.tiles[k].neighbourIDs[2], _mapData.tiles[k].neighbourIDs[3], _mapData.tiles[k].neighbourIDs[4], _mapData.tiles[k].neighbourIDs[5]);
+				}
+				generateNeighboursFromMapData(i, j, _mapData.tiles[k].neighbourIDs[0], _mapData.tiles[k].neighbourIDs[1], _mapData.tiles[k].neighbourIDs[2], _mapData.tiles[k].neighbourIDs[3], _mapData.tiles[k].neighbourIDs[4], _mapData.tiles[k].neighbourIDs[5]);
+				k++;
+			}
+		}
 	}
 	
 	private void SetupLoadedVillage(int tileID, int villageType, string playerName, uint goldStock, uint woodStock, int healthRemaining){
@@ -431,7 +484,6 @@ public class GameComponent : GenericComponent
 	}
 	[RPC]
 	private void RPCSetupLoadedVillage(int tileID, int villageType, string playerName, uint goldStock, uint woodStock, int healthRemaining){
-		GetTileByID(tileID);
 		TileComponent tileWithVillage = GetTileByID(tileID);
 		VillageComponent newVillage = CreateVillage(tileWithVillage, (VillageType)villageType, _playerManager.GetPlayer(playerName));
 		tileWithVillage.setOccupantType(OccupantType.VILLAGE);
@@ -468,12 +520,17 @@ public class GameComponent : GenericComponent
 	/// Generate a map based on the current selection.
 	/// </summary>
 	public void BeginGame(){
-		if( _currentMap.Equals("Preset1") ){
-			List<PlayerComponent> players = _playerManager.GetPlayers();
-			newGame(players);
+		if(_isNewGame){
+			if( _currentMap.Equals("Preset1") ){
+				List<PlayerComponent> players = _playerManager.GetPlayers();
+				newGame(players);
+			}
+			else if( _currentMap.Equals("TestMap") ){
+				TestMapGeneration();
+			}
 		}
-		else if( _currentMap.Equals("TestMap") ){
-			TestMapGeneration();
+		else{
+			newLoadedGame(_currentMap);
 		}
 	}
 	
@@ -653,6 +710,7 @@ public class GameComponent : GenericComponent
 		foreach (TileComponent tile in _mapTiles) {
 			Destroy(tile.gameObject);
 		}
+		Save(_currentMap);
 
 		PlayerComponent player = _remainingPlayers[0];
 		_remainingPlayers.Clear();
@@ -701,6 +759,8 @@ public class GameComponent : GenericComponent
 		
 		//--- TileInfo ---//
 		mapData.tiles = new TileData[_mapTiles.GetLength(0)*_mapTiles.GetLength(1)];
+		mapData.height = _mapTiles.GetLength(0);
+		mapData.width = _mapTiles.GetLength(1);
 		i = 0;
 		List<VillageComponent> savedVillages = new List<VillageComponent>();
 		List<UnitComponent> savedUnits = new List<UnitComponent>();
@@ -715,10 +775,14 @@ public class GameComponent : GenericComponent
 			mapData.tiles[i].hasRoad = tile.hasRoad();
 			mapData.tiles[i].landType = (int)tile.getLandType();
 			mapData.tiles[i].occupantType = (int)tile.getOccupantType();
-			mapData.tiles[i].neighbourIDs = new int[tile.getNeighbours().Count];
+			mapData.tiles[i].neighbourIDs = new int[6];
 			List<TileComponent> neighbours = tile.getNeighbours();
-			for(int j = 0; j < neighbours.Count; ++j){
+			int j = 0;
+			for(; j < tile.getNeighbours().Count; ++j){
 				mapData.tiles[i].neighbourIDs[j] = neighbours[j].getID();
+			}
+			for(; j < 6; ++j){
+				mapData.tiles[i].neighbourIDs[j] = -1; //Fill the rest of the neighbour slots with dummy values
 			}
 			//			mapData.tiles[i].homeVillageID = tile.getVillage().GetComponent<TileComponent>().getID();
 			
@@ -785,6 +849,7 @@ public class GameComponent : GenericComponent
 		
 		bf.Serialize(file, mapData);
 		file.Close();
+		Debug.Log("Saved: " + _mapDirectory + mapName + "Info.dat");
 	}
 	
 	public void Load(string mapName) {

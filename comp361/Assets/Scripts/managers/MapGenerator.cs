@@ -234,19 +234,6 @@ public class MapGenerator : MonoBehaviour {
 				++k;
 			}
 		}
-		
-		//--- Connect each tile to its neighbour ---//
-		k = 0;
-		for (int i = 0; i < columns; ++i)
-		{
-			for (int j = 0; j < rows; ++j)
-			{
-				if(Network.isServer){
-					networkView.RPC("generateNeighboursFromMapData", RPCMode.Others, i, j, mapData.tiles[k].neighbourIDs[0], mapData.tiles[k].neighbourIDs[1], mapData.tiles[k].neighbourIDs[2], mapData.tiles[k].neighbourIDs[3], mapData.tiles[k].neighbourIDs[4], mapData.tiles[k].neighbourIDs[5]);
-				}
-				generateNeighboursFromMapData(i, j, mapData.tiles[k].neighbourIDs[0], mapData.tiles[k].neighbourIDs[1], mapData.tiles[k].neighbourIDs[2], mapData.tiles[k].neighbourIDs[3], mapData.tiles[k].neighbourIDs[4], mapData.tiles[k].neighbourIDs[5]);
-			}
-		}
 	}
 
 	[RPC]
@@ -280,7 +267,8 @@ public class MapGenerator : MonoBehaviour {
 			_landTiles[i,j].createRoad();
 		}
 		_landTiles[i,j].setOccupantType((OccupantType)occupantType);
-		
+
+		/*
 		//Do this in GameComponent
 		if(_landTiles[i,j].getID() > 0){
 			_landTiles[i,j].setVillage( this.GetComponent<GameComponent>().GetTileByID(homeVillageID).GetComponent<VillageComponent>() );
@@ -293,6 +281,7 @@ public class MapGenerator : MonoBehaviour {
 		case(OccupantType.STRUCTURE):
 			break;
 		}
+		*/
 	}
 
 	[RPC]
@@ -353,31 +342,6 @@ public class MapGenerator : MonoBehaviour {
                 n.Remove(t);
             }
         }
-		_landTiles[i,j].setNeighbours(n);
-	}
-
-	[RPC]
-	private void generateNeighboursFromMapData(int i, int j, int neighbourID1, int neighbourID2, int neighbourID3, int neighbourID4, int neighbourID5, int neighbourID6)
-	{
-		List<TileComponent> n = new List<TileComponent>();
-		if(neighbourID1 > -1){
-			n.Add( this.GetComponent<GameComponent>().GetTileByID(neighbourID1) );
-		}
-		if(neighbourID2 > -1){
-			n.Add( this.GetComponent<GameComponent>().GetTileByID(neighbourID2) );
-		}
-		if(neighbourID3 > -1){
-			n.Add( this.GetComponent<GameComponent>().GetTileByID(neighbourID3) );
-		}
-		if(neighbourID4 > -1){
-			n.Add( this.GetComponent<GameComponent>().GetTileByID(neighbourID4) );
-		}
-		if(neighbourID5 > -1){
-			n.Add( this.GetComponent<GameComponent>().GetTileByID(neighbourID5) );
-		}
-		if(neighbourID6 > -1){
-			n.Add( this.GetComponent<GameComponent>().GetTileByID(neighbourID6) );
-		}
 		_landTiles[i,j].setNeighbours(n);
 	}
 
