@@ -25,9 +25,9 @@ public class MapGenerator : MonoBehaviour
     public void GenerateMap()
     {
         //TODO: Selecting which map you want
-        GenerateSquareGridWithHoles(20, 20, _origin, _tileHeight, _tileDiagonal);
+        //GenerateSquareGridWithHoles(20, 20, _origin, _tileHeight, _tileDiagonal);
         //GenerateParalleloGrid(20, 20, _origin, _tileHeight, _tileDiagonal);
-        //GenerateSquareGrid(_rows, _columns, _origin, _tileHeight, _tileDiagonal);
+        GenerateSquareGrid(_rows, _columns, _origin, _tileHeight, _tileDiagonal);
         AddTerrain(_forestRatio, _meadowRatio);
     }
 
@@ -129,7 +129,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int j = 0; j < rows; ++j)
             {
-                int randomRemove = (i + j + System.DateTime.Now.Millisecond) % 7;
+                int randomRemove = (i * j + System.DateTime.Now.Millisecond) % 6;
                 if (randomRemove == 0)
                 {
                     TileComponent tile = _landTiles[i, j].gameObject.GetComponent<TileComponent>();
@@ -190,7 +190,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int j = 0; j < rows; ++j)
             {
-                int randomRemove = (i + j + System.DateTime.Now.Millisecond) % 10;
+                int randomRemove = (i * j + System.DateTime.Now.Millisecond) % 10;
                 if (randomRemove == 0)
                 {
                     TileComponent tile = _landTiles[i, j].gameObject.GetComponent<TileComponent>();
