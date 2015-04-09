@@ -375,6 +375,11 @@ public class UnitComponent : GenericComponent
             ThrowError("You cannot combine a unit with itself.");
             return;
         }
+        if (this.GetComponent<TileComponent>().getPlayerIndex() != uc.GetComponent<TileComponent>().getPlayerIndex())
+        {
+            ThrowError("You can only combine two of your own units.");
+            return;
+        }
         // peasant + peasant = infantry
         // peasant + infantry = soldier
         // peasant + soldier = knight
@@ -458,10 +463,10 @@ public class UnitComponent : GenericComponent
     public bool upgradeUnit(UnitType newLevel)
     {
         if (newLevel == UnitType.CANNON) return false;
-        if (this._unitType == UnitType.CANNON) return false;
-        else
+        if (this._unitType == UnitType.CANNON) 
         {
             ThrowError("Cannons cannot be upgraded.");
+            return false;
         }
         if (newLevel >= _unitType)
         {
@@ -499,6 +504,7 @@ public class UnitComponent : GenericComponent
                 if (t.getLandType() == LandType.MEADOW || t.getLandType() == LandType.GRASS)
                 {
                     t.createRoad();
+                    _currentAction = ActionType.BUILDING_ROAD;
                 }
             }
         }
@@ -523,7 +529,7 @@ public class UnitComponent : GenericComponent
 
     public void cultivate()
     {
-        if (_roundsCultivating >= 2)
+        if (_roundsCultivating == 0)
         {
             this.GetComponent<TileComponent>().setLandType(LandType.MEADOW);
             _currentAction = ActionType.READY_FOR_ORDERS;
@@ -531,7 +537,7 @@ public class UnitComponent : GenericComponent
         }
         else
         {
-            ++_roundsCultivating;
+            _roundsCultivating--;
         }
     }
 
@@ -569,6 +575,11 @@ public class UnitComponent : GenericComponent
 
     public void cultivateMeadow()
     {
+        if (this.GetComponent<TileComponent>().getLandType() == LandType.MEADOW)
+        {
+            ThrowError("There is already a meadow on this tile.");
+            return;
+        }
         _currentAction = ActionType.CULTIVATING_MEADOW;
         _roundsCultivating = 2;
     }

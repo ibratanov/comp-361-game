@@ -362,6 +362,11 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
+    public void DisplayUpgradeMenu()
+    {
+            // TODO: grey out options based on last selected unit type
+    }
+
     public void HideVillageActions()
     {
         for (int i = 0; i < _inGamePanels.Length; ++i)
@@ -382,42 +387,60 @@ public class GUIManager : MonoBehaviour {
 		for(int i = 0; i < _inGamePanels.Length; ++i){
             if (_inGamePanels[i].name.Contains("Panel_Unit_Actions"))
             {
+                _inGamePanels[i].SetActive(true);
 				switch (unit)
 				{
+                case UnitType.PEASANT:
+                        foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
+                        {
+                            if (b.name.Contains("OpenFire"))
+                            {
+                                DisableButton(b);
+                            }                            
+                        }
+                    break;
 				case UnitType.INFANTRY:
 					foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
 					{
-						if (b.name.Contains("Harvest"))
+                        if (b.name.Contains("Harvest") || b.name.Contains("OpenFire"))
 						{
 
 							DisableButton(b);
 						}
-						break;
+						
 					}
 					break;
 				case UnitType.SOLDIER:
 					foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
 					{
-						if (b.name.Contains("Harvest"))
+                        if (b.name.Contains("Harvest") || b.name.Contains("OpenFire"))
 						{
 							DisableButton(b);
 						}
-						break;
+						
 					}
 					break;
 				case UnitType.KNIGHT:
 					foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
 					{
-						if (b.name.Contains("Harvest") || b.name.Contains ("Upgrade") || b.name.Contains("BuildRoad") || b.name.Contains ("OpenFire"))
+						if (b.name.Contains("Harvest") || b.name.Contains ("Upgrade") || b.name.Contains("Build") || b.name.Contains ("OpenFire"))
 						{
 							DisableButton(b);
 						}
 					}
-					break;
+                    break;
+                case UnitType.CANNON:
+                    foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
+                    {
+                        if (b.name.Contains("Harvest") || b.name.Contains("Upgrade") || b.name.Contains("Build") || b.name.Contains("Merge"))
+                        {
+                            DisableButton(b);
+                        }
+                    }
+                    break;
 				default:
 					break;
 				}
-				_inGamePanels[i].SetActive(true);
 				HideOtherActionPanels("Unit_Actions");
 
 			}
