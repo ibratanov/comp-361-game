@@ -614,7 +614,8 @@ public class GameComponent : GenericComponent
 					if (randomNeighbour.getLandType() != LandType.FOREST &&
 					    !randomNeighbour.hasRoad() &&
 					    randomNeighbour.getOccupyingStructure() == null &&
-					    randomNeighbour.getOccupantType() == OccupantType.NONE)
+					    randomNeighbour.getOccupantType() == OccupantType.NONE && 
+                        randomNeighbour.getLandType() != LandType.SEA)
 					{
 						randomNeighbour.setLandType(LandType.FOREST);
 						randomNeighbour.Unhighlight();
