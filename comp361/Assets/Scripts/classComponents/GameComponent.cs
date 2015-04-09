@@ -494,11 +494,11 @@ public class GameComponent : GenericComponent
 
 	#region CheckPanelUpdates
 
-	public void checkVillageActions()
+	public void UpdateVillageActionPanel()
 	{
-		_guiManager.DisplayVillageActions(_lastSelectedTile.GetComponent<VillageComponent>());
+		_guiManager.HideVillageActions();
+		_guiManager.DisplayVillageActions(_lastSelectedTile.getVillage ());
 	}
-
 	#endregion
 	
 	
@@ -562,11 +562,6 @@ public class GameComponent : GenericComponent
 		players.Add(player);
 	}
 
-	public void UpdateVillageActionPanel()
-	{
-		_guiManager.HideVillageActions();
-		_guiManager.DisplayVillageActions(_lastSelectedTile.getVillage ());
-	}
 	
 	public void removePlayer(PlayerComponent player) {
 		_remainingPlayers.Remove(player);
