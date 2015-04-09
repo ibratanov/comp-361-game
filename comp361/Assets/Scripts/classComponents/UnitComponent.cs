@@ -149,6 +149,8 @@ public class UnitComponent : GenericComponent
          * Implementation of setLocation Seq. Diagr.
          * setLocation above is actually a setter.
          */
+        bool shouldMerge = false;
+
             OccupantType occType = dest.getOccupantType();
             LandType lType = dest.getLandType();
             VillageComponent destVillage = dest.getVillage();
@@ -169,6 +171,7 @@ public class UnitComponent : GenericComponent
 						setLocation(dest);
 						dest.setPlayerIndex(this.GetComponent<TileComponent>().getPlayerIndex());
 						successfullyMoved = true;
+                        shouldMerge = true;
 					}
                     // destination is an empty tile in different player's village
 					else if (destVillage != null && destVillage != _village)
@@ -181,12 +184,14 @@ public class UnitComponent : GenericComponent
                         takeOverTile(dest);
                         setCurrentAction(ActionType.EXPANDING_REGION);
 						successfullyMoved = true;
+                        shouldMerge = false;
 					}
                     // destination is an empty tile in the same village as the unit currently belongs to
 					else if (destVillage != null && destVillage == _village)
                     {
 						setLocation(dest);
 						successfullyMoved = true;
+                        shouldMerge = true;
 					}
 					break;
                 case OccupantType.UNIT:
@@ -197,6 +202,7 @@ public class UnitComponent : GenericComponent
                     takeOverTile(dest);
                     setCurrentAction(ActionType.EXPANDING_REGION);
 					successfullyMoved = true;
+                    shouldMerge = false;
                     //UnitComponent destUnit = dest.getOccupyingUnit();
                     //destUnit.die();
                     //takeOverTile(dest);
@@ -214,6 +220,7 @@ public class UnitComponent : GenericComponent
                         takeOverTile(dest);
                         setCurrentAction(ActionType.ATTACKING);
 						successfullyMoved = true;
+                        shouldMerge = false;
 					}
 					break;
                 case OccupantType.STRUCTURE:
@@ -236,6 +243,7 @@ public class UnitComponent : GenericComponent
                             takeOverTile(dest);
                             setCurrentAction(ActionType.ATTACKING);
 							successfullyMoved = true;
+                            shouldMerge = false;
 						}
 					}
                     else if (sType == StructureType.TOMBSTONE)
@@ -252,6 +260,7 @@ public class UnitComponent : GenericComponent
                             takeOverTile(dest);
                         }
 						successfullyMoved = true;
+                        shouldMerge = true;
 					}
 					break;
             }
@@ -279,7 +288,7 @@ public class UnitComponent : GenericComponent
 					break;
 				}
 			}
-			return true;
+			return shouldMerge;
 	}
 
 
@@ -584,9 +593,9 @@ public class UnitComponent : GenericComponent
 
             if (isReachable)
             {
-                bool isRelocated = setDestination(destination);
-				if (isRelocated) destination.connectRegions();
-                if (isRelocated && _unitType == UnitType.CANNON) _currentAction = ActionType.ALREADY_MOVED;
+                bool shouldMerge = setDestination(destination);
+				if (shouldMerge) destination.connectRegions();
+                if (shouldMerge && _unitType == UnitType.CANNON) _currentAction = ActionType.ALREADY_MOVED;
             }
             else
             {
@@ -643,6 +652,7 @@ public class UnitComponent : GenericComponent
         // get current village of tile
         VillageComponent previousVillage = dest.getVillage();
         int previousPlayer = dest.getPlayerIndex();
+        VillageType previousVillageType = previousVillage.getVillageType();
 
         bool tileInvaded = false;
         bool destroyVillage = false;
@@ -703,6 +713,10 @@ public class UnitComponent : GenericComponent
                 {
                     tileInvaded = true;
                     dest.TurnVillageToMeadow(this.GetComponent<TileComponent>().getPlayerIndex());
+                    foreach (var t in previousVillage.getControlledRegion())
+                    {
+                        t.setVillage(null);
+                    }
                 }
                 break;
         }
@@ -754,6 +768,10 @@ public class UnitComponent : GenericComponent
                 {
                     VillageComponent firstVillage = firstArea[0].getVillage();
                     GameObject.Destroy(firstVillage.getVillageGameObject());
+                    foreach (var tt in totalArea)
+                    {
+                        tt.setVillage(null);
+                    }
                 }
                 foreach (var t in firstArea)
                 {
@@ -767,7 +785,7 @@ public class UnitComponent : GenericComponent
                 {
                     if (t.getVillage() == null)
                     {
-                        VillageComponent newHovel = GameObject.FindObjectOfType<GameComponent>().CreateVillage(t, VillageType.HOVEL, GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers()[previousPlayer]);
+                        VillageComponent newHovel = GameObject.FindObjectOfType<GameComponent>().CreateVillage(t, previousVillageType, GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers()[previousPlayer - 1]);
                         t.setOccupantType(OccupantType.VILLAGE);
                         //t.UpdateVillageReference();
 
@@ -782,24 +800,44 @@ public class UnitComponent : GenericComponent
                     }
                 }
             }
-            if (totalArea.Count < 3)
+            if (totalArea.Count > 0)
             {
-                if (totalArea[0].getVillage() != null)
+                if (totalArea.Count < 3)
                 {
-                    VillageComponent firstVillage = totalArea[0].getVillage();
-                    GameObject.Destroy(firstVillage);
+                    if (totalArea[0].getVillage() != null)
+                    {
+                        VillageComponent firstVillage = totalArea[0].getVillage();
+                        GameObject.Destroy(firstVillage);
+                    }
+                    foreach (var t in totalArea)
+                    {
+                        t.setPlayerIndex(0);
+                        t.setVillage(null);
+                    }
                 }
-                foreach (var t in totalArea)
+                else
                 {
-                    t.setPlayerIndex(0);
-                    t.setVillage(null);
+                    foreach (var t in totalArea)
+                    {
+                        if (t.getVillage() == null)
+                        {
+                            var players = GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers();
+                            VillageComponent newHovel = GameObject.FindObjectOfType<GameComponent>().CreateVillage(t, previousVillageType, GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers()[previousPlayer - 1]);
+                            t.setOccupantType(OccupantType.VILLAGE);
+                            //t.UpdateVillageReference();
+
+                            newHovel.associate(t);
+                            newHovel.addGold(1);
+                            newHovel.addWood(0);
+                            foreach (var tile in totalArea)
+                            {
+                                tile.setVillage(newHovel);
+                            }
+                            break;
+                        }
+                    }
                 }
             }
-            else
-            {
-
-            }
-
 
         }
 
