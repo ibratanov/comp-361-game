@@ -25,7 +25,7 @@ public class MapGenerator : MonoBehaviour {
         //TODO: Selecting which map you want
         GenerateSquareGridWithHoles(20, 20, _origin, _tileHeight, _tileDiagonal);
         //GenerateParalleloGrid(20, 20, _origin, _tileHeight, _tileDiagonal);
-        //GenerateSquareGrid(20, 20, _origin, _tileHeight, _tileDiagonal);
+		//GenerateSquareGrid(_rows, _columns, _origin, _tileHeight, _tileDiagonal);
 		AddTerrain(_forestRatio, _meadowRatio);
 	}
 	
@@ -201,7 +201,40 @@ public class MapGenerator : MonoBehaviour {
             }
         }
     }
-	
+
+	/// <summary>
+	/// Recreate the map based off of loaded map data
+	/// </summary>
+	public void GenerateLoadedMap( MapData mapData ) 
+	{
+		int rows = mapData.height;
+		int columns = mapData.width;
+		if(Network.isServer){
+			networkView.RPC("InitializeMapArray", RPCMode.Others, columns, rows);
+		}
+		InitializeMapArray(columns, rows);
+		
+		//---Create the tile object---//
+		int k = 0;
+		for (int i = 0; i < columns; ++i)
+		{
+			for (int j = 0; j < rows; ++j)
+			{
+				Vector3 currentPosition = new Vector3(mapData.tiles[k].x, mapData.tiles[k].y, mapData.tiles[k].z);
+				int playerIndex = mapData.tiles[k].playerIndex;
+				int tileID = mapData.tiles[k].tileID;
+				bool hasRoad = mapData.tiles[k].hasRoad;
+				int landType = mapData.tiles[k].landType;
+				int occupantType = mapData.tiles[k].occupantType;
+				int homeVillageID = mapData.tiles[k].homeVillageID;
+				if(Network.isServer){
+					networkView.RPC("InstantiateTileFromMapData", RPCMode.Others, i, j, currentPosition, playerIndex, tileID, hasRoad, landType, occupantType, homeVillageID);
+				}
+				InstantiateTileFromMapData(i, j, currentPosition, playerIndex, tileID, hasRoad, landType, occupantType, homeVillageID);
+				++k;
+			}
+		}
+	}
 
 	[RPC]
 	private void InitializeMapArray(int columns, int rows){
@@ -221,6 +254,35 @@ public class MapGenerator : MonoBehaviour {
             int nPlayers = this.GetComponent<GameComponent>()._playerManager.GetPlayers().Count;
             _landTiles[i, j].setPlayerIndex(playerIndex);
     }
+
+	[RPC]
+	private void InstantiateTileFromMapData(int i, int j, Vector3 position, int playerIndex, int tileID, bool hasRoad, int landType, int occupantType, int homeVillageID){
+		GameObject gameTile = (GameObject)Instantiate(_gameTile, position, Quaternion.identity);
+		gameTile.transform.parent = this.transform; //Keep things organized with a parental hierarchy
+		_landTiles[i,j] = gameTile.GetComponent<TileComponent>();
+		_landTiles[i,j].setID(tileID);
+		_landTiles[i,j].setPlayerIndex(playerIndex);
+		_landTiles[i,j].setLandType((LandType)landType);
+		if(hasRoad){
+			_landTiles[i,j].createRoad();
+		}
+		_landTiles[i,j].setOccupantType((OccupantType)occupantType);
+
+		/*
+		//Do this in GameComponent
+		if(_landTiles[i,j].getID() > 0){
+			_landTiles[i,j].setVillage( this.GetComponent<GameComponent>().GetTileByID(homeVillageID).GetComponent<VillageComponent>() );
+		}
+		switch(_landTiles[i,j].getOccupantType()){
+		case(OccupantType.VILLAGE):
+			break;
+		case(OccupantType.UNIT):
+			break;
+		case(OccupantType.STRUCTURE):
+			break;
+		}
+		*/
+	}
 
 	[RPC]
 	private void generateNeighbours(int i, int j)

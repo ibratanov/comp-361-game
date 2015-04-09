@@ -89,7 +89,7 @@ public class TileComponent : GenericComponent
 	[RPC]
 	private void RPCsetPlayerIndex(int playerIndex){
 		_playerIndex = playerIndex;
-		Highlight();
+		//Highlight();
 	}
 	
 	public LandType getLandType() {
@@ -132,7 +132,7 @@ public class TileComponent : GenericComponent
 	}
 	
 	[RPC]
-	private void RPCUpdateVillage() {
+	public void RPCUpdateVillage() {
 		List<TileComponent> region = breadthFS();
 		foreach(TileComponent tile in region){
 			if(tile.GetComponent<VillageComponent>()){
@@ -432,7 +432,8 @@ public class TileComponent : GenericComponent
 	// Use this for initialization
 	void Start() {
 		_game = GameObject.FindObjectOfType<GameComponent>();
-		Unhighlight();
+
+		//Unhighlight();
 	}
 	
 	void Awake(){
@@ -452,7 +453,7 @@ public class TileComponent : GenericComponent
 				//                _terrainGameObject = (GameObject)Instantiate(_assets.getVillageGameObject(_village.getVillageType()), this.transform.position, Quaternion.identity);
 				//               _terrainGameObject.transform.parent = this.transform;
 			}
-			//Highlight();
+			Unhighlight();
 			_drawUpdated = false;
 		}
 	}

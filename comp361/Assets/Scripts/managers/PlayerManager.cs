@@ -65,6 +65,15 @@ public class PlayerManager : MonoBehaviour {
 		return (PlayerComponent)_players[index];
 	}
 
+	public PlayerComponent GetPlayer(string name){
+		foreach(PlayerComponent player in _players){
+			if(player.getUserName().Equals(name)){
+				return player;
+			}
+		}
+		return null;
+	}
+
 	#region New Profile Menu commands
 
 	/// <summary>
