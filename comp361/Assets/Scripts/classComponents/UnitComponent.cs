@@ -375,6 +375,11 @@ public class UnitComponent : GenericComponent
             ThrowError("You cannot combine a unit with itself.");
             return;
         }
+        if (this.GetComponent<TileComponent>().getPlayerIndex() != uc.GetComponent<TileComponent>().getPlayerIndex())
+        {
+            ThrowError("You can only combine two of your own units.");
+            return;
+        }
         // peasant + peasant = infantry
         // peasant + infantry = soldier
         // peasant + soldier = knight
@@ -458,10 +463,10 @@ public class UnitComponent : GenericComponent
     public bool upgradeUnit(UnitType newLevel)
     {
         if (newLevel == UnitType.CANNON) return false;
-        if (this._unitType == UnitType.CANNON) return false;
-        else
+        if (this._unitType == UnitType.CANNON) 
         {
             ThrowError("Cannons cannot be upgraded.");
+            return false;
         }
         if (newLevel >= _unitType)
         {
@@ -499,6 +504,7 @@ public class UnitComponent : GenericComponent
                 if (t.getLandType() == LandType.MEADOW || t.getLandType() == LandType.GRASS)
                 {
                     t.createRoad();
+                    _currentAction = ActionType.BUILDING_ROAD;
                 }
             }
         }
@@ -523,7 +529,7 @@ public class UnitComponent : GenericComponent
 
     public void cultivate()
     {
-        if (_roundsCultivating >= 2)
+        if (_roundsCultivating == 0)
         {
             this.GetComponent<TileComponent>().setLandType(LandType.MEADOW);
             _currentAction = ActionType.READY_FOR_ORDERS;
@@ -531,7 +537,7 @@ public class UnitComponent : GenericComponent
         }
         else
         {
-            ++_roundsCultivating;
+            _roundsCultivating--;
         }
     }
 
@@ -569,6 +575,11 @@ public class UnitComponent : GenericComponent
 
     public void cultivateMeadow()
     {
+        if (this.GetComponent<TileComponent>().getLandType() == LandType.MEADOW)
+        {
+            ThrowError("There is already a meadow on this tile.");
+            return;
+        }
         _currentAction = ActionType.CULTIVATING_MEADOW;
         _roundsCultivating = 2;
     }
@@ -653,6 +664,8 @@ public class UnitComponent : GenericComponent
         VillageComponent previousVillage = dest.getVillage();
         int previousPlayer = dest.getPlayerIndex();
         VillageType previousVillageType = previousVillage.getVillageType();
+        float woodStock = previousVillage.getWoodStock();
+        float goldStock = previousVillage.getGoldStock();
 
         bool tileInvaded = false;
         bool destroyVillage = false;
@@ -665,7 +678,7 @@ public class UnitComponent : GenericComponent
                 tileInvaded = true;
                 foreach (var t in this.GetComponent<TileComponent>().getTwoHexRadius())
                 {
-                    if (t.getOccupantType() == OccupantType.UNIT && t.getPlayerIndex() == previousVillage.getControlledRegion()[0].getPlayerIndex())
+                    if (t.getOccupyingUnit() != null && t.getPlayerIndex() == previousVillage.getControlledRegion()[0].getPlayerIndex())
                     {
                         if (t.getOccupyingUnit().getUnitType() != UnitType.CANNON && t.getOccupyingUnit().getUnitType() >= _unitType)
                         {
@@ -673,7 +686,7 @@ public class UnitComponent : GenericComponent
                             ThrowError("An enemy unit is guarding this tile.");
                         }
                     }
-                    if (t.getOccupantType() == OccupantType.STRUCTURE && t.getPlayerIndex() == previousVillage.getControlledRegion()[0].getPlayerIndex())
+                    if (t.getOccupyingStructure() != null && t.getPlayerIndex() == previousVillage.getControlledRegion()[0].getPlayerIndex())
                     {
                         if (t.getOccupyingStructure().getStructureType() == StructureType.WATCHTOWER && _unitType <= UnitType.INFANTRY)
                         {
@@ -783,6 +796,9 @@ public class UnitComponent : GenericComponent
                 thirdArea = totalArea;
             }
 
+            float[] gold = AssignStock(firstArea, secondArea, thirdArea, goldStock);
+            float[] wood = AssignStock(firstArea, secondArea, thirdArea, woodStock);
+
             if (firstArea.Count < 3)
             {
                 if (firstArea[0].getVillage() != null)
@@ -810,39 +826,88 @@ public class UnitComponent : GenericComponent
                         t.setOccupantType(OccupantType.VILLAGE);
 
                         newHovel.associate(t);
-                        newHovel.addGold(1);
-                        newHovel.addWood(0);
+                        newHovel.addGold((uint)gold[0]);
+                        newHovel.addWood((uint)wood[0]);
                         foreach (var tile in firstArea)
                         {
                             tile.setVillage(newHovel);
+                            newHovel.addToControlledRegion(tile);
                         }
                         break;
                     }
                 }
             }
-            remainingVillage(secondArea, previousPlayer, previousVillageType);
-            remainingVillage(thirdArea, previousPlayer, previousVillageType);
+            remainingVillage(secondArea, previousPlayer, previousVillageType, gold[1], wood[1]);
+            remainingVillage(thirdArea, previousPlayer, previousVillageType, gold[2], wood[2]);
 
         }
 
     }
 
-    private void remainingVillage(List<TileComponent> secondArea, int playerIndex, VillageType villageType)
+    private float[] AssignStock(List<TileComponent> firstArea, List<TileComponent> secondArea, List<TileComponent> thirdArea, float stock)
     {
-        if (secondArea.Count > 0)
+        float[] assignment = new float[3];
+
+        for (int i = 0; i < 3; i++)
         {
-            foreach (var t in secondArea)
+            assignment[i] = 0;
+
+        }
+
+        if (firstArea.Count > 2 && secondArea.Count > 2 && thirdArea.Count > 2)
+        {
+            assignment[0] = (int)stock / 3;
+            assignment[1] = (int)stock / 3;
+            assignment[2] = stock - assignment[0] - assignment[1];
+        }
+        else if (firstArea.Count > 2 && secondArea.Count > 2)
+        {
+            assignment[0] = (int)stock / 2;
+            assignment[1] = stock - assignment[0];
+        }
+
+        else if (thirdArea.Count > 2 && secondArea.Count > 2)
+        {
+            assignment[2] = (int)stock / 2;
+            assignment[1] = stock - assignment[2];
+        }
+
+        else if (thirdArea.Count > 2 && firstArea.Count > 2)
+        {
+            assignment[2] = (int)stock / 2;
+            assignment[0] = stock - assignment[2];
+        }
+        else if (firstArea.Count > 2)
+        {
+            assignment[0] = stock;
+        }
+        else if (secondArea.Count > 2)
+        {
+            assignment[1] = stock;
+        }
+        else if (thirdArea.Count > 2)
+        {
+            assignment[2] = stock;
+        }
+        return assignment;
+    }
+
+    private void remainingVillage(List<TileComponent> area, int playerIndex, VillageType villageType, float gold, float wood)
+    {
+        if (area.Count > 0)
+        {
+            foreach (var t in area)
             {
                 t.setVillage(null);
             }
-            if (secondArea.Count < 3)
+            if (area.Count < 3)
             {
-                if (secondArea[0].getVillage() != null)
+                if (area[0].getVillage() != null)
                 {
-                    VillageComponent firstVillage = secondArea[0].getVillage();
+                    VillageComponent firstVillage = area[0].getVillage();
                     GameObject.Destroy(firstVillage);
                 }
-                foreach (var t in secondArea)
+                foreach (var t in area)
                 {
                     t.setPlayerIndex(0);
                     t.setVillage(null);
@@ -850,7 +915,7 @@ public class UnitComponent : GenericComponent
             }
             else
             {
-                foreach (var t in secondArea)
+                foreach (var t in area)
                 {
                     if (t.getVillage() == null)
                     {
@@ -860,11 +925,12 @@ public class UnitComponent : GenericComponent
                         //t.UpdateVillageReference();
 
                         newHovel.associate(t);
-                        newHovel.addGold(1);
-                        newHovel.addWood(0);
-                        foreach (var tile in secondArea)
+                        newHovel.addGold((uint)gold);
+                        newHovel.addWood((uint)wood);
+                        foreach (var tile in area)
                         {
                             tile.setVillage(newHovel);
+                            newHovel.addToControlledRegion(tile);
                         }
                         break;
                     }

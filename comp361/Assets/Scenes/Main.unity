@@ -2078,18 +2078,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 969104344}
-        m_MethodName: UpdateUnitActionPanel
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &201223682
@@ -4093,18 +4081,6 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 969104344}
         m_MethodName: cultivateMeadowLastSelectedUnit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 969104344}
-        m_MethodName: UpdateUnitActionPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6240,8 +6216,8 @@ MonoBehaviour:
           m_StringArgument: Upgrade_Unit
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 969104344}
-        m_MethodName: UpdateUnitActionPanel
+      - m_Target: {fileID: 322718658}
+        m_MethodName: DisplayUpgradeMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8805,18 +8781,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 969104344}
-        m_MethodName: UpdateUnitActionPanel
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &793341638
@@ -10623,30 +10587,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 322718658}
-        m_MethodName: HideOtherActionPanels
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: HireUnit
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 969104344}
-        m_MethodName: UpdateVillageActionPanel
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
       - m_Target: {fileID: 1384876014}
         m_MethodName: SetActive
         m_Mode: 6
@@ -16174,18 +16114,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 969104344}
-        m_MethodName: UpdateUnitActionPanel
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1466695308
@@ -19876,6 +19804,34 @@ Prefab:
     m_Modifications:
     - target: {fileID: 11444098, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11444170, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496536, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11443976, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11408580, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11443950, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11444058, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11444018, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 406842, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
@@ -19989,7 +19945,7 @@ Prefab:
     - target: {fileID: 11444018, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
-      objectReference: {fileID: 969104344}
+      objectReference: {fileID: 322718658}
     - target: {fileID: 11444034, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -20204,19 +20160,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11444098, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11444098, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 969104344}
+      objectReference: {fileID: 139820051}
     - target: {fileID: 11444098, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: UpdateVillageActionPanel
+      value: SetActive
       objectReference: {fileID: 0}
     - target: {fileID: 11444098, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 11444098, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_StringArgument
@@ -20225,7 +20181,7 @@ Prefab:
     - target: {fileID: 11444098, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 1384876014}
+      objectReference: {fileID: 139820051}
     - target: {fileID: 11444098, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
       value: SetActive
@@ -20257,22 +20213,34 @@ Prefab:
     - target: {fileID: 11444098, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 322718658}
+      objectReference: {fileID: 1384876014}
     - target: {fileID: 11444098, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: HideOtherActionPanels
+      value: SetActive
       objectReference: {fileID: 0}
     - target: {fileID: 11444098, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 11444098, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
-      value: HireUnit
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 11444098, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_BoolArgument
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11444098, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_BoolArgument
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11444018, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
+      value: DisplayUpgradeMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 11444018, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 612dec4a1f04e9248b3b5349955566a6, type: 2}
@@ -20658,18 +20626,6 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 969104344}
         m_MethodName: setMerge
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 969104344}
-        m_MethodName: UpdateUnitActionPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -21337,18 +21293,6 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 969104344}
         m_MethodName: startFireCannon
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 969104344}
-        m_MethodName: UpdateUnitActionPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
