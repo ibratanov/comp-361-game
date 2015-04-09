@@ -60,6 +60,25 @@ public class UnitComponent : GenericComponent
     UnitType _unitType;
     VillageComponent _village;
 
+	readonly public static Color[] PLAYER_COLOURS = 
+	{
+		new Color(1.0f,0.25f,0.25f), 
+		new Color(0.25f,1.0f,0.25f), 
+		new Color(0.25f,0.25f,1.0f), 
+		new Color(0.25f,1.0f,1.0f), 
+		new Color(1.0f,0.25f,1.0f), 
+		new Color(1.0f,1.0f,0.25f), 
+	};
+	readonly public static Color[] PLAYER_COLOURS_DARK = 
+	{
+		new Color(1.0f,0.25f,0.25f), 
+		new Color(0.25f,1.0f,0.25f), 
+		new Color(0.25f,0.25f,1.0f), 
+		new Color(0.25f,1.0f,1.0f), 
+		new Color(1.0f,0.25f,1.0f), 
+		new Color(1.0f,1.0f,0.25f), 
+	};
+
     /*********************
      *  GETTERS/SETTERS  *
      ********************/
@@ -545,6 +564,7 @@ public class UnitComponent : GenericComponent
 		TileComponent tComponent = this.gameObject.GetComponent<TileComponent>();
 		_village = tComponent.getVillage();
 		createUnit(uType);
+		SetColour(tComponent.getPlayerIndex());
 		tComponent.setOccupantType(OccupantType.UNIT);
 	}
 
@@ -850,6 +870,20 @@ public class UnitComponent : GenericComponent
 		_unitGameObject.transform.parent = this.gameObject.transform;
 		_isMoving = true;
     }
+
+	public void SetColour(int index)
+	{
+		for(int i = 0; i < _unitGameObject.renderer.materials.Length; ++i){
+			if(_unitGameObject.renderer.materials[i].name.Contains("mat_dark") || 
+			   _unitGameObject.renderer.materials[i].name.Contains("mat_clothDark") ){
+				_unitGameObject.renderer.materials[i].SetColor("_Color", PLAYER_COLOURS_DARK[index]);
+			}
+			else if(_unitGameObject.renderer.materials[i].name.Contains("mat_light") ||
+			        _unitGameObject.renderer.materials[i].name.Contains("mat_clothLight") ){
+				_unitGameObject.renderer.materials[i].SetColor("_Color", PLAYER_COLOURS[index]);
+			}
+		}
+	}
 
     /*********************
      *   UNITY METHODS   *
