@@ -62,21 +62,11 @@ public class TileComponent : GenericComponent
 	/*********************
 	 *  GETTERS/SETTERS  *
 	 ********************/
-	
-	//   public GameObject getTileGameObject()
-	//   {
-	//       return _tileGameObject;
-	//   }
-	
-	//   public void setTileGameObject(GameObject tileGameObject)
-	//   {
-	//       _tileGameObject = tileGameObject;
-	//   }
-	
-	//    public GameObject getTerrainGameObject()
-	//    {
-	//        return _terrainGameObject;
-	//    }
+
+    public GameObject getTerrainGameObject()
+    {
+        return _terrainGameObject;
+    }
 	
 	//    public void setTerrainGameObject(ref GameObject terrainGameObject)
 	//    {
@@ -662,25 +652,35 @@ public class TileComponent : GenericComponent
 	 ****************************/
 	
 	public void Highlight(){
-		int lastMaterialIndex = _terrainGameObject.renderer.materials.Length - 1;
-		for(int i = 0; i < _terrainGameObject.renderer.materials.Length; ++i){
-			if(_terrainGameObject.renderer.materials[i].name.Contains("surface_top")){
-				_terrainGameObject.renderer.materials[i].SetColor("_Color", PLAYER_COLOURS[_playerIndex]);
-			}
-		}
+		// Checks to make sure the tile is not a deleted tile
+        if (_playerIndex != -1)
+        {
+            int lastMaterialIndex = _terrainGameObject.renderer.materials.Length - 1;
+            for (int i = 0; i < _terrainGameObject.renderer.materials.Length; ++i)
+            {
+                if (_terrainGameObject.renderer.materials[i].name.Contains("surface_top"))
+                {
+                    _terrainGameObject.renderer.materials[i].SetColor("_Color", PLAYER_COLOURS[_playerIndex]);
+                }
+            }
+        }
 	}
 	
 	public void Unhighlight(){
-		Color colour = PLAYER_COLOURS[_playerIndex];
-		Color newColour = new Color(0,0,0);
-		newColour.r = Mathf.Min(colour.r + 0.5f, 1.0f);
-		newColour.g = Mathf.Min(colour.g + 0.5f, 1.0f);
-		newColour.b = Mathf.Min(colour.b + 0.5f, 1.0f);
-		for(int i = 0; i < _terrainGameObject.renderer.materials.Length; ++i){
-			if(_terrainGameObject.renderer.materials[i].name.Contains("surface_top")){
-				_terrainGameObject.renderer.materials[i].SetColor("_Color", newColour);
-			}
-		}
+        // Checks to make sure the tile is not a deleted tile
+        if (_playerIndex != -1)
+        {
+            Color colour = PLAYER_COLOURS[_playerIndex];
+		    Color newColour = new Color(0,0,0);
+		    newColour.r = Mathf.Min(colour.r + 0.5f, 1.0f);
+		    newColour.g = Mathf.Min(colour.g + 0.5f, 1.0f);
+		    newColour.b = Mathf.Min(colour.b + 0.5f, 1.0f);
+		    for(int i = 0; i < _terrainGameObject.renderer.materials.Length; ++i){
+			    if(_terrainGameObject.renderer.materials[i].name.Contains("surface_top")){
+				    _terrainGameObject.renderer.materials[i].SetColor("_Color", newColour);
+			    }
+		    }
+        }
 	}
 	
 	public void HighlightNeighbours(){
