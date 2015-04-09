@@ -831,6 +831,7 @@ public class UnitComponent : GenericComponent
                         foreach (var tile in firstArea)
                         {
                             tile.setVillage(newHovel);
+                            newHovel.addToControlledRegion(tile);
                         }
                         break;
                     }
@@ -929,6 +930,7 @@ public class UnitComponent : GenericComponent
                         foreach (var tile in area)
                         {
                             tile.setVillage(newHovel);
+                            newHovel.addToControlledRegion(tile);
                         }
                         break;
                     }

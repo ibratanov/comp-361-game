@@ -477,13 +477,18 @@ public class GameComponent : GenericComponent
 			
 			//Reset the ActionType for each unit based on its current ActionType
 			List<UnitComponent> units = vc.getSupportingUnits ();
-			foreach (UnitComponent unit in units) {
+			foreach (UnitComponent unit in units) 
+            {
 
-				if (unit.getCurrentAction() == ActionType.EXPANDING_REGION || unit.getCurrentAction() == ActionType.GATHERING_WOOD) {
+				if (unit.getCurrentAction() == ActionType.EXPANDING_REGION || 
+                    unit.getCurrentAction() == ActionType.GATHERING_WOOD || 
+                    unit.getCurrentAction() == ActionType.BUILDING_ROAD || 
+                    unit.getCurrentAction() == ActionType.ATTACKING ||
+                    unit.getCurrentAction() == ActionType.ALREADY_MOVED ||
+                    unit.getCurrentAction() == ActionType.EXPANDING_REGION) 
+                {
 					unit.setCurrentAction(ActionType.READY_FOR_ORDERS);
-				} else if (unit.getCurrentAction() == ActionType.ATTACKING) {
-				//TODO: reset for other ActionTypes
-				}
+				} 
 			}
 
 			// move & purchase phase begin when function returns
