@@ -27,11 +27,6 @@ public class VillageComponent : GenericComponent
 	private GUIManager _menus;
 	private int _healthLeft;
 	
-	/*
-	 * TODO: Decide - may be unnecessary
-	 */
-	VillageType[] _upgradeCosts;
-	
 	/*********************
 	 *    CONSTRUCTOR    *
 	 ********************/
@@ -254,18 +249,6 @@ public class VillageComponent : GenericComponent
 			{
 				hasSpace = true;
 				CreateUnit(i, unitType);
-				/*
-				_supportingUnits.Add(unit);
-
-                if (unitType != UnitType.PEASANT && unitType != UnitType.SOLDIER)
-                {
-                    unit.TrampleMeadow(unit.getLocation());
-                }
-                if (unitType != UnitType.KNIGHT && unitType != UnitType.CANNON && _controlledRegion[i].getLandType() == LandType.FOREST)
-                {
-                    unit.GatherWood(unit.getLocation());
-                }
-                */
 				break;
 			}
 		}
@@ -388,9 +371,10 @@ public class VillageComponent : GenericComponent
 	}
 	
 	void killVillagers() {
-		foreach (UnitComponent unit in _supportingUnits) {
-			unit.die();
-		}
+        while(_supportingUnits.Count > 0)
+        {
+            _supportingUnits[0].die();
+        }
 		_supportingUnits = new List<UnitComponent>();
 	}
 	
@@ -496,13 +480,7 @@ public class VillageComponent : GenericComponent
     public void DestroyVillage()
     {
         // call die() on all units
-        foreach (var unit in _supportingUnits)
-        {
-            unit.die();
-        }
-
-        // clear supporting units list
-        _supportingUnits = new List<UnitComponent>();
+        killVillagers();
         
         // set all tiles to neutral
         foreach (var tile in _controlledRegion)

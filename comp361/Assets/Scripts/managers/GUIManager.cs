@@ -444,10 +444,6 @@ public class GUIManager : MonoBehaviour {
 				HideOtherActionPanels("Unit_Actions");
 
 			}
-//			else if (!(_inGamePanels[i].name.Contains("CurrentPlayer")))
-//			{
-//				_inGamePanels[i].SetActive(false);
-//			}
 		}
 	}
 
