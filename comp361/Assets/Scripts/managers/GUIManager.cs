@@ -351,14 +351,14 @@ public class GUIManager : MonoBehaviour {
 					}
 				}
 			}
-			else if (!(_inGamePanels[i].name.Contains("CurrentPlayer")))
-			{
-				_inGamePanels[i].SetActive(false);
-				foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
-				{
-					EnableButton(b);
-				}
-			}
+//			else if (!(_inGamePanels[i].name.Contains("CurrentPlayer")))
+//			{
+//				_inGamePanels[i].SetActive(false);
+//				foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
+//				{
+//					EnableButton(b);
+//				}
+//			}
 		}
 	}
 
@@ -421,10 +421,10 @@ public class GUIManager : MonoBehaviour {
 				HideOtherActionPanels("Unit_Actions");
 
 			}
-			else if (!(_inGamePanels[i].name.Contains("CurrentPlayer")))
-			{
-				_inGamePanels[i].SetActive(false);
-			}
+//			else if (!(_inGamePanels[i].name.Contains("CurrentPlayer")))
+//			{
+//				_inGamePanels[i].SetActive(false);
+//			}
 		}
 	}
 
