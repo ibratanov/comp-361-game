@@ -767,7 +767,7 @@ public class UnitComponent : GenericComponent
                 {
                     if (t.getVillage() == null)
                     {
-                        VillageComponent newHovel = GameObject.FindObjectOfType<GameComponent>().CreateVillage(t, previousVillageType, GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers()[previousPlayer]);
+                        VillageComponent newHovel = GameObject.FindObjectOfType<GameComponent>().CreateVillage(t, previousVillageType, GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers()[previousPlayer - 1]);
                         t.setOccupantType(OccupantType.VILLAGE);
                         //t.UpdateVillageReference();
 
@@ -803,7 +803,8 @@ public class UnitComponent : GenericComponent
                     {
                         if (t.getVillage() == null)
                         {
-                            VillageComponent newHovel = GameObject.FindObjectOfType<GameComponent>().CreateVillage(t, previousVillageType, GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers()[previousPlayer]);
+                            var players = GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers();
+                            VillageComponent newHovel = GameObject.FindObjectOfType<GameComponent>().CreateVillage(t, previousVillageType, GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers()[previousPlayer - 1]);
                             t.setOccupantType(OccupantType.VILLAGE);
                             //t.UpdateVillageReference();
 
