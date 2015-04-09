@@ -22,10 +22,7 @@ public class MapGenerator : MonoBehaviour {
 	private int _idCounter = 0;
 	
 	public void GenerateMap(){
-        //TODO: Selecting which map you want
-        GenerateSquareGridWithHoles(20, 20, _origin, _tileHeight, _tileDiagonal);
-        //GenerateParalleloGrid(20, 20, _origin, _tileHeight, _tileDiagonal);
-		//GenerateSquareGrid(_rows, _columns, _origin, _tileHeight, _tileDiagonal);
+		GenerateSquareGrid( _rows, _columns, _origin, _tileHeight, _tileDiagonal);
 		AddTerrain(_forestRatio, _meadowRatio);
 	}
 	
@@ -68,9 +65,8 @@ public class MapGenerator : MonoBehaviour {
 				currentPosition += diag;
 			}
 		}
-
-        // call generateNeighbors on each tile and remove random tiles
-        for (int i = 0; i < columns; ++i)
+		// call getNeighbors on each tile
+		for (int i = 0; i < columns; ++i)
 		{
 			for (int j = 0; j < rows; ++j)
 			{
@@ -81,160 +77,7 @@ public class MapGenerator : MonoBehaviour {
 			}
 		}
 	}
-
-    private void GenerateSquareGridWithHoles(int rows, int columns, Vector3 startLocation, Vector3 tileHeight, Vector3 tileDiagonal)
-    {
-        if (Network.isServer)
-        {
-            networkView.RPC("InitializeMapArray", RPCMode.Others, columns, rows);
-        }
-        InitializeMapArray(columns, rows);
-
-        int gridId = 0;
-        Vector3 currentPosition = startLocation;
-        int nPlayers = this.GetComponent<GameComponent>()._playerManager.GetPlayers().Count;
-        for (int i = 0; i < columns; ++i)
-        {
-            bool phase = false;
-            currentPosition = startLocation + tileHeight * i;
-            for (int j = 0; j < rows; ++j)
-            {
-                int playerIndex = Random.Range(0, nPlayers + 1);
-                if (Network.isServer)
-                {
-                    networkView.RPC("InstantiateTile", RPCMode.Others, currentPosition, i, j, playerIndex);
-                }
-
-                InstantiateTile(currentPosition, i, j, playerIndex);
-
-                //Update position for next tile
-                Vector3 diag = tileDiagonal;
-                if (phase)
-                {
-                    diag.z *= -1; //We're drawing horizontally so it zigzags
-                }
-                phase = !phase;
-                currentPosition += diag;
-            }
-        }
-
-        // call generateNeighbors on each tile and remove random tiles
-        for (int i = 0; i < columns; ++i)
-        {
-            for (int j = 0; j < rows; ++j)
-            {
-                int randomRemove = (i + j + System.DateTime.Now.Millisecond) % 7;
-                if (randomRemove == 0)
-                {
-                    TileComponent tile = _landTiles[i, j].gameObject.GetComponent<TileComponent>();
-                    tile.setPlayerIndex(-1);        
-                    tile.setLandType(LandType.SEA);
-                    Destroy(tile.getTerrainGameObject());
-                }
-
-                if (Network.isServer)
-                {
-                    networkView.RPC("generateNeighbours", RPCMode.Others, i, j);
-                }
-                generateNeighbours(i, j);
-            }
-        }
-    }
-
-    private void GenerateParalleloGrid(int rows, int columns, Vector3 startLocation, Vector3 tileHeight, Vector3 tileDiagonal)
-    {
-        if (Network.isServer)
-        {
-            networkView.RPC("InitializeMapArray", RPCMode.Others, columns, rows);
-        }
-        InitializeMapArray(columns, rows);
-
-        int gridId = 0;
-        Vector3 currentPosition = startLocation;
-        int nPlayers = this.GetComponent<GameComponent>()._playerManager.GetPlayers().Count;
-        for (int i = 0; i < columns; ++i)
-        {
-            bool phase = false;
-            currentPosition = startLocation + tileHeight * i;
-            int tileGenOffset = 200;
-            for (int j = 0; j < rows; ++j)
-            {
-                int playerIndex = Random.Range(0, nPlayers + 1);
-                if (Network.isServer)
-                {
-                    networkView.RPC("InstantiateTile", RPCMode.Others, currentPosition, i, j, playerIndex);
-                }
-
-                InstantiateTile(currentPosition, i, j, playerIndex);
-
-                //Update position for next tile
-                Vector3 diag = tileDiagonal;
-                if (phase && tileGenOffset % 2 == 0) //Changes the shape
-                {
-                    diag.z *= -1; //We're drawing horizontally so it zigzags
-                }
-                phase = !phase;
-                currentPosition += diag;
-                tileGenOffset--;
-            }
-        }
-
-        // call generateNeighbors on each tile and remove random tiles
-        for (int i = 0; i < columns; ++i)
-        {
-            for (int j = 0; j < rows; ++j)
-            {
-                int randomRemove = (i + j + System.DateTime.Now.Millisecond) % 10;
-                if (randomRemove == 0)
-                {
-                    TileComponent tile = _landTiles[i, j].gameObject.GetComponent<TileComponent>();
-                    tile.setPlayerIndex(-1);
-                    tile.setLandType(LandType.SEA);
-                    Destroy(tile.getTerrainGameObject());
-                }
-
-                if (Network.isServer)
-                {
-                    networkView.RPC("generateNeighbours", RPCMode.Others, i, j);
-                }
-                generateNeighbours(i, j);
-            }
-        }
-    }
-
-	/// <summary>
-	/// Recreate the map based off of loaded map data
-	/// </summary>
-	public void GenerateLoadedMap( MapData mapData ) 
-	{
-		int rows = mapData.height;
-		int columns = mapData.width;
-		if(Network.isServer){
-			networkView.RPC("InitializeMapArray", RPCMode.Others, columns, rows);
-		}
-		InitializeMapArray(columns, rows);
-		
-		//---Create the tile object---//
-		int k = 0;
-		for (int i = 0; i < columns; ++i)
-		{
-			for (int j = 0; j < rows; ++j)
-			{
-				Vector3 currentPosition = new Vector3(mapData.tiles[k].x, mapData.tiles[k].y, mapData.tiles[k].z);
-				int playerIndex = mapData.tiles[k].playerIndex;
-				int tileID = mapData.tiles[k].tileID;
-				bool hasRoad = mapData.tiles[k].hasRoad;
-				int landType = mapData.tiles[k].landType;
-				int occupantType = mapData.tiles[k].occupantType;
-				int homeVillageID = mapData.tiles[k].homeVillageID;
-				if(Network.isServer){
-					networkView.RPC("InstantiateTileFromMapData", RPCMode.Others, i, j, currentPosition, playerIndex, tileID, hasRoad, landType, occupantType, homeVillageID);
-				}
-				InstantiateTileFromMapData(i, j, currentPosition, playerIndex, tileID, hasRoad, landType, occupantType, homeVillageID);
-				++k;
-			}
-		}
-	}
+	
 
 	[RPC]
 	private void InitializeMapArray(int columns, int rows){
@@ -242,46 +85,16 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 	[RPC]
-    private void InstantiateTile(Vector3 position, int i, int j, int playerIndex)
-    {
-            GameObject gameTile = (GameObject)Instantiate(_gameTile, position, Quaternion.identity);
-            //gameTile.transform.parent = this.transform;
-            _landTiles[i, j] = gameTile.GetComponent<TileComponent>();
-            _landTiles[i, j].setID(_idCounter++);
-            gameTile.transform.parent = this.transform; //Keep things organized with a parental hierarchy
-            //		_landTiles[i,j].setTileGameObject(gameTile);
-            _landTiles[i, j].setLandType(LandType.GRASS);
-            int nPlayers = this.GetComponent<GameComponent>()._playerManager.GetPlayers().Count;
-            _landTiles[i, j].setPlayerIndex(playerIndex);
-    }
-
-	[RPC]
-	private void InstantiateTileFromMapData(int i, int j, Vector3 position, int playerIndex, int tileID, bool hasRoad, int landType, int occupantType, int homeVillageID){
+	private void InstantiateTile(Vector3 position, int i, int j, int playerIndex){
 		GameObject gameTile = (GameObject)Instantiate(_gameTile, position, Quaternion.identity);
-		gameTile.transform.parent = this.transform; //Keep things organized with a parental hierarchy
+		//gameTile.transform.parent = this.transform;
 		_landTiles[i,j] = gameTile.GetComponent<TileComponent>();
-		_landTiles[i,j].setID(tileID);
+		_landTiles[i,j].setID(_idCounter++);
+		gameTile.transform.parent = this.transform; //Keep things organized with a parental hierarchy
+//		_landTiles[i,j].setTileGameObject(gameTile);
+		_landTiles[i,j].setLandType(LandType.GRASS);
+		int nPlayers = this.GetComponent<GameComponent>()._playerManager.GetPlayers().Count;
 		_landTiles[i,j].setPlayerIndex(playerIndex);
-		_landTiles[i,j].setLandType((LandType)landType);
-		if(hasRoad){
-			_landTiles[i,j].createRoad();
-		}
-		_landTiles[i,j].setOccupantType((OccupantType)occupantType);
-
-		/*
-		//Do this in GameComponent
-		if(_landTiles[i,j].getID() > 0){
-			_landTiles[i,j].setVillage( this.GetComponent<GameComponent>().GetTileByID(homeVillageID).GetComponent<VillageComponent>() );
-		}
-		switch(_landTiles[i,j].getOccupantType()){
-		case(OccupantType.VILLAGE):
-			break;
-		case(OccupantType.UNIT):
-			break;
-		case(OccupantType.STRUCTURE):
-			break;
-		}
-		*/
 	}
 
 	[RPC]
@@ -331,17 +144,8 @@ public class MapGenerator : MonoBehaviour {
 			{
 				n.Add(_landTiles[i - 1, j + 1]);
 			}
+			
 		}
-        
-        //Check to make sure no SEA tiles are added to neighbors
-        List<TileComponent> nCopy = new List<TileComponent>(n);
-        foreach (TileComponent t in nCopy)
-        {
-            if (t.getLandType() == LandType.SEA) 
-            {
-                n.Remove(t);
-            }
-        }
 		_landTiles[i,j].setNeighbours(n);
 	}
 
