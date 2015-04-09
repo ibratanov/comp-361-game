@@ -151,9 +151,6 @@ public class UnitComponent : GenericComponent
          * Implementation of setLocation Seq. Diagr.
          * setLocation above is actually a setter.
          */
-        bool contested = isContested(dest);
-        //if (!contested)
-        //{
             OccupantType occType = dest.getOccupantType();
             LandType lType = dest.getLandType();
             VillageComponent destVillage = dest.getVillage();
@@ -183,7 +180,7 @@ public class UnitComponent : GenericComponent
 							return false;
                         } 
                         //takeOverTile(dest);
-                        takeOverTilev2(dest);
+                        takeOverTile(dest);
                         setCurrentAction(ActionType.EXPANDING_REGION);
 						successfullyMoved = true;
 					}
@@ -199,7 +196,7 @@ public class UnitComponent : GenericComponent
                     {
                         return false;
                     }
-                    takeOverTilev2(dest);
+                    takeOverTile(dest);
                     setCurrentAction(ActionType.EXPANDING_REGION);
 					successfullyMoved = true;
                     //UnitComponent destUnit = dest.getOccupyingUnit();
@@ -216,7 +213,7 @@ public class UnitComponent : GenericComponent
                     }
                     else if (_unitType >= UnitType.SOLDIER)
                     {
-                        takeOverTilev2(dest);
+                        takeOverTile(dest);
                         setCurrentAction(ActionType.ATTACKING);
 						successfullyMoved = true;
 					}
@@ -238,7 +235,7 @@ public class UnitComponent : GenericComponent
                         else if (_unitType >= UnitType.SOLDIER)
                         {
                             //destStruct.destroy() //TODO: implement a destroy method which destroys an enemy's structure upon invasion
-                            takeOverTilev2(dest);
+                            takeOverTile(dest);
                             setCurrentAction(ActionType.ATTACKING);
 							successfullyMoved = true;
 						}
@@ -285,9 +282,6 @@ public class UnitComponent : GenericComponent
 				}
 			}
 			return true;
-		//}
-
-		//return false;
 	}
 
 
@@ -367,54 +361,6 @@ public class UnitComponent : GenericComponent
 
         return cost;
     }
-
-    public bool isContested(TileComponent destination)
-    {
-        List<TileComponent> neighbours = destination.getNeighbours();
-        neighbours.Add(destination);
-
-        foreach (TileComponent tile in neighbours)
-        {
-            UnitComponent enemyUnit = tile.getOccupyingUnit();
-
-            if (enemyUnit)
-            {
-                VillageComponent enemyVillage = enemyUnit.getVillage();
-
-                if (enemyVillage != _village)
-                {
-                    UnitType enemyUnitType = enemyUnit.getUnitType();
-
-                    if (_unitType <= enemyUnitType)
-                    {
-                        return true;
-                    }
-                }
-            }
-            else
-            {
-                StructureComponent enemyStructure = tile.getOccupyingStructure();
-
-                if (enemyStructure)
-                {
-                    StructureType enemyStructureType = enemyStructure.getStructureType();
-
-                    if (enemyStructureType == StructureType.WATCHTOWER)
-                    {
-                        VillageComponent enemyVillage = tile.getVillage();
-
-                        if (_unitType <= UnitType.INFANTRY || _village != enemyVillage)
-                        { 
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
     public void CombineUnit(UnitComponent uc)
     {
         if (this.Equals(uc))
@@ -694,7 +640,7 @@ public class UnitComponent : GenericComponent
     }
 
 
-    public void takeOverTilev2(TileComponent dest)
+    public void takeOverTile(TileComponent dest)
     {
         // get current village of tile
         VillageComponent previousVillage = dest.getVillage();
@@ -710,7 +656,7 @@ public class UnitComponent : GenericComponent
                 tileInvaded = true;
                 foreach (var t in this.GetComponent<TileComponent>().getTwoHexRadius())
                 {
-                    if (t.getOccupantType() == OccupantType.UNIT)
+                    if (t.getOccupantType() == OccupantType.UNIT && t.getPlayerIndex() == previousVillage.getControlledRegion()[0].getPlayerIndex())
                     {
                         if (t.getOccupyingUnit().getUnitType() != UnitType.CANNON && t.getOccupyingUnit().getUnitType() >= _unitType)
                         {
@@ -718,10 +664,27 @@ public class UnitComponent : GenericComponent
                             ThrowError("An enemy unit is guarding this tile.");
                         }
                     }
+                    if (t.getOccupantType() == OccupantType.STRUCTURE && t.getPlayerIndex() == previousVillage.getControlledRegion()[0].getPlayerIndex())
+                    {
+                        if (t.getOccupyingStructure().getStructureType() == StructureType.WATCHTOWER && _unitType <= UnitType.INFANTRY)
+                        {
+                            tileInvaded = false;
+                            ThrowError("An enemy watch tower is guarding this tile.");
+                        }
+                    }
                 }
                 break;
             case OccupantType.STRUCTURE:
                 // if unit is a soldier or knight, kill structure, give tile to this unit's village
+                if (_unitType == UnitType.SOLDIER || _unitType == UnitType.KNIGHT)
+                {
+                    tileInvaded = true;
+                    dest.getOccupyingStructure().die();
+                }
+                else
+                {
+                    ThrowError("Your unit is not stronger than the watch tower.");
+                }
                 break;
             case OccupantType.UNIT:
                 // if unit's level < current unit's level, kill unit, give tile to this unit's village
@@ -737,7 +700,11 @@ public class UnitComponent : GenericComponent
                 break;
             case OccupantType.VILLAGE:
                 // if unit is a soldier or knight, turn village tile to meadow of this unit's color
-                    // if >=3 tiles left, randomly regenerate new village on remaining tiles
+                if (_unitType == UnitType.SOLDIER || _unitType == UnitType.KNIGHT)
+                {
+                    tileInvaded = true;
+                    dest.TurnVillageToMeadow(this.GetComponent<TileComponent>().getPlayerIndex());
+                }
                 break;
         }
 
@@ -762,103 +729,113 @@ public class UnitComponent : GenericComponent
             _village.addWood(previousVillage.getWoodStock());
             previousVillage.DestroyVillage();
         }
-
-
-    }
-
-
-    public void takeOverTile(TileComponent destination)
-    {
-        VillageComponent enemyVillage = destination.getVillage();
-        PlayerComponent enemyPlayer = enemyVillage.getPlayer();
-        OccupantType destinationOccupantType = destination.getOccupantType();
-
-        if (destinationOccupantType == OccupantType.VILLAGE)
+        else
         {
-            _village.addGold(enemyVillage.getGoldStock());
-            _village.addWood(enemyVillage.getWoodStock());
-            enemyPlayer.remove(enemyVillage);
-        }
-
-        _village.associate(destination);
-		setLocation(destination);
-
-        List<TileComponent> neighbours = destination.getNeighbours();
-
-        bool isVillageDestroyed = false;
-
-        foreach (TileComponent neighbour in neighbours)
-        {
-            List<TileComponent> region = neighbour.breadthFS();
-
-            if (region.Count >= 3 && !TileComponent.containsVillage(region))
+            // if >=3 tiles left, randomly regenerate new village on remaining tiles
+            List<TileComponent> totalArea = new List<TileComponent>();
+            foreach (var t in previousVillage.getControlledRegion())
             {
-                VillageComponent newHovel = new VillageComponent(0, 0, enemyPlayer, region, null, VillageType.HOVEL);
+                totalArea.Add(t);
+            }
+            // find all components of land belonging to opposing player, regenerate village randomly on one
+            List<TileComponent> firstArea = previousVillage.getControlledRegion()[0].breadthFS();
 
-                enemyPlayer.addVillage(newHovel);
-
-                foreach (TileComponent tile in region)
+            // if controlled region isn't empty, there's a second area
+            List<TileComponent> secondArea = new List<TileComponent>();
+            foreach (var t in firstArea)
+            {
+                if (totalArea.Contains(t))
                 {
-                    newHovel.associate(tile);
-
-                    if (tile.getOccupantType() == OccupantType.UNIT)
-                    {
-                        newHovel.associate(tile.getOccupyingUnit());
-                    }
+                    totalArea.Remove(t);
+                }
+            }
+            if (firstArea.Count < 3)
+            {
+                if (firstArea[0].getVillage() != null)
+                {
+                    VillageComponent firstVillage = firstArea[0].getVillage();
+                    GameObject.Destroy(firstVillage.getVillageGameObject());
+                }
+                foreach (var t in firstArea)
+                {
+                    t.setPlayerIndex(0);
+                    t.setVillage(null);
                 }
             }
             else
             {
-                foreach (TileComponent tile in region)
+                foreach (var t in firstArea)
                 {
-                    OccupantType tileOccupantType = tile.getOccupantType();
-
-                    if (tileOccupantType == OccupantType.UNIT)
+                    if (t.getVillage() == null)
                     {
-                        UnitComponent occupyingUnit = tile.getOccupyingUnit();
-                        occupyingUnit.die(); 
 
-                        StructureComponent tomb = new StructureComponent(StructureType.TOMBSTONE, tile);
-                        tile.setOccupyingStructure(tomb);
-                    }
-                    else if (tileOccupantType == OccupantType.VILLAGE)
-                    {
-                        VillageComponent village = tile.getVillage();
-                        enemyPlayer.remove(village);
-                        village.DestroyVillage();
-                        village = null;
-
-                        tile.setOccupyingStructure(null);
-
-                        isVillageDestroyed = true;
                     }
                 }
             }
-        }
-
-        if (isVillageDestroyed)
-        {
-            List<VillageComponent> enemyVillages = enemyPlayer.getVillages();
-
-            GameComponent game = enemyPlayer.getGame();
-            List<PlayerComponent> players = game.getRemainingPlayers();
-
-            if (enemyVillages.Count == 0)
+            if (totalArea.Count < 3)
             {
-                enemyPlayer.incrementLosses();
-                game.removePlayer(enemyPlayer);
+                if (totalArea[0].getVillage() != null)
+                {
+                    VillageComponent firstVillage = totalArea[0].getVillage();
+                    GameObject.Destroy(firstVillage);
+                }
+                foreach (var t in totalArea)
+                {
+                    t.setPlayerIndex(0);
+                    t.setVillage(null);
+                }
+            }
+            else
+            {
 
-                players = game.getRemainingPlayers();
             }
 
-            if (players.Count == 1)
+
+        }
+
+    }
+
+    private void remainingVillage(List<TileComponent> area, int playerIndex)
+    {
+        if (area.Count < 3)
+        {
+            if (area[0].getVillage() != null)
             {
-                players[0].incrementWins();
-                game.endGame();
+                VillageComponent firstVillage = area[0].getVillage();
+                _village.addGold(firstVillage.getGoldStock());
+                _village.addWood(firstVillage.getWoodStock());
+                firstVillage.DestroyVillage();
+            }
+            else
+            {
+                foreach (var t in area)
+                {
+                    t.setPlayerIndex(0);
+                }
+            }
+        }
+        else
+        {
+            if (area[0].getVillage() == null)
+            {
+                VillageComponent newHovel = GameObject.FindObjectOfType<GameComponent>().CreateVillage(area[0], VillageType.HOVEL, GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers()[playerIndex]);
+                area[0].setOccupantType(OccupantType.VILLAGE);
+                area[0].UpdateVillageReference();
+
+                //PlayerComponent player = participants[playerIndex - 1];
+                //player.add(newHovel);
+                newHovel.associate(area[0]);
+                newHovel.addGold(50);
+                // add enough wood to be able to upgrade to village for demo, can remove later
+                newHovel.addWood(24);
+                foreach (var t in area)
+                {
+                    // set all villages on tiles
+                    t.setVillage(newHovel);
+                }
             }
         }
     }
-
     public GameObject getGameObject()
     {
         return _unitGameObject;

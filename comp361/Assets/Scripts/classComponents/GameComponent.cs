@@ -4,9 +4,13 @@ using System.Collections;
 using UnityEngine.UI;
 using Assets.Scripts.classComponents;
 
-[SerializePrivateVariables]
+using System;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+
 public class GameComponent : GenericComponent
 {
+	private string _mapDirectory = "./maps/";
 	/*********************
 	 *     ATTRIBUTES    *
 	 ********************/
@@ -31,6 +35,7 @@ public class GameComponent : GenericComponent
 	UnitComponent _lastSelectedUnit;
     StructureComponent _lastSelectedStructure;
     UnitComponent _unitToMerge;
+    UnitComponent _unitToMove;
 	bool _moveStarted = false;
     bool _fireStarted = false;
     bool _merging = false;
@@ -188,6 +193,7 @@ public class GameComponent : GenericComponent
     public void startMoveLastSelectedUnit()
     {
         _moveStarted = true;
+        _unitToMove = _lastSelectedUnit;
     }
 
 	
@@ -197,11 +203,12 @@ public class GameComponent : GenericComponent
 		//_lastSelectedTile.UnhighlightNeighbours();
 		//_lastSelectedTile.UpdateDraw();
 		if(Network.isServer || Network.isClient){
-			int tileID_current = _lastSelectedUnit.GetComponent<TileComponent>().getID();
+            int tileID_current = _unitToMove.GetComponent<TileComponent>().getID();
 			int tileID_destination = _lastSelectedTile.getID();
 			networkView.RPC("RPCMoveLastSelectedUnit", RPCMode.Others, tileID_current, tileID_destination);
 		}
-		_lastSelectedUnit.moveUnit(_lastSelectedTile);
+		_unitToMove.moveUnit(_lastSelectedTile);
+        _moveStarted = false;
 	}
 	[RPC]
 	public void RPCMoveLastSelectedUnit(int tileID_current, int tileID_destination)
@@ -418,11 +425,11 @@ public class GameComponent : GenericComponent
 				{
 					continue;
 				}
-				if (Random.value < .5f)
+				if (UnityEngine.Random.value < .5f)
 				{
 					tiles.Add (tc);
 					tiles.AddRange (tc.getNeighbours());
-					TileComponent randomNeighbour = tc.getNeighbours()[Random.Range (0, tc.getNeighbours().Count)];
+					TileComponent randomNeighbour = tc.getNeighbours()[UnityEngine.Random.Range (0, tc.getNeighbours().Count)];
 					
 					if (randomNeighbour.getLandType() != LandType.FOREST &&
 					    !randomNeighbour.hasRoad() &&
@@ -564,6 +571,187 @@ public class GameComponent : GenericComponent
 		_roundCount = 0;
 		//		instance = this;
 		_mapGenerator = this.GetComponent<MapGenerator>();
+
+		if(!Directory.Exists(_mapDirectory))//if it doesn't, create it
+		{    
+			Directory.CreateDirectory(_mapDirectory);
+		}
 	}
 
+	//reference: http://zerosalife.github.io/blog/2014/08/09/persistent-data-in-unity/
+	public void Save(string mapName) {
+		BinaryFormatter bf = new BinaryFormatter();
+		FileStream file = File.Open(_mapDirectory + mapName + "Info.dat", FileMode.OpenOrCreate);
+		
+		int i = 0;
+		MapData mapData = new MapData();
+		//--- PlayerInfo ---//
+		mapData.round = _roundCount;
+		mapData.players = new string[_playerManager.GetPlayers().Count];
+		for(i = 0; i < mapData.players.Length; ++i){
+			mapData.players[i] = _playerManager.GetPlayer(i).getUserName();
+		}
+		mapData.remainingPlayers = new string[_remainingPlayers.Count];
+		for(i = 0; i < mapData.remainingPlayers.Length; ++i){
+			mapData.remainingPlayers[i] = _remainingPlayers[i].getUserName();
+		}
+		mapData.currentPlayerIndex = _currentPlayerIndex;
+		
+		//--- TileInfo ---//
+		mapData.tiles = new TileData[_mapTiles.GetLength(0)*_mapTiles.GetLength(1)];
+		i = 0;
+		List<VillageComponent> savedVillages = new List<VillageComponent>();
+		List<UnitComponent> savedUnits = new List<UnitComponent>();
+		List<StructureComponent> savedStructures = new List<StructureComponent>();
+		foreach(TileComponent tile in _mapTiles){
+			mapData.tiles[i] = new TileData();
+			mapData.tiles[i].x = tile.transform.position.x;
+			mapData.tiles[i].y = tile.transform.position.y;
+			mapData.tiles[i].z = tile.transform.position.z;
+			mapData.tiles[i].tileID = tile.getID();
+			mapData.tiles[i].playerIndex = tile.getPlayerIndex();
+			mapData.tiles[i].hasRoad = tile.hasRoad();
+			mapData.tiles[i].landType = (int)tile.getLandType();
+			mapData.tiles[i].occupantType = (int)tile.getOccupantType();
+			mapData.tiles[i].neighbourIDs = new int[tile.getNeighbours().Count];
+			List<TileComponent> neighbours = tile.getNeighbours();
+			for(int j = 0; j < neighbours.Count; ++j){
+				mapData.tiles[i].neighbourIDs[j] = neighbours[j].getID();
+			}
+			//			mapData.tiles[i].homeVillageID = tile.getVillage().GetComponent<TileComponent>().getID();
+			
+			switch(tile.getOccupantType()){
+			case(OccupantType.VILLAGE):
+				savedVillages.Add(tile.GetComponent<VillageComponent>());
+				break;
+			case(OccupantType.UNIT):
+				savedUnits.Add(tile.GetComponent<UnitComponent>());
+				break;
+			case(OccupantType.STRUCTURE):
+				savedStructures.Add(tile.GetComponent<StructureComponent>());
+				break;
+			}
+			++i;
+		}
+		
+		//--- VillageInfo ---//
+		mapData.villages = new VillageData[savedVillages.Count];
+		for(i = 0; i < mapData.villages.Length; ++i){
+			VillageComponent village = savedVillages[i];
+			mapData.villages[i] = new VillageData();
+			//			mapData.villages[i].occupyingTileID = village.getOccupyingTile().getID();
+			//			mapData.villages[i].playerIndex = village.getOccupyingTile().getPlayerIndex();
+			mapData.villages[i].goldStock = village.getGoldStock();
+			mapData.villages[i].woodStock = village.getWoodStock();
+			List<TileComponent> region = village.getControlledRegion();
+			mapData.villages[i].controlledRegionIDs = new int[region.Count];
+			for(int j = 0; j < region.Count; ++j){
+				mapData.villages[i].controlledRegionIDs[j] = region[j].getID();
+			}
+			List<UnitComponent> support = village.getSupportingUnits();
+			mapData.villages[i].supportingUnitIDs = new int[support.Count];
+			for(int j = 0; j < support.Count; ++j){
+				//				mapData.villages[i].supportingUnitIDs[j] = support[j].GetComponent<TileComponent>().getID();
+			}
+			mapData.villages[i].villageType = (int)village.getVillageType();
+			mapData.villages[i].remainingHealth = village.GetHealthLeft();
+		}
+		
+		//--- UnitInfo ---//
+		mapData.units = new UnitData[savedUnits.Count];
+		for(i = 0; i < mapData.units.Length; ++i){
+			UnitComponent unit = savedUnits[i];
+			mapData.units[i] = new UnitData();
+			//			mapData.units[i].occupyingTileID = unit.GetComponent<TileComponent>().getID();
+			//			mapData.units[i].playerIndex = unit.GetComponent<TileComponent>().getPlayerIndex();
+			mapData.units[i].roundsCultivating = unit.getRoundsCultivating();
+			mapData.units[i].upkeep = unit.getUpkeep();
+			mapData.units[i].currentAction = (int)unit.getCurrentAction();
+			mapData.units[i].unitType = (int)unit.getUnitType();
+			//			mapData.units[i].homeVillageTileID = unit.getVillage().GetComponent<TileComponent>().getID();
+		}
+		
+		//--- StructureInfo ---//
+		mapData.structures = new StructureData[savedStructures.Count];
+		for(i = 0; i < mapData.structures.Length; ++i){
+			StructureComponent structure = savedStructures[i];
+			mapData.structures[i] = new StructureData();
+			//			mapData.structures[i].occupyingTileID = structure.GetComponent<TileComponent>().getID();
+			mapData.structures[i].playerIndex = structure.GetComponent<TileComponent>().getPlayerIndex();
+			mapData.structures[i].structureType = (int)structure.getStructureType();
+		}
+		
+		bf.Serialize(file, mapData);
+		file.Close();
+	}
+	
+	public void Load(string mapName) {
+		if(File.Exists(_mapDirectory + mapName + "Info.dat")) {
+			BinaryFormatter bf = new BinaryFormatter();
+			FileStream file = File.Open(_mapDirectory + mapName + "Info.dat", FileMode.Open);
+			MapData mapData = (MapData)bf.Deserialize(file);
+			file.Close();
+			
+			//Copy mapData back into newly created tile components here//
+		}
+	}
+}
+
+[Serializable]
+class MapData {
+	// Add new variables for loading and saving here.
+	public int round;
+	public string[] players;
+	public string[] remainingPlayers;
+	public int currentPlayerIndex;
+	public TileData[] tiles;
+	public VillageData[] villages;
+	public UnitData[] units;
+	public StructureData[] structures;
+}
+
+[Serializable]
+class TileData {
+	// Add new variables for loading and saving here.
+	public float x,y,z;
+	public int tileID;
+	public int playerIndex;
+	public bool hasRoad;
+	public int landType;
+	public int occupantType;
+	public int[] neighbourIDs;
+	public int homeVillageID;
+}
+
+[Serializable]
+class VillageData {
+	// Add new variables for loading and saving here.
+	public int occupyingTileID;
+	public int playerIndex;
+	public uint goldStock;
+	public uint woodStock;
+	public int[] controlledRegionIDs;
+	public int[] supportingUnitIDs;
+	public int villageType;
+	public int remainingHealth;
+}
+
+[Serializable]
+class UnitData {
+	// Add new variables for loading and saving here.
+	public int occupyingTileID;
+	public int playerIndex;
+	public uint roundsCultivating;
+	public uint upkeep;
+	public int currentAction;
+	public int unitType;
+	public int homeVillageTileID;
+}
+
+[Serializable]
+class StructureData {
+	// Add new variables for loading and saving here.
+	public int occupyingTileID;
+	public int playerIndex;
+	public int structureType;
 }
