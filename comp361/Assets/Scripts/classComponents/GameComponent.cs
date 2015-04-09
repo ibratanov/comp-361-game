@@ -22,6 +22,7 @@ public class GameComponent : GenericComponent
 	public Text _settingsButtonText;
 
 	private MapGenerator _mapGenerator;
+	private MapData _mapData;
 	
 	int _roundCount; 
 	
@@ -251,7 +252,44 @@ public class GameComponent : GenericComponent
 		GenerateRegions();
 		BeginRound();
 	}
-	
+
+	public void newLoadedGame(string mapName) {
+		NewGameInit(); //Hide title panels (networked)
+		InitializePlayers(); //load all profiles into remaining players (networked)
+		Load(mapName); //Get the mapData (server only)
+		
+		//Remove players that have been loaded but aren't actually participating in the current map
+		foreach(PlayerComponent participant in _playerManager.GetPlayers()){
+			bool matchFound = false;
+			for(int i = 0; i < _mapData.players.Length; ++i){
+				if( _playerManager.GetPlayer(_mapData.players[i]).Equals(participant.getUserName()) ){
+					matchFound = true;
+				}
+			}
+			if(!matchFound){
+				removePlayer(participant); //(networked)
+			}
+		}
+		SetRoundAndPlayer(_mapData.round, _mapData.currentPlayerIndex); //set whose turn it is (networked)
+		
+		//--- TileInfo ---//
+		_mapGenerator.GenerateLoadedMap(_mapData); //Create the tile objects and components (networked)
+		UpdateGeneratedMap(); //get the TileComponents that were just generated(networked)
+		//--- create the villages, units, and structures (networked) ---//
+		foreach(VillageData village in _mapData.villages){
+			string playerName = _playerManager.GetPlayer(village.playerIndex).getUserName();
+			SetupLoadedVillage(village.occupyingTileID, village.villageType, playerName, village.goldStock, village.woodStock, village.remainingHealth);
+		}
+		/*		foreach(UnitData unit in _mapData.units){
+			SetupLoadedVillage(village); 
+		}
+		foreach(StructureData structure in _mapData.structures){
+			SetupLoadedVillage(village); 
+		}
+		BeginRound();
+		*/
+	}
+
 	//Players will increment their turns in alphabetical order to maintain network consistency 
 	//(Note, if we want to enforce randomness, int array can be converted to string and passed by RPC). Stretch goal
 	private void InitializePlayers(){
@@ -286,6 +324,19 @@ public class GameComponent : GenericComponent
 			_settingsButtonText.text = _playerManager.GetPlayer(0).getUserName();
 		}
 		_guiManager.HideLoadedProfilePanel();
+	}
+
+	
+	private void SetRoundAndPlayer(int currentRound, int currentPlayerIndex){
+		if(Network.isServer){
+			networkView.RPC("RPCSetRoundAndPlayer", RPCMode.Others, currentRound, currentPlayerIndex);
+		}
+		RPCSetRoundAndPlayer(currentRound, currentPlayerIndex);
+	}
+	[RPC]
+	private void RPCSetRoundAndPlayer(int currentRound, int currentPlayerIndex){
+		_roundCount = currentRound;
+		_currentPlayerIndex = currentPlayerIndex;
 	}
 	
 	private void GenerateRegions(){
@@ -358,6 +409,51 @@ public class GameComponent : GenericComponent
 		vc.Initialize(VillageType.HOVEL, pc);
 		tc.setLandType(LandType.GRASS);
 		return vc;
+	}
+
+	
+	private void UpdateGeneratedMap(){
+		if(Network.isServer){
+			networkView.RPC("RPCUpdateGeneratedMap", RPCMode.Others);
+		}
+		RPCUpdateGeneratedMap();
+	}
+	[RPC]
+	private void RPCUpdateGeneratedMap(){
+		_mapTiles =_mapGenerator.getLandTiles();
+	}
+	
+	private void SetupLoadedVillage(int tileID, int villageType, string playerName, uint goldStock, uint woodStock, int healthRemaining){
+		if(Network.isServer){
+			networkView.RPC("RPCSetupLoadedVillage", RPCMode.Others, tileID, villageType, playerName, goldStock, woodStock, healthRemaining);
+		}
+		RPCSetupLoadedVillage(tileID, villageType, playerName, goldStock, woodStock, healthRemaining);
+	}
+	[RPC]
+	private void RPCSetupLoadedVillage(int tileID, int villageType, string playerName, uint goldStock, uint woodStock, int healthRemaining){
+		GetTileByID(tileID);
+		TileComponent tileWithVillage = GetTileByID(tileID);
+		VillageComponent newVillage = CreateVillage(tileWithVillage, (VillageType)villageType, _playerManager.GetPlayer(playerName));
+		tileWithVillage.setOccupantType(OccupantType.VILLAGE);
+		tileWithVillage.RPCUpdateVillage(); //use the networked method since we're already in an RPC
+		
+		newVillage.associate(tileWithVillage);
+		newVillage.addGold(goldStock);
+		// add enough wood to be able to upgrade to village for demo, can remove later
+		newVillage.addWood(woodStock);
+		// add all other tiles in the bfs to this village's controlled region
+		foreach (var controlledTile in tileWithVillage.breadthFS())
+		{
+			if (!newVillage.getControlledRegion().Contains(controlledTile))
+			{
+				newVillage.addToControlledRegion(controlledTile);
+				controlledTile.UpdateVillageReference();
+			}
+		}
+		int initialHealth = newVillage.GetHealthLeft();
+		for(int i = initialHealth - healthRemaining; i > 0; --i){
+			newVillage.DecrementHealth();
+		}
 	}
 	
 	/// <summary>
@@ -695,21 +791,21 @@ public class GameComponent : GenericComponent
 		if(File.Exists(_mapDirectory + mapName + "Info.dat")) {
 			BinaryFormatter bf = new BinaryFormatter();
 			FileStream file = File.Open(_mapDirectory + mapName + "Info.dat", FileMode.Open);
-			MapData mapData = (MapData)bf.Deserialize(file);
+			_mapData = (MapData)bf.Deserialize(file);
 			file.Close();
-			
-			//Copy mapData back into newly created tile components here//
 		}
 	}
 }
 
 [Serializable]
-class MapData {
+public class MapData {
 	// Add new variables for loading and saving here.
 	public int round;
-	public string[] players;
+	public string[] players; //just used to check if the players playing match the ones saved in the game
 	public string[] remainingPlayers;
 	public int currentPlayerIndex;
+	public int height; //the number of rows
+	public int width; //the number of columns
 	public TileData[] tiles;
 	public VillageData[] villages;
 	public UnitData[] units;
@@ -717,7 +813,7 @@ class MapData {
 }
 
 [Serializable]
-class TileData {
+public class TileData {
 	// Add new variables for loading and saving here.
 	public float x,y,z;
 	public int tileID;
@@ -730,7 +826,7 @@ class TileData {
 }
 
 [Serializable]
-class VillageData {
+public class VillageData {
 	// Add new variables for loading and saving here.
 	public int occupyingTileID;
 	public int playerIndex;
@@ -743,7 +839,7 @@ class VillageData {
 }
 
 [Serializable]
-class UnitData {
+public class UnitData {
 	// Add new variables for loading and saving here.
 	public int occupyingTileID;
 	public int playerIndex;
@@ -755,7 +851,7 @@ class UnitData {
 }
 
 [Serializable]
-class StructureData {
+public class StructureData {
 	// Add new variables for loading and saving here.
 	public int occupyingTileID;
 	public int playerIndex;

@@ -132,7 +132,7 @@ public class TileComponent : GenericComponent
 	}
 	
 	[RPC]
-	private void RPCUpdateVillage() {
+	public void RPCUpdateVillage() {
 		List<TileComponent> region = breadthFS();
 		foreach(TileComponent tile in region){
 			if(tile.GetComponent<VillageComponent>()){
