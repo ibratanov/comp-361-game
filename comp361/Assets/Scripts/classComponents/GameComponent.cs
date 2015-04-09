@@ -304,12 +304,11 @@ public class GameComponent : GenericComponent
 		foreach(UnitData unit in _mapData.units){
 			SetupLoadedUnit(unit.occupyingTileID, unit.homeVillageTileID, unit.unitType, unit.roundsCultivating, unit.currentAction); 
 		}
-		/*
 		foreach(StructureData structure in _mapData.structures){
-			SetupLoadedVillage(village); 
+			SetupLoadedStructure(structure.occupyingTileID, structure.playerIndex, structure.structureType); 
 		}
-		BeginRound();
-		*/
+		_guiManager.DisplayRoundPanel(_roundCount);
+		StartCoroutine("delaySetPlayer");
 	}
 
 	[RPC]
@@ -454,7 +453,7 @@ public class GameComponent : GenericComponent
 	
 	public VillageComponent CreateVillage(TileComponent tc, VillageType vType, PlayerComponent pc){
 		VillageComponent vc = tc.gameObject.AddComponent<VillageComponent>();
-		vc.Initialize(VillageType.HOVEL, pc);
+		vc.Initialize(vType, pc);
 		tc.setLandType(LandType.GRASS);
 		return vc;
 	}
@@ -534,7 +533,23 @@ public class GameComponent : GenericComponent
 		VillageComponent vc = tc.getVillage();
 		vc.associate(uc);
 	}
-	
+
+	private void SetupLoadedStructure(int tileID, int playerIndex, int structureType){
+		if(Network.isServer){
+			networkView.RPC("RPCSetupLoadedStructure", RPCMode.Others, tileID, playerIndex, structureType);
+		}
+		RPCSetupLoadedStructure(tileID, playerIndex, structureType);
+	}
+	[RPC]
+	private void RPCSetupLoadedStructure(int tileID, int playerIndex, int structureType){
+		TileComponent tc = GetTileByID(tileID);
+		StructureComponent sc = tc.gameObject.AddComponent<StructureComponent>();
+		sc.setLocation(tc);
+		sc.RPCCreateStructure(structureType); //use the networked version because we're already in an RPC
+		tc.setOccupantType(OccupantType.STRUCTURE);
+		tc.setOccupyingStructure(sc);
+	}
+
 	/// <summary>
 	/// Allows menu buttons to declare which map to generate on BeginGame()
 	/// </summary>

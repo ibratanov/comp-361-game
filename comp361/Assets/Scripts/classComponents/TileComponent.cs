@@ -386,7 +386,7 @@ public class TileComponent : GenericComponent
             if (_village.getWoodStock() >= 5)
             {
                 _village.removeWood(5);
-                StructureComponent tower = _terrainGameObject.AddComponent<StructureComponent>();
+				StructureComponent tower = this.gameObject.AddComponent<StructureComponent>();
                 tower.setLocation(this);
                 tower.CreateStructure(StructureType.WATCHTOWER);
                 _occupantType = OccupantType.STRUCTURE;

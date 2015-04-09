@@ -45,7 +45,7 @@ public class StructureComponent : GenericComponent
 
 
     [RPC]
-    private void RPCCreateStructure(int st)
+    public void RPCCreateStructure(int st)
     {
         _structureType = (StructureType)st;
         if (_structureGameObject)
