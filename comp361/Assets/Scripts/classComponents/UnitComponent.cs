@@ -714,6 +714,7 @@ public class UnitComponent : GenericComponent
                 destroyVillage = true;
             }
             setLocation(dest);
+            _currentAction = ActionType.EXPANDING_REGION;
         }
 
         // if less than 3 tiles left, destroy village
@@ -812,6 +813,10 @@ public class UnitComponent : GenericComponent
     {
         if (secondArea.Count > 0)
         {
+            foreach (var t in secondArea)
+            {
+                t.setVillage(null);
+            }
             if (secondArea.Count < 3)
             {
                 if (secondArea[0].getVillage() != null)
