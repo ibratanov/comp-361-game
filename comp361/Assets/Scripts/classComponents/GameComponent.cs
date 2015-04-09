@@ -583,7 +583,7 @@ public class GameComponent : GenericComponent
 	public void Save(string mapName) {
 		BinaryFormatter bf = new BinaryFormatter();
 		FileStream file = File.Open(_mapDirectory + mapName + "Info.dat", FileMode.OpenOrCreate);
-		
+
 		int i = 0;
 		MapData mapData = new MapData();
 		//--- PlayerInfo ---//
@@ -597,9 +597,11 @@ public class GameComponent : GenericComponent
 			mapData.remainingPlayers[i] = _remainingPlayers[i].getUserName();
 		}
 		mapData.currentPlayerIndex = _currentPlayerIndex;
-		
+
 		//--- TileInfo ---//
-		mapData.tiles = new TileData[_mapTiles.GetLength(0)*_mapTiles.GetLength(1)];
+		mapData.height = _mapTiles.GetLength(0);
+		mapData.width = _mapTiles.GetLength(1);
+		mapData.tiles = new TileData[mapData.height * mapData.width];
 		i = 0;
 		List<VillageComponent> savedVillages = new List<VillageComponent>();
 		List<UnitComponent> savedUnits = new List<UnitComponent>();
@@ -634,7 +636,7 @@ public class GameComponent : GenericComponent
 			}
 			++i;
 		}
-		
+
 		//--- VillageInfo ---//
 		mapData.villages = new VillageData[savedVillages.Count];
 		for(i = 0; i < mapData.villages.Length; ++i){
@@ -657,7 +659,7 @@ public class GameComponent : GenericComponent
 			mapData.villages[i].villageType = (int)village.getVillageType();
 			mapData.villages[i].remainingHealth = village.GetHealthLeft();
 		}
-		
+
 		//--- UnitInfo ---//
 		mapData.units = new UnitData[savedUnits.Count];
 		for(i = 0; i < mapData.units.Length; ++i){
@@ -671,7 +673,7 @@ public class GameComponent : GenericComponent
 			mapData.units[i].unitType = (int)unit.getUnitType();
 			//			mapData.units[i].homeVillageTileID = unit.getVillage().GetComponent<TileComponent>().getID();
 		}
-		
+
 		//--- StructureInfo ---//
 		mapData.structures = new StructureData[savedStructures.Count];
 		for(i = 0; i < mapData.structures.Length; ++i){
@@ -681,7 +683,7 @@ public class GameComponent : GenericComponent
 			mapData.structures[i].playerIndex = structure.GetComponent<TileComponent>().getPlayerIndex();
 			mapData.structures[i].structureType = (int)structure.getStructureType();
 		}
-		
+
 		bf.Serialize(file, mapData);
 		file.Close();
 	}
@@ -692,9 +694,141 @@ public class GameComponent : GenericComponent
 			FileStream file = File.Open(_mapDirectory + mapName + "Info.dat", FileMode.Open);
 			MapData mapData = (MapData)bf.Deserialize(file);
 			file.Close();
+
+			/* Player Info */
+
+			_roundCount = mapData.round;
+
+			int i = 0;
+
+			for (i = 0; i < mapData.players.Length; ++i) {
+				_playerManager.AddPlayer(new PlayerComponent(mapData.players[i], "")); 
+				//maybe will need to save the wins and losses instead, to use 2nd constructor? or also save password?
+			}
+
+			for (i = 0; i < mapData.remainingPlayers.Length; ++i) {
+				_remainingPlayers.Add(new PlayerComponent(mapData.remainingPlayers[i], ""));
+				//same concern
+			}
+
+			_currentPlayerIndex = mapData.currentPlayerIndex;
+
+			/* TileInfo */
+			_mapTiles = new TileComponent[mapData.height, mapData.width];
+
+			i = 0;
+			int j = 0;
+
+			foreach (TileData tileData in mapData.tiles) {
+				if (j == mapData.width - 1) {
+					++i;
+					j = 0;
+				}
+
+				TileComponent tile = new TileComponent(tileData.playerIndex);
+				tile.transform.TransformPoint(tileData.x, tileData.y, tileData.z);
+				tile.setID(tileData.tileID);
+				if (tileData.hasRoad) {
+					tile.createRoad();
+				}
+				tile.setLandType((LandType) tileData.landType);
+				tile.setOccupantType((OccupantType) tileData.occupantType);
+
+				_mapTiles[i, j] = tile; 
+			}
+
+			// populate neighbours
+			i = 0;
+			j = 0;
+			int k = 0;
+			int l = 0;
+			while (i < mapData.height) {
+				List<TileComponent> neighbours = new List<TileComponent>();
+				int[] neighbourIDs = mapData.tiles[k].neighbourIDs;
+
+				for (l = 0; l < neighbourIDs.Length; ++l) {
+					neighbours.Add(findTileByID(neighbourIDs[l]));
+				}
+
+				_mapTiles[i, j].setNeighbours(neighbours);
+				++i;
+				++j;
+				++k;
+			}
+
+			/* VillageInfo */
+			for (i = 0; i < mapData.villages.Length; ++i) {
+				VillageData villageData = mapData.villages[i];
+				uint gold = villageData.goldStock;
+				uint wood = villageData.woodStock;
+				PlayerComponent player = _playerManager.GetPlayer(mapData.villages[i].playerIndex);
+
+				List<TileComponent> region = new List<TileComponent>();
+				for (l = 0; l < villageData.controlledRegionIDs.Length; ++l) {
+					region.Add(findTileByID(villageData.controlledRegionIDs[l]));
+				}
+
+				List<UnitComponent> units = new List<UnitComponent>();
+				for (l = 0; l < villageData.supportingUnitIDs.Length; ++l) {
+					//units.Add();
+				}
+
+				VillageType type = (VillageType) villageData.villageType;
+
+				VillageComponent village = new VillageComponent(gold, wood, player, region, units, type);
+				// assign villageData.remainingHealth
+			}
 			
-			//Copy mapData back into newly created tile components here//
+
+			/* UnitInfo */
+			List<UnitComponent> allUnits = new List<UnitComponent>();
+			UnitData[] unitsData = mapData.units;
+			for (i = 0; i < unitsData.Length; ++i) {
+				UnitComponent u = new UnitComponent();
+
+				u.setCurrentAction((ActionType) unitsData[i].currentAction);
+				u.setUnitType((UnitType) unitsData[i].unitType, true);
+				//set unitsData[i].roundsCultivating;
+				//set unitsData[i].upkeep;
+
+				allUnits.Add(u);
+			}
+
+			//do something with allUnits
+
+			/* Structure Info */
+
+			List<StructureComponent> structures = new List<StructureComponent>();
+			StructureData[] structuresData = mapData.structures;
+			for (i = 0; i < structuresData.Length; ++i) {
+				//find structure's tile
+				StructureComponent structure = new StructureComponent((StructureType) structuresData[i].structureType, null);
+
+				structures.Add(structure);
+			}
+
+			// do something with structures
 		}
+	}
+
+	private TileComponent findTileByID(int ID) {
+		for (int i = 0; i < _mapTiles.GetLength(0); ++i) {
+			List<TileComponent> tiles = getRow(_mapTiles, i);
+			TileComponent tile = tiles.Find(t => t.getID() == ID);
+			if (tile != null) { // FX: maybe this will suffer from the weird "null" vs null bug
+				return tile;
+			}
+		}
+			return null;
+	}
+
+	private List<T> getRow<T>(T[,] matrix, int row) {
+		var columns = matrix.GetLength(1);
+		List<T> array = new List<T>();
+		for (int i = 0; i < columns; ++i) {
+			array.Add(matrix[row, i]);
+		}
+		return array;
 	}
 }
 
@@ -705,6 +839,8 @@ class MapData {
 	public string[] players;
 	public string[] remainingPlayers;
 	public int currentPlayerIndex;
+	public int height;
+	public int width;
 	public TileData[] tiles;
 	public VillageData[] villages;
 	public UnitData[] units;
