@@ -653,6 +653,8 @@ public class UnitComponent : GenericComponent
         VillageComponent previousVillage = dest.getVillage();
         int previousPlayer = dest.getPlayerIndex();
         VillageType previousVillageType = previousVillage.getVillageType();
+        float woodStock = previousVillage.getWoodStock();
+        float goldStock = previousVillage.getGoldStock();
 
         bool tileInvaded = false;
         bool destroyVillage = false;
@@ -783,6 +785,9 @@ public class UnitComponent : GenericComponent
                 thirdArea = totalArea;
             }
 
+            float[] gold = AssignStock(firstArea, secondArea, thirdArea, goldStock);
+            float[] wood = AssignStock(firstArea, secondArea, thirdArea, woodStock);
+
             if (firstArea.Count < 3)
             {
                 if (firstArea[0].getVillage() != null)
@@ -810,8 +815,8 @@ public class UnitComponent : GenericComponent
                         t.setOccupantType(OccupantType.VILLAGE);
 
                         newHovel.associate(t);
-                        newHovel.addGold(1);
-                        newHovel.addWood(0);
+                        newHovel.addGold((uint)gold[0]);
+                        newHovel.addWood((uint)wood[0]);
                         foreach (var tile in firstArea)
                         {
                             tile.setVillage(newHovel);
@@ -820,29 +825,77 @@ public class UnitComponent : GenericComponent
                     }
                 }
             }
-            remainingVillage(secondArea, previousPlayer, previousVillageType);
-            remainingVillage(thirdArea, previousPlayer, previousVillageType);
+            remainingVillage(secondArea, previousPlayer, previousVillageType, gold[1], wood[1]);
+            remainingVillage(thirdArea, previousPlayer, previousVillageType, gold[2], wood[2]);
 
         }
 
     }
 
-    private void remainingVillage(List<TileComponent> secondArea, int playerIndex, VillageType villageType)
+    private float[] AssignStock(List<TileComponent> firstArea, List<TileComponent> secondArea, List<TileComponent> thirdArea, float stock)
     {
-        if (secondArea.Count > 0)
+        float[] assignment = new float[3];
+
+        for (int i = 0; i < 3; i++)
         {
-            foreach (var t in secondArea)
+            assignment[i] = 0;
+
+        }
+
+        if (firstArea.Count > 2 && secondArea.Count > 2 && thirdArea.Count > 2)
+        {
+            assignment[0] = (int)stock / 3;
+            assignment[1] = (int)stock / 3;
+            assignment[2] = stock - assignment[0] - assignment[1];
+        }
+        else if (firstArea.Count > 2 && secondArea.Count > 2)
+        {
+            assignment[0] = (int)stock / 2;
+            assignment[1] = stock - assignment[0];
+        }
+
+        else if (thirdArea.Count > 2 && secondArea.Count > 2)
+        {
+            assignment[2] = (int)stock / 2;
+            assignment[1] = stock - assignment[2];
+        }
+
+        else if (thirdArea.Count > 2 && firstArea.Count > 2)
+        {
+            assignment[2] = (int)stock / 2;
+            assignment[0] = stock - assignment[2];
+        }
+        else if (firstArea.Count > 2)
+        {
+            assignment[0] = stock;
+        }
+        else if (secondArea.Count > 2)
+        {
+            assignment[1] = stock;
+        }
+        else if (thirdArea.Count > 2)
+        {
+            assignment[2] = stock;
+        }
+        return assignment;
+    }
+
+    private void remainingVillage(List<TileComponent> area, int playerIndex, VillageType villageType, float gold, float wood)
+    {
+        if (area.Count > 0)
+        {
+            foreach (var t in area)
             {
                 t.setVillage(null);
             }
-            if (secondArea.Count < 3)
+            if (area.Count < 3)
             {
-                if (secondArea[0].getVillage() != null)
+                if (area[0].getVillage() != null)
                 {
-                    VillageComponent firstVillage = secondArea[0].getVillage();
+                    VillageComponent firstVillage = area[0].getVillage();
                     GameObject.Destroy(firstVillage);
                 }
-                foreach (var t in secondArea)
+                foreach (var t in area)
                 {
                     t.setPlayerIndex(0);
                     t.setVillage(null);
@@ -850,7 +903,7 @@ public class UnitComponent : GenericComponent
             }
             else
             {
-                foreach (var t in secondArea)
+                foreach (var t in area)
                 {
                     if (t.getVillage() == null)
                     {
@@ -860,9 +913,9 @@ public class UnitComponent : GenericComponent
                         //t.UpdateVillageReference();
 
                         newHovel.associate(t);
-                        newHovel.addGold(1);
-                        newHovel.addWood(0);
-                        foreach (var tile in secondArea)
+                        newHovel.addGold((uint)gold);
+                        newHovel.addWood((uint)wood);
+                        foreach (var tile in area)
                         {
                             tile.setVillage(newHovel);
                         }
