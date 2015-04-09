@@ -62,21 +62,19 @@ public class UnitComponent : GenericComponent
 
 	readonly public static Color[] PLAYER_COLOURS = 
 	{
-		new Color(1.0f,0.25f,0.25f), 
-		new Color(0.25f,1.0f,0.25f), 
-		new Color(0.25f,0.25f,1.0f), 
-		new Color(0.25f,1.0f,1.0f), 
-		new Color(1.0f,0.25f,1.0f), 
-		new Color(1.0f,1.0f,0.25f), 
+		Color.white,
+		Color.red,
+		Color.green,
+		Color.blue,
+		Color.cyan
 	};
 	readonly public static Color[] PLAYER_COLOURS_DARK = 
 	{
-		new Color(1.0f,0.25f,0.25f), 
-		new Color(0.25f,1.0f,0.25f), 
-		new Color(0.25f,0.25f,1.0f), 
-		new Color(0.25f,1.0f,1.0f), 
-		new Color(1.0f,0.25f,1.0f), 
-		new Color(1.0f,1.0f,0.25f), 
+		Color.white,
+		Color.red,
+		Color.green,
+		Color.blue,
+		Color.cyan
 	};
 
     /*********************
@@ -850,14 +848,18 @@ public class UnitComponent : GenericComponent
 
 	public void SetColour(int index)
 	{
-		for(int i = 0; i < _unitGameObject.renderer.materials.Length; ++i){
-			if(_unitGameObject.renderer.materials[i].name.Contains("mat_dark") || 
-			   _unitGameObject.renderer.materials[i].name.Contains("mat_clothDark") ){
-				_unitGameObject.renderer.materials[i].SetColor("_Color", PLAYER_COLOURS_DARK[index]);
-			}
-			else if(_unitGameObject.renderer.materials[i].name.Contains("mat_light") ||
-			        _unitGameObject.renderer.materials[i].name.Contains("mat_clothLight") ){
-				_unitGameObject.renderer.materials[i].SetColor("_Color", PLAYER_COLOURS[index]);
+		Renderer[] renderers = _unitGameObject.GetComponentsInChildren<Renderer>() as Renderer[];
+		for (int i = 0; i < renderers.Length; i++)
+		{
+			foreach (Material m in renderers[i].materials){
+				if(m.name.Contains("mat_dark") || 
+				   m.name.Contains("mat_clothDark") ){
+					m.SetColor("_Color", PLAYER_COLOURS_DARK[index]);
+				}
+				else if(m.name.Contains("mat_light") ||
+				        m.name.Contains("mat_clothLight") ){
+					m.SetColor("_Color", PLAYER_COLOURS[index]);
+				}
 			}
 		}
 	}
