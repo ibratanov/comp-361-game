@@ -259,6 +259,11 @@ public class GameComponent : GenericComponent
 	}
 
 	public void newLoadedGame(string mapName) {
+		if(mapName.Equals("TestMap")){
+			_playerManager.AddPlayer(new PlayerComponent("Rita", "rita"));
+			_playerManager.AddPlayer(new PlayerComponent("Marc", "marc"));
+			_playerManager.AddPlayer(new PlayerComponent("Ivo", "ivo"));
+		}
 		NewGameInit(); //Hide title panels (networked)
 		InitializePlayers(); //load all profiles into remaining players (networked)
 		Load(mapName); //Get the mapData (server only)
@@ -291,8 +296,10 @@ public class GameComponent : GenericComponent
 		UpdateGeneratedMap(); //get the TileComponents that were just generated(networked)
 		//--- create the villages, units, and structures (networked) ---//
 		foreach(VillageData village in _mapData.villages){
-			string playerName = _playerManager.GetPlayer(village.playerIndex).getUserName();
-			SetupLoadedVillage(village.occupyingTileID, village.villageType, playerName, village.goldStock, village.woodStock, village.remainingHealth);
+			if(village.playerIndex-1 >= 0){
+				string playerName = _playerManager.GetPlayer(village.playerIndex-1).getUserName();
+				SetupLoadedVillage(village.occupyingTileID, village.villageType, playerName, village.goldStock, village.woodStock, village.remainingHealth);
+			}
 		}
 		/*		foreach(UnitData unit in _mapData.units){
 			SetupLoadedVillage(village); 
@@ -784,7 +791,12 @@ public class GameComponent : GenericComponent
 			for(; j < 6; ++j){
 				mapData.tiles[i].neighbourIDs[j] = -1; //Fill the rest of the neighbour slots with dummy values
 			}
-			//			mapData.tiles[i].homeVillageID = tile.getVillage().GetComponent<TileComponent>().getID();
+			if(tile.getVillage() != null){
+				mapData.tiles[i].homeVillageID = tile.getVillage().GetComponent<TileComponent>().getID();
+			}
+			else{
+				mapData.tiles[i].homeVillageID = -1;
+			}
 			
 			switch(tile.getOccupantType()){
 			case(OccupantType.VILLAGE):
@@ -805,8 +817,8 @@ public class GameComponent : GenericComponent
 		for(i = 0; i < mapData.villages.Length; ++i){
 			VillageComponent village = savedVillages[i];
 			mapData.villages[i] = new VillageData();
-			//			mapData.villages[i].occupyingTileID = village.getOccupyingTile().getID();
-			//			mapData.villages[i].playerIndex = village.getOccupyingTile().getPlayerIndex();
+			mapData.villages[i].occupyingTileID = village.GetComponent<TileComponent>().getID();
+			mapData.villages[i].playerIndex = village.GetComponent<TileComponent>().getPlayerIndex();
 			mapData.villages[i].goldStock = village.getGoldStock();
 			mapData.villages[i].woodStock = village.getWoodStock();
 			List<TileComponent> region = village.getControlledRegion();
@@ -817,7 +829,7 @@ public class GameComponent : GenericComponent
 			List<UnitComponent> support = village.getSupportingUnits();
 			mapData.villages[i].supportingUnitIDs = new int[support.Count];
 			for(int j = 0; j < support.Count; ++j){
-				//				mapData.villages[i].supportingUnitIDs[j] = support[j].GetComponent<TileComponent>().getID();
+				mapData.villages[i].supportingUnitIDs[j] = support[j].GetComponent<TileComponent>().getID();
 			}
 			mapData.villages[i].villageType = (int)village.getVillageType();
 			mapData.villages[i].remainingHealth = village.GetHealthLeft();
@@ -828,13 +840,13 @@ public class GameComponent : GenericComponent
 		for(i = 0; i < mapData.units.Length; ++i){
 			UnitComponent unit = savedUnits[i];
 			mapData.units[i] = new UnitData();
-			//			mapData.units[i].occupyingTileID = unit.GetComponent<TileComponent>().getID();
-			//			mapData.units[i].playerIndex = unit.GetComponent<TileComponent>().getPlayerIndex();
+			mapData.units[i].occupyingTileID = unit.GetComponent<TileComponent>().getID();
+			mapData.units[i].playerIndex = unit.GetComponent<TileComponent>().getPlayerIndex();
 			mapData.units[i].roundsCultivating = unit.getRoundsCultivating();
 			mapData.units[i].upkeep = unit.getUpkeep();
 			mapData.units[i].currentAction = (int)unit.getCurrentAction();
 			mapData.units[i].unitType = (int)unit.getUnitType();
-			//			mapData.units[i].homeVillageTileID = unit.getVillage().GetComponent<TileComponent>().getID();
+			mapData.units[i].homeVillageTileID = unit.getVillage().GetComponent<TileComponent>().getID();
 		}
 		
 		//--- StructureInfo ---//
@@ -842,7 +854,7 @@ public class GameComponent : GenericComponent
 		for(i = 0; i < mapData.structures.Length; ++i){
 			StructureComponent structure = savedStructures[i];
 			mapData.structures[i] = new StructureData();
-			//			mapData.structures[i].occupyingTileID = structure.GetComponent<TileComponent>().getID();
+			mapData.structures[i].occupyingTileID = structure.GetComponent<TileComponent>().getID();
 			mapData.structures[i].playerIndex = structure.GetComponent<TileComponent>().getPlayerIndex();
 			mapData.structures[i].structureType = (int)structure.getStructureType();
 		}
