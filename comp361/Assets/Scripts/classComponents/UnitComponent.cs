@@ -624,6 +624,7 @@ public class UnitComponent : GenericComponent
     {
         // get current village of tile
         VillageComponent previousVillage = dest.getVillage();
+        int previousPlayer = dest.getPlayerIndex();
 
         bool tileInvaded = false;
         bool destroyVillage = false;
@@ -748,7 +749,18 @@ public class UnitComponent : GenericComponent
                 {
                     if (t.getVillage() == null)
                     {
+                        VillageComponent newHovel = GameObject.FindObjectOfType<GameComponent>().CreateVillage(t, VillageType.HOVEL, GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers()[previousPlayer]);
+                        t.setOccupantType(OccupantType.VILLAGE);
+                        //t.UpdateVillageReference();
 
+                        newHovel.associate(t);
+                        newHovel.addGold(1);
+                        newHovel.addWood(0);
+                        foreach (var tile in firstArea)
+                        {
+                            tile.setVillage(newHovel);
+                        }
+                        break;
                     }
                 }
             }
