@@ -678,7 +678,7 @@ public class UnitComponent : GenericComponent
                 tileInvaded = true;
                 foreach (var t in this.GetComponent<TileComponent>().getTwoHexRadius())
                 {
-                    if (t.getOccupantType() == OccupantType.UNIT && t.getPlayerIndex() == previousVillage.getControlledRegion()[0].getPlayerIndex())
+                    if (t.getOccupyingUnit() != null && t.getPlayerIndex() == previousVillage.getControlledRegion()[0].getPlayerIndex())
                     {
                         if (t.getOccupyingUnit().getUnitType() != UnitType.CANNON && t.getOccupyingUnit().getUnitType() >= _unitType)
                         {
@@ -686,7 +686,7 @@ public class UnitComponent : GenericComponent
                             ThrowError("An enemy unit is guarding this tile.");
                         }
                     }
-                    if (t.getOccupantType() == OccupantType.STRUCTURE && t.getPlayerIndex() == previousVillage.getControlledRegion()[0].getPlayerIndex())
+                    if (t.getOccupyingStructure() != null && t.getPlayerIndex() == previousVillage.getControlledRegion()[0].getPlayerIndex())
                     {
                         if (t.getOccupyingStructure().getStructureType() == StructureType.WATCHTOWER && _unitType <= UnitType.INFANTRY)
                         {
