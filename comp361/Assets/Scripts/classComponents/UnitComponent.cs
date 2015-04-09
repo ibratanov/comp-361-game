@@ -90,6 +90,12 @@ public class UnitComponent : GenericComponent
         return _roundsCultivating;
     }
 
+	public void setRoundsCultivating(uint rounds)
+	{
+		_roundsCultivating = rounds;
+	}
+
+
     public ActionType getCurrentAction()
     {
         return _currentAction;

@@ -301,9 +301,10 @@ public class GameComponent : GenericComponent
 				SetupLoadedVillage(village.occupyingTileID, village.villageType, playerName, village.goldStock, village.woodStock, village.remainingHealth);
 			}
 		}
-		/*		foreach(UnitData unit in _mapData.units){
-			SetupLoadedVillage(village); 
+		foreach(UnitData unit in _mapData.units){
+			SetupLoadedUnit(unit.occupyingTileID, unit.homeVillageTileID, unit.unitType, unit.roundsCultivating, unit.currentAction); 
 		}
+		/*
 		foreach(StructureData structure in _mapData.structures){
 			SetupLoadedVillage(village); 
 		}
@@ -457,7 +458,6 @@ public class GameComponent : GenericComponent
 		tc.setLandType(LandType.GRASS);
 		return vc;
 	}
-
 	
 	private void UpdateGeneratedMap(){
 		if(Network.isServer){
@@ -513,6 +513,26 @@ public class GameComponent : GenericComponent
 		for(int i = initialHealth - healthRemaining; i > 0; --i){
 			newVillage.DecrementHealth();
 		}
+	}
+
+	private void SetupLoadedUnit(int tileID, int homeVillageTileID, int unitType, uint roundsCultivating, int currentAction){
+		if(Network.isServer){
+			networkView.RPC("RPCSetupLoadedUnit", RPCMode.Others, tileID, homeVillageTileID, unitType, roundsCultivating, currentAction);
+		}
+		RPCSetupLoadedUnit(tileID, homeVillageTileID, unitType, roundsCultivating, currentAction);
+	}
+	[RPC]
+	private void RPCSetupLoadedUnit(int tileID, int homeVillageTileID, int unitType, uint roundsCultivating, int currentAction){
+		UnitType uType = (UnitType)unitType;
+		TileComponent tc = GetTileByID(tileID);
+		UnitComponent uc = tc.gameObject.AddComponent<UnitComponent>();
+		uc.Initialize(uType);
+		uc.setCurrentAction((ActionType)currentAction);
+		uc.setRoundsCultivating(roundsCultivating);
+		tc.setOccupantType(OccupantType.UNIT);
+		tc.setOccupyingUnit(uc);
+		VillageComponent vc = tc.getVillage();
+		vc.associate(uc);
 	}
 	
 	/// <summary>

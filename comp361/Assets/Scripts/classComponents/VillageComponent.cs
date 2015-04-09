@@ -356,7 +356,7 @@ public class VillageComponent : GenericComponent
 	public void associate(UnitComponent unit) {
 		VillageComponent formerVillage = unit.getVillage();
 		
-		if (formerVillage) {
+		if (formerVillage != null) {
 			List<UnitComponent> units = formerVillage.getSupportingUnits();
 			units.Remove(unit);
 		}
