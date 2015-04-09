@@ -735,8 +735,7 @@ public class UnitComponent : GenericComponent
             // find all components of land belonging to opposing player, regenerate village randomly on one
             List<TileComponent> firstArea = previousVillage.getControlledRegion()[0].breadthFS();
 
-            // if controlled region isn't empty, there's a second area
-            List<TileComponent> secondArea = new List<TileComponent>();
+
             foreach (var t in firstArea)
             {
                 if (totalArea.Contains(t))
@@ -744,6 +743,27 @@ public class UnitComponent : GenericComponent
                     totalArea.Remove(t);
                 }
             }
+
+            // if controlled region isn't empty, there's a second area
+            List<TileComponent> secondArea = new List<TileComponent>();
+            if (totalArea.Count > 0)
+            {
+                secondArea = totalArea[0].breadthFS();
+                foreach (var t in secondArea)
+                {
+                    if (totalArea.Contains(t))
+                    {
+                        totalArea.Remove(t);
+                    }
+                }
+            }
+            List<TileComponent> thirdArea = new List<TileComponent>();
+
+            if (totalArea.Count > 0)
+            {
+                thirdArea = totalArea;
+            }
+
             if (firstArea.Count < 3)
             {
                 if (firstArea[0].getVillage() != null)
@@ -769,7 +789,6 @@ public class UnitComponent : GenericComponent
                     {
                         VillageComponent newHovel = GameObject.FindObjectOfType<GameComponent>().CreateVillage(t, previousVillageType, GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers()[previousPlayer - 1]);
                         t.setOccupantType(OccupantType.VILLAGE);
-                        //t.UpdateVillageReference();
 
                         newHovel.associate(t);
                         newHovel.addGold(1);
@@ -782,86 +801,50 @@ public class UnitComponent : GenericComponent
                     }
                 }
             }
-            if (totalArea.Count > 0)
-            {
-                if (totalArea.Count < 3)
-                {
-                    if (totalArea[0].getVillage() != null)
-                    {
-                        VillageComponent firstVillage = totalArea[0].getVillage();
-                        GameObject.Destroy(firstVillage);
-                    }
-                    foreach (var t in totalArea)
-                    {
-                        t.setPlayerIndex(0);
-                        t.setVillage(null);
-                    }
-                }
-                else
-                {
-                    foreach (var t in totalArea)
-                    {
-                        if (t.getVillage() == null)
-                        {
-                            var players = GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers();
-                            VillageComponent newHovel = GameObject.FindObjectOfType<GameComponent>().CreateVillage(t, previousVillageType, GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers()[previousPlayer - 1]);
-                            t.setOccupantType(OccupantType.VILLAGE);
-                            //t.UpdateVillageReference();
-
-                            newHovel.associate(t);
-                            newHovel.addGold(1);
-                            newHovel.addWood(0);
-                            foreach (var tile in totalArea)
-                            {
-                                tile.setVillage(newHovel);
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
+            remainingVillage(secondArea, previousPlayer, previousVillageType);
+            remainingVillage(thirdArea, previousPlayer, previousVillageType);
 
         }
 
     }
 
-    private void remainingVillage(List<TileComponent> area, int playerIndex)
+    private void remainingVillage(List<TileComponent> secondArea, int playerIndex, VillageType villageType)
     {
-        if (area.Count < 3)
+        if (secondArea.Count > 0)
         {
-            if (area[0].getVillage() != null)
+            if (secondArea.Count < 3)
             {
-                VillageComponent firstVillage = area[0].getVillage();
-                _village.addGold(firstVillage.getGoldStock());
-                _village.addWood(firstVillage.getWoodStock());
-                firstVillage.DestroyVillage();
+                if (secondArea[0].getVillage() != null)
+                {
+                    VillageComponent firstVillage = secondArea[0].getVillage();
+                    GameObject.Destroy(firstVillage);
+                }
+                foreach (var t in secondArea)
+                {
+                    t.setPlayerIndex(0);
+                    t.setVillage(null);
+                }
             }
             else
             {
-                foreach (var t in area)
+                foreach (var t in secondArea)
                 {
-                    t.setPlayerIndex(0);
-                }
-            }
-        }
-        else
-        {
-            if (area[0].getVillage() == null)
-            {
-                VillageComponent newHovel = GameObject.FindObjectOfType<GameComponent>().CreateVillage(area[0], VillageType.HOVEL, GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers()[playerIndex]);
-                area[0].setOccupantType(OccupantType.VILLAGE);
-                area[0].UpdateVillageReference();
+                    if (t.getVillage() == null)
+                    {
+                        var players = GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers();
+                        VillageComponent newHovel = GameObject.FindObjectOfType<GameComponent>().CreateVillage(t, villageType, GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers()[playerIndex - 1]);
+                        t.setOccupantType(OccupantType.VILLAGE);
+                        //t.UpdateVillageReference();
 
-                //PlayerComponent player = participants[playerIndex - 1];
-                //player.add(newHovel);
-                newHovel.associate(area[0]);
-                newHovel.addGold(50);
-                // add enough wood to be able to upgrade to village for demo, can remove later
-                newHovel.addWood(24);
-                foreach (var t in area)
-                {
-                    // set all villages on tiles
-                    t.setVillage(newHovel);
+                        newHovel.associate(t);
+                        newHovel.addGold(1);
+                        newHovel.addWood(0);
+                        foreach (var tile in secondArea)
+                        {
+                            tile.setVillage(newHovel);
+                        }
+                        break;
+                    }
                 }
             }
         }
