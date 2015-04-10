@@ -1435,7 +1435,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 969104344}
-        m_MethodName: newLoadedGame
+        m_MethodName: SetMap
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10447,7 +10447,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 969104344}
-        m_MethodName: newLoadedGame
+        m_MethodName: SetMap
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14076,7 +14076,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 969104344}
-        m_MethodName: newLoadedGame
+        m_MethodName: SetMap
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -15399,7 +15399,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 969104344}
-        m_MethodName: newLoadedGame
+        m_MethodName: SetMap
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -21519,7 +21519,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 969104344}
-        m_MethodName: newLoadedGame
+        m_MethodName: SetMap
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
