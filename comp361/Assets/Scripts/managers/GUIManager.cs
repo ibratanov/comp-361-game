@@ -17,6 +17,7 @@ public class GUIManager : MonoBehaviour {
 	private List<GameObject> _loadProfileButtons = new List<GameObject>();
 	private PlayerManager _playerManager;
 	private string _profileDirectory = "./profiles/";
+	private string _mapDirectory = "./maps/";
 	
 	public GameObject[] _cameras; 
 	public Vector3 _initZoomCameraPos;
@@ -594,4 +595,36 @@ public class GUIManager : MonoBehaviour {
 	}
 
 	#endregion
+
+	public void DisplaySavedGames()
+	{
+		foreach (GameObject g in _menus)
+		{
+			if (g.name.Contains ("SavedGames"))
+			{
+				Button[] bs = g.GetComponentsInChildren<Button>() as Button[];
+				string[] mapNames = new string[] { "Square", "Parallel", "Holy" };
+				foreach (string mapName in mapNames)
+				{
+					foreach (Button b in bs)
+					{
+						if (b.name.Contains (mapName))
+						{
+							if(File.Exists(_mapDirectory + mapName + "Info.dat")) 
+							{
+								EnableButton(b);
+								b.GetComponentInChildren<Text>().text = "Saved " + mapName + " Grid";
+							}
+							else 
+							{
+								DisableButton(b);
+								b.GetComponentInChildren<Text>().text = "No " + mapName + " Save";
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
 }
