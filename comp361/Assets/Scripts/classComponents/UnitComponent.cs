@@ -482,6 +482,7 @@ public class UnitComponent : GenericComponent
             {
 				setUnitType(newLevel, true);
                 _village.removeGold(cost);
+				SetColour(gameObject.GetComponent<TileComponent>().getPlayerIndex());
                 return true;
             }
             else

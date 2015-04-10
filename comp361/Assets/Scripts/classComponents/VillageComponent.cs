@@ -218,6 +218,7 @@ public class VillageComponent : GenericComponent
 		{
 			setVillageType(newLevel);
 			removeWood(cost);
+			SetColour(gameObject.GetComponent<TileComponent>().getPlayerIndex());
 			return true;
 		}
 		else
