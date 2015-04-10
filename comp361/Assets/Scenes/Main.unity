@@ -5134,6 +5134,11 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 582605325}
   - {fileID: 2065825965}
+  _inGameButtons:
+  - {fileID: 890220265}
+  - {fileID: 306715209}
+  - {fileID: 1162420834}
+  - {fileID: 1324206598}
   _availableProfilesPanel: {fileID: 376235115}
   _loadProfileButtonPrefab: {fileID: 163384, guid: d6897f30237bc38498591827dca69c82,
     type: 2}
@@ -15949,6 +15954,10 @@ Prefab:
       propertyPath: m_Pivot.y
       value: .5
       objectReference: {fileID: 0}
+    - target: {fileID: 166498, guid: 6d09c32f2de02b046ad2c23bf1e9015f, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6d09c32f2de02b046ad2c23bf1e9015f, type: 2}
   m_RootGameObject: {fileID: 1791258889}
@@ -21642,6 +21651,10 @@ Prefab:
       propertyPath: m_Pivot.y
       value: .5
       objectReference: {fileID: 0}
+    - target: {fileID: 184016, guid: c58c2e651b141e0448d2329de85f5afc, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c58c2e651b141e0448d2329de85f5afc, type: 2}
   m_RootGameObject: {fileID: 1658082189}
@@ -23051,6 +23064,10 @@ Prefab:
     - target: {fileID: 22470460, guid: 94ddb1318ba47964db163d221f6843a8, type: 2}
       propertyPath: m_Pivot.y
       value: .5
+      objectReference: {fileID: 0}
+    - target: {fileID: 170460, guid: 94ddb1318ba47964db163d221f6843a8, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 94ddb1318ba47964db163d221f6843a8, type: 2}
