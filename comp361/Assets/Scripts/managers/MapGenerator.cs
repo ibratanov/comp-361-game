@@ -261,7 +261,12 @@ public class MapGenerator : MonoBehaviour
         //		_landTiles[i,j].setTileGameObject(gameTile);
         _landTiles[i, j].setLandType(LandType.GRASS);
         int nPlayers = this.GetComponent<GameComponent>()._playerManager.GetPlayers().Count;
-        _landTiles[i, j].setPlayerIndex(playerIndex);
+		if(i == 0 && j == 0){
+			_landTiles[i, j].setPlayerIndex(0);
+		}
+		else{
+			_landTiles[i, j].setPlayerIndex(playerIndex);
+		}
     }
 
     [RPC]
