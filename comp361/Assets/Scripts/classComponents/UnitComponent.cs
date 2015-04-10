@@ -735,7 +735,6 @@ public class UnitComponent : GenericComponent
                     foreach (var t in previousVillage.getControlledRegion())
                     {
                         t.setVillage(null);
-						t.UpdateDraw();
                     }
                 }
                 break;
@@ -744,15 +743,19 @@ public class UnitComponent : GenericComponent
         if (tileInvaded)
         {
             // give tile to this unit's village
+			TileComponent currentTile = this.GetComponent<TileComponent>();
             _village.addToControlledRegion(dest);
-            dest.setPlayerIndex(this.GetComponent<TileComponent>().getPlayerIndex());
-            previousVillage.RemoveTile(dest);
+            dest.setPlayerIndex(currentTile.getPlayerIndex());
+			dest.setOccupyingUnit(this);
+			dest.setOccupantType(OccupantType.UNIT);
+			currentTile.setOccupyingUnit(null);
+			previousVillage.RemoveTile(dest);
             if (previousVillage.getControlledRegion().Count < 3)
             {
                 destroyVillage = true;
             }
+			setCurrentAction(ActionType.EXPANDING_REGION);
             setLocation(dest);
-            _currentAction = ActionType.EXPANDING_REGION;
         }
 
         // if less than 3 tiles left, destroy village
@@ -772,7 +775,12 @@ public class UnitComponent : GenericComponent
                 totalArea.Add(t);
             }
             // find all components of land belonging to opposing player, regenerate village randomly on one
-            List<TileComponent> firstArea = previousVillage.getControlledRegion()[0].breadthFS();
+			int temp = 0;
+			TileComponent tempTile = previousVillage.getControlledRegion()[temp];
+			while (tempTile.getID() == dest.getID() && temp < previousVillage.getControlledRegion().Count) {
+				tempTile = previousVillage.getControlledRegion()[++temp];
+			}
+            List<TileComponent> firstArea = tempTile.breadthFS();
 
 
             foreach (var t in firstArea)
@@ -785,7 +793,7 @@ public class UnitComponent : GenericComponent
 
             // if controlled region isn't empty, there's a second area
             List<TileComponent> secondArea = new List<TileComponent>();
-            if (totalArea.Count > 0)
+            if (totalArea.Count > 1 || totalArea.Count == 1 && totalArea[0].getID() != dest.getID())
             {
                 secondArea = totalArea[0].breadthFS();
                 foreach (var t in secondArea)
@@ -798,7 +806,7 @@ public class UnitComponent : GenericComponent
             }
             List<TileComponent> thirdArea = new List<TileComponent>();
 
-            if (totalArea.Count > 0)
+			if (totalArea.Count > 1 || totalArea.Count == 1 && totalArea[0].getID() != dest.getID())
             {
                 thirdArea = totalArea;
             }
@@ -849,6 +857,9 @@ public class UnitComponent : GenericComponent
 
         }
 
+		foreach (TileComponent tile in previousVillage.getControlledRegion()) {
+			tile.UpdateDraw();
+		}
     }
 
     private float[] AssignStock(List<TileComponent> firstArea, List<TileComponent> secondArea, List<TileComponent> thirdArea, float stock)
