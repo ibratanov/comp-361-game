@@ -735,7 +735,6 @@ public class UnitComponent : GenericComponent
                     foreach (var t in previousVillage.getControlledRegion())
                     {
                         t.setVillage(null);
-						t.UpdateDraw();
                     }
                 }
                 break;
@@ -750,7 +749,7 @@ public class UnitComponent : GenericComponent
 			dest.setOccupyingUnit(this);
 			dest.setOccupantType(OccupantType.UNIT);
 			currentTile.setOccupyingUnit(null);
-            previousVillage.RemoveTile(dest);
+			previousVillage.RemoveTile(dest);
             if (previousVillage.getControlledRegion().Count < 3)
             {
                 destroyVillage = true;
@@ -794,7 +793,7 @@ public class UnitComponent : GenericComponent
 
             // if controlled region isn't empty, there's a second area
             List<TileComponent> secondArea = new List<TileComponent>();
-            if (totalArea.Count > 1)
+            if (totalArea.Count > 1 || totalArea.Count == 1 && totalArea[0].getID() != dest.getID())
             {
                 secondArea = totalArea[0].breadthFS();
                 foreach (var t in secondArea)
@@ -807,7 +806,7 @@ public class UnitComponent : GenericComponent
             }
             List<TileComponent> thirdArea = new List<TileComponent>();
 
-            if (totalArea.Count > 1)
+			if (totalArea.Count > 1 || totalArea.Count == 1 && totalArea[0].getID() != dest.getID())
             {
                 thirdArea = totalArea;
             }
@@ -858,6 +857,9 @@ public class UnitComponent : GenericComponent
 
         }
 
+		foreach (TileComponent tile in previousVillage.getControlledRegion()) {
+			tile.UpdateDraw();
+		}
     }
 
     private float[] AssignStock(List<TileComponent> firstArea, List<TileComponent> secondArea, List<TileComponent> thirdArea, float stock)
