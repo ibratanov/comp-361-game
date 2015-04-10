@@ -461,18 +461,25 @@ public class VillageComponent : GenericComponent
 	
 	public void removeWood(uint amount) {
 		if(Network.isServer || Network.isClient){
-			networkView.RPC("RPCRemoveWood", RPCMode.Others, amount);
+			networkView.RPC("RPCRemoveWood", RPCMode.Others, (int)amount);
 		}
-		RPCRemoveWood(amount);
+		RPCRemoveWood((int)amount);
 	}
 
 	[RPC]
-	public void RPCRemoveWood(uint amount) {
-		_woodStock -= amount;
+	public void RPCRemoveWood(int amount) {
+		_woodStock -= (uint)amount;
 		_menus.setWoodStock((int)_woodStock);
 	}
-	
+
 	public void replaceTombstonesByForest() {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCReplaceTombstonesByForest", RPCMode.Others);
+		}
+		RPCReplaceTombstonesByForest();
+	}
+	[RPC]
+	public void RPCReplaceTombstonesByForest() {
 		foreach (TileComponent tile in _controlledRegion) {
 			StructureComponent occupyingStructure = tile.getOccupyingStructure();
 			StructureType structureType = occupyingStructure.getStructureType();
