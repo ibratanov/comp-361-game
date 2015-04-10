@@ -39,6 +39,10 @@ public class MapGenerator : MonoBehaviour
 		{
 			GenerateSquareGridWithHoles(_rows, _columns, _origin, _tileHeight, _tileDiagonal);
 		}
+		else{
+			//Square is the default
+			GenerateSquareGrid(_rows, _columns, _origin, _tileHeight, _tileDiagonal);
+		}
         AddTerrain(_forestRatio, _meadowRatio);
     }
 
