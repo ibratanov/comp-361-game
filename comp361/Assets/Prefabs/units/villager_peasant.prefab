@@ -9,7 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 437622}
   - 95: {fileID: 9537622}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: villager_peasant
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26,7 +26,7 @@ GameObject:
   - 4: {fileID: 469690}
   - 33: {fileID: 3369690}
   - 23: {fileID: 2369690}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: strap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - 4: {fileID: 469692}
   - 33: {fileID: 3369692}
   - 23: {fileID: 2369692}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: shirt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,7 +60,7 @@ GameObject:
   - 4: {fileID: 469694}
   - 33: {fileID: 3369694}
   - 23: {fileID: 2369694}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: sandal_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -77,7 +77,7 @@ GameObject:
   - 4: {fileID: 469696}
   - 33: {fileID: 3369696}
   - 23: {fileID: 2369696}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: sandal_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - 4: {fileID: 469698}
   - 33: {fileID: 3369698}
   - 23: {fileID: 2369698}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: pants
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,7 +111,7 @@ GameObject:
   - 4: {fileID: 469700}
   - 33: {fileID: 3369700}
   - 23: {fileID: 2369700}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: nose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,7 +128,7 @@ GameObject:
   - 4: {fileID: 469702}
   - 33: {fileID: 3369702}
   - 23: {fileID: 2369702}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: hood
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -145,7 +145,7 @@ GameObject:
   - 4: {fileID: 469704}
   - 33: {fileID: 3369704}
   - 23: {fileID: 2369704}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -162,7 +162,7 @@ GameObject:
   - 4: {fileID: 469706}
   - 33: {fileID: 3369706}
   - 23: {fileID: 2369706}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: hand_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -179,7 +179,7 @@ GameObject:
   - 4: {fileID: 469708}
   - 33: {fileID: 3369708}
   - 23: {fileID: 2369708}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: hand_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -196,7 +196,7 @@ GameObject:
   - 4: {fileID: 469710}
   - 33: {fileID: 3369710}
   - 23: {fileID: 2369710}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: foot_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -213,7 +213,7 @@ GameObject:
   - 4: {fileID: 469712}
   - 33: {fileID: 3369712}
   - 23: {fileID: 2369712}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: foot_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -230,7 +230,7 @@ GameObject:
   - 4: {fileID: 469714}
   - 33: {fileID: 3369714}
   - 23: {fileID: 2369714}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: eye_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -247,7 +247,7 @@ GameObject:
   - 4: {fileID: 469716}
   - 33: {fileID: 3369716}
   - 23: {fileID: 2369716}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: eye_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -264,7 +264,7 @@ GameObject:
   - 4: {fileID: 469718}
   - 33: {fileID: 3369718}
   - 23: {fileID: 2369718}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: belt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -281,7 +281,7 @@ GameObject:
   - 4: {fileID: 469720}
   - 33: {fileID: 3369720}
   - 23: {fileID: 2369720}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: basket
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -296,7 +296,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 469722}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: villager_peasant
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -9,7 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 444032}
   - 95: {fileID: 9544032}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: villager_soldier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24,7 +24,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 475968}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: villager_soldier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   - 4: {fileID: 475970}
   - 33: {fileID: 3375970}
   - 23: {fileID: 2375970}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: belt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58,7 +58,7 @@ GameObject:
   - 4: {fileID: 475972}
   - 33: {fileID: 3375972}
   - 23: {fileID: 2375972}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: boot_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,7 +75,7 @@ GameObject:
   - 4: {fileID: 475974}
   - 33: {fileID: 3375974}
   - 23: {fileID: 2375974}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: boot_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - 4: {fileID: 475976}
   - 33: {fileID: 3375976}
   - 23: {fileID: 2375976}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: eye_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -109,7 +109,7 @@ GameObject:
   - 4: {fileID: 475978}
   - 33: {fileID: 3375978}
   - 23: {fileID: 2375978}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: eye_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,7 +126,7 @@ GameObject:
   - 4: {fileID: 475980}
   - 33: {fileID: 3375980}
   - 23: {fileID: 2375980}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: glove_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -143,7 +143,7 @@ GameObject:
   - 4: {fileID: 475982}
   - 33: {fileID: 3375982}
   - 23: {fileID: 2375982}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: glove_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,7 +160,7 @@ GameObject:
   - 4: {fileID: 475984}
   - 33: {fileID: 3375984}
   - 23: {fileID: 2375984}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: head1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   - 4: {fileID: 475986}
   - 33: {fileID: 3375986}
   - 23: {fileID: 2375986}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: helmet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,7 +194,7 @@ GameObject:
   - 4: {fileID: 475988}
   - 33: {fileID: 3375988}
   - 23: {fileID: 2375988}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: knee_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -211,7 +211,7 @@ GameObject:
   - 4: {fileID: 475990}
   - 33: {fileID: 3375990}
   - 23: {fileID: 2375990}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: knee_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -228,7 +228,7 @@ GameObject:
   - 4: {fileID: 475992}
   - 33: {fileID: 3375992}
   - 23: {fileID: 2375992}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: nose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -245,7 +245,7 @@ GameObject:
   - 4: {fileID: 475994}
   - 33: {fileID: 3375994}
   - 23: {fileID: 2375994}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: pants1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -262,7 +262,7 @@ GameObject:
   - 4: {fileID: 475996}
   - 33: {fileID: 3375996}
   - 23: {fileID: 2375996}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: shirt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -279,7 +279,7 @@ GameObject:
   - 4: {fileID: 475998}
   - 33: {fileID: 3375998}
   - 23: {fileID: 2375998}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: shirtChest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -296,7 +296,7 @@ GameObject:
   - 4: {fileID: 476000}
   - 33: {fileID: 3376000}
   - 23: {fileID: 2376000}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: shirtStrip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -313,7 +313,7 @@ GameObject:
   - 4: {fileID: 476002}
   - 33: {fileID: 3376002}
   - 23: {fileID: 2376002}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: shoulder_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -330,7 +330,7 @@ GameObject:
   - 4: {fileID: 476004}
   - 33: {fileID: 3376004}
   - 23: {fileID: 2376004}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: shoulder_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -347,7 +347,7 @@ GameObject:
   - 4: {fileID: 476006}
   - 33: {fileID: 3376006}
   - 23: {fileID: 2376006}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: undershirt
   m_TagString: Untagged
   m_Icon: {fileID: 0}

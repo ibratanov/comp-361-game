@@ -9,7 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 406196}
   - 137: {fileID: 13706210}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cannon_Ball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25,7 +25,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 406198}
   - 137: {fileID: 13706212}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cannon_Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 406200}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: cannon_joint_ROOT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 406202}
   - 137: {fileID: 13706214}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cannon_Wheel_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 406204}
   - 137: {fileID: 13706216}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cannon_Wheel_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 406208}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: cannon_joint_body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 406206}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: cannon_joint_ball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,7 +117,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 406210}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: cannon_joint_wheel_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -132,7 +132,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 406214}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: cannon_joint_wheel_L_tip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147,7 +147,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 406212}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: cannon_joint_wheel_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -162,7 +162,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 406216}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: cannon_joint_wheel_R_tip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -178,7 +178,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 431678}
   - 95: {fileID: 9506216}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: villager_cannon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
