@@ -299,7 +299,7 @@ public class GameComponent : GenericComponent
 	public void newGame(List<PlayerComponent> participants) {
 		NewGameInit();
 		InitializePlayers();
-		_mapGenerator.GenerateMap();
+		_mapGenerator.GenerateMap(_currentMap);
 		GenerateRegions();
 		BeginRound();
 	}
@@ -614,13 +614,15 @@ public class GameComponent : GenericComponent
 	/// </summary>
 	public void BeginGame(){
 		if(_isNewGame){
-			if( _currentMap.Equals("Preset1") ){
-				List<PlayerComponent> players = _playerManager.GetPlayers();
-				newGame(players);
-			}
-			else if( _currentMap.Equals("TestMap") ){
-				TestMapGeneration();
-			}
+//			if( _currentMap.Equals("Preset1") ){
+//				List<PlayerComponent> players = _playerManager.GetPlayers();
+//				newGame(players);
+//			}
+//			else if( _currentMap.Equals("TestMap") ){
+//				TestMapGeneration();
+//			}
+			List<PlayerComponent> players = _playerManager.GetPlayers();
+			newGame(players);
 		}
 		else{
 			newLoadedGame(_currentMap);

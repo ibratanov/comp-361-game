@@ -22,12 +22,23 @@ public class MapGenerator : MonoBehaviour
     private TileComponent[,] _waterTiles;
     private int _idCounter = 0;
 
-    public void GenerateMap()
+    public void GenerateMap(string map)
     {
         //TODO: Selecting which map you want
         //GenerateSquareGridWithHoles(20, 20, _origin, _tileHeight, _tileDiagonal);
         //GenerateParalleloGrid(20, 20, _origin, _tileHeight, _tileDiagonal);
-        GenerateSquareGrid(_rows, _columns, _origin, _tileHeight, _tileDiagonal);
+		if (map.Equals ("Square"))
+	    {
+	        GenerateSquareGrid(_rows, _columns, _origin, _tileHeight, _tileDiagonal);
+		}
+		else if (map.Equals ("Parallel"))
+		{
+			GenerateParalleloGrid(_rows, _columns, _origin, _tileHeight, _tileDiagonal);
+		}
+		else if (map.Equals ("Holy"))
+		{
+			GenerateSquareGridWithHoles(_rows, _columns, _origin, _tileHeight, _tileDiagonal);
+		}
         AddTerrain(_forestRatio, _meadowRatio);
     }
 
