@@ -129,6 +129,42 @@ public class GameComponent : GenericComponent
 	 *      METHODS      *
 	 ********************/
 	
+    public void HighlightVillages()
+    {
+        UnHighlightAll();
+
+        foreach (var village in _currentPlayer.getVillages())
+        {
+
+            village.GetComponent<TileComponent>().Highlight();
+        }
+    }
+
+    public void HighlightUnitsWithAvailableActions()
+    {
+        UnHighlightAll();
+
+        foreach (var village in _currentPlayer.getVillages())
+        {
+            foreach(var unit in village.getSupportingUnits())
+            {
+                if (unit.getCurrentAction() == ActionType.READY_FOR_ORDERS)
+                {
+                    unit.GetComponent<TileComponent>().Highlight();
+                }               
+            }
+        }
+        _guiManager.HideOtherActionPanels(String.Empty);
+    }
+
+    public void UnHighlightAll()
+    {
+        foreach (var tile in _mapTiles)
+        {
+            tile.Unhighlight();
+        }
+    }
+
 	public void hireVillagerOnLastSelected(int unitType)
 	{
 		if(Network.isServer||Network.isClient){
