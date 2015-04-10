@@ -414,6 +414,7 @@ public class TileComponent : GenericComponent
         if (_village != null)
         {
             GameObject.Destroy(_village.getVillageGameObject());
+			_occupantType = OccupantType.NONE;
             _landType = LandType.MEADOW;
             _playerIndex = playerIndex;
             _village = null;
