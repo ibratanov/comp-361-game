@@ -620,7 +620,7 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
-	public void DisplayOnlineSavedGames() {
+	public void DisplaySavedOnlineGames() {
 		foreach (GameObject g in _menus) {
 			if (g.name.Contains("Online_SavedGames")) {
 				Button[] bs = g.GetComponentsInChildren<Button>() as Button[];
