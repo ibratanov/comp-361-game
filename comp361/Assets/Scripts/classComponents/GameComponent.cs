@@ -309,6 +309,7 @@ public class GameComponent : GenericComponent
 			_playerManager.AddPlayer(new PlayerComponent("Rita", "rita"));
 			_playerManager.AddPlayer(new PlayerComponent("Marc", "marc"));
 			_playerManager.AddPlayer(new PlayerComponent("Ivo", "ivo"));
+            _playerManager.AddPlayer(new PlayerComponent("RitaLu", "ritalu"));
 		}
 		NewGameInit(); //Hide title panels (networked)
 		InitializePlayers(); //load all profiles into remaining players (networked)
@@ -319,6 +320,7 @@ public class GameComponent : GenericComponent
             _playerManager.AddPlayer(new PlayerComponent("Rita", "rita"));
             _playerManager.AddPlayer(new PlayerComponent("Marc", "marc"));
             _playerManager.AddPlayer(new PlayerComponent("Ivo", "ivo"));
+            _playerManager.AddPlayer(new PlayerComponent("RitaLu", "ritalu"));
             LoadScenario(mapName);
         }
         else
@@ -777,6 +779,7 @@ public class GameComponent : GenericComponent
 		_playerManager.AddPlayer(new PlayerComponent("Rita", "rita"));
 		_playerManager.AddPlayer(new PlayerComponent("Marc", "marc"));
 		_playerManager.AddPlayer(new PlayerComponent("Ivo", "ivo"));
+        _playerManager.AddPlayer(new PlayerComponent("RitaLu", "ritalu"));
 		newGame(_playerManager.GetPlayers());
 	}
 
