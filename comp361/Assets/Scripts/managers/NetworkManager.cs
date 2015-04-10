@@ -10,7 +10,7 @@ public class NetworkManager : MonoBehaviour {
 	private const string _projectName = "Comp361_RITAGame"; //Should be unique to this project
 	private string _roomName = "testRoom"; //Can be any name (possible suggestion: player name)
 	private const int _maxPlayers = 6;
-	private const int _portNumber = 25602;
+	private const int _portNumber = 25608;
 
 	//Server joining
 	private HostData[] _hostList;

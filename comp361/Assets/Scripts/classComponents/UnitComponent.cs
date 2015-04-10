@@ -130,6 +130,7 @@ public class UnitComponent : GenericComponent
 			destComponent.setUnitType( this.getUnitType(), false );
 			destComponent.setVillage( this.getVillage() );
 			destComponent.setGameObject( this.getGameObject() );
+
 			destination.setOccupantType(OccupantType.UNIT);
 			//destination.setOccupyingUnit(this);
 
@@ -144,6 +145,8 @@ public class UnitComponent : GenericComponent
 			//Keep the UnitComponent selected for further actions
 			GameComponent gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>();
             gameManager.setLastSelectedUnit(destComponent.GetComponent<UnitComponent>());
+
+			destination.UpdateDraw();
 		}
 
         return true;
