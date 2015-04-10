@@ -312,7 +312,17 @@ public class GameComponent : GenericComponent
 		}
 		NewGameInit(); //Hide title panels (networked)
 		InitializePlayers(); //load all profiles into remaining players (networked)
-		Load(mapName); //Get the mapData (server only)
+        if (mapName.Equals("InvadeVillage") || mapName.Equals("StarveVillage")
+            || mapName.Equals("ThreewayMerge") || mapName.Equals("ThreewaySplit")
+            || mapName.Equals("Combat") || mapName.Equals("Win"))
+        {
+            LoadScenario(mapName);
+        }
+        else
+        {
+            Load(mapName); //Get the mapData (server only)
+        }
+
 		
 		//Remove players that have been loaded but aren't actually participating in the current map
 		foreach(PlayerComponent participant in _playerManager.GetPlayers()){ //Iterate over each player loaded before game started
@@ -959,6 +969,18 @@ public class GameComponent : GenericComponent
 			file.Close();
 		}
 	}
+
+    public void LoadScenario(string mapName)
+    {
+        string mapDirectory = "./SavedScenarios/";
+        if (File.Exists(mapDirectory + mapName + ".dat"))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(mapDirectory + mapName + ".dat", FileMode.Open);
+            _mapData = (MapData)bf.Deserialize(file);
+            file.Close();
+        }
+    }
 }
 
 [Serializable]
