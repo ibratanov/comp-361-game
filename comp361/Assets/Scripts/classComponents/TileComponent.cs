@@ -532,6 +532,7 @@ public class TileComponent : GenericComponent
                     _menus.setGoldStock((int)_village.getGoldStock());
                     _menus.setWoodStock((int)_village.getWoodStock());
                 }
+                _menus.setUpgradeVillageButtonCosts(_village.getVillageType());
             }
 
             if (_game.isAttacking())
@@ -548,7 +549,7 @@ public class TileComponent : GenericComponent
                 }
 
                 _game.setLastSelectedUnit(this.GetComponent<UnitComponent>());
-
+                _menus.setUpgradeUnitButtonCosts(this.GetComponent<UnitComponent>().getUnitType());
 
                 PlayerComponent pc = this.GetComponent<UnitComponent>().getVillage().getPlayer();
                 if (canSelect(pc))

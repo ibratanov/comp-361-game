@@ -477,7 +477,7 @@ public class UnitComponent : GenericComponent
             ThrowError("Cannons cannot be upgraded.");
             return false;
         }
-        if (newLevel >= _unitType)
+        if (newLevel > _unitType)
         {
             uint cost = calculateCost(_unitType, newLevel);
 
@@ -486,6 +486,7 @@ public class UnitComponent : GenericComponent
 				setUnitType(newLevel, true);
                 _village.removeGold(cost);
 				SetColour(gameObject.GetComponent<TileComponent>().getPlayerIndex());
+                getLocation().Select(); //Ensure the menu button values are updated.
                 return true;
             }
             else
