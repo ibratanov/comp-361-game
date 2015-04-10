@@ -316,6 +316,9 @@ public class GameComponent : GenericComponent
             || mapName.Equals("ThreewayMerge") || mapName.Equals("ThreewaySplit")
             || mapName.Equals("Combat") || mapName.Equals("Win"))
         {
+            _playerManager.AddPlayer(new PlayerComponent("Rita", "rita"));
+            _playerManager.AddPlayer(new PlayerComponent("Marc", "marc"));
+            _playerManager.AddPlayer(new PlayerComponent("Ivo", "ivo"));
             LoadScenario(mapName);
         }
         else
