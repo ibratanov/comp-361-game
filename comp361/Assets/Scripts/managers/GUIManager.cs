@@ -705,6 +705,52 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
+	public void InitializeSettingsPanel(List<PlayerComponent> players)
+	{
+		foreach (GameObject g in _inGamePanels)
+		{
+			if (g.name.Contains ("Settings"))
+			{
+				int i = 0;
+				Text[] ts = g.GetComponentsInChildren<Text>() as Text[];
+				foreach (Text t in ts)
+				{
+					if (t.name.Contains("Text_Player"))
+					{
+						if (players[i] != null)
+						{
+							t.text = players[i].getUserName();
+						}
+						else 
+						{
+							break;
+						}
+					}
+				}				
+				break;
+			}
+		}
+	}
+
+	public void UpdateSettingsPanel (int eliminatedIndex)
+	{
+		foreach (GameObject g in _inGamePanels)
+		{
+			if (g.name.Contains ("Settings"))
+			{
+				Text[] ts = g.GetComponentsInChildren<Text>() as Text[];
+				foreach (Text t in ts)
+				{
+					if (t.name.Contains(eliminatedIndex.ToString()))
+					{
+						t.color = Color.black;
+					}
+				}				
+				break;
+			}
+		}
+	}
+
 	#region win/lose
 	public void displayWin() {
 		displayEndPanel("Win");

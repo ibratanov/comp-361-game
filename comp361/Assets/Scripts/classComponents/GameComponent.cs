@@ -635,6 +635,7 @@ public class GameComponent : GenericComponent
 //				TestMapGeneration();
 //			}
 			List<PlayerComponent> players = _playerManager.GetPlayers();
+			_guiManager.InitializeSettingsPanel(players);
 			newGame(players);
 		}
 		else{
