@@ -596,27 +596,19 @@ public class GUIManager : MonoBehaviour {
 
 	#endregion
 
-	public void DisplaySavedGames()
-	{
-		foreach (GameObject g in _menus)
-		{
-			if (g.name.Contains ("SavedGames"))
-			{
+	public void DisplaySavedGames() {
+		foreach (GameObject g in _menus) {
+			if (g.name.Contains("SavedGames")) {
 				Button[] bs = g.GetComponentsInChildren<Button>() as Button[];
 				string[] mapNames = new string[] { "Square", "Parallel", "Holy" };
-				foreach (string mapName in mapNames)
-				{
-					foreach (Button b in bs)
-					{
-						if (b.name.Contains (mapName))
-						{
-							if(File.Exists(_mapDirectory + mapName + "Info.dat")) 
-							{
+				foreach (string mapName in mapNames) {
+					foreach (Button b in bs) {
+						if (b.name.Contains(mapName)) {
+							if (File.Exists(_mapDirectory + mapName + "Info.dat")) {
 								EnableButton(b);
 								b.GetComponentInChildren<Text>().text = "Saved " + mapName + " Grid";
 							}
-							else 
-							{
+							else {
 								DisableButton(b);
 								b.GetComponentInChildren<Text>().text = "No " + mapName + " Save";
 							}
@@ -627,4 +619,26 @@ public class GUIManager : MonoBehaviour {
 			}
 		}
 	}
+
+	#region win/lose
+	public void displayWin() {
+		displayEndPanel("Win");
+	}
+
+	public void displayLose() {
+		displayEndPanel("Lose");
+	}
+
+	private void displayEndPanel(string endType) {
+		for (int i = 0; i < _menus.Length; ++i) {
+			if (_menus[i].name.Contains("Menu_InGame")) {
+				foreach (GameObject panel in _inGamePanels) {
+					if (panel.name.Contains("endType")) {
+						panel.SetActive(true);
+					}
+				}
+			}
+		}
+	}
+	#endregion
 }
