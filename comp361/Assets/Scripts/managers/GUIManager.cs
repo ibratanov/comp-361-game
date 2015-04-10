@@ -45,7 +45,22 @@ public class GUIManager : MonoBehaviour {
 			}
 		}
 
+		UpdateAvailableProfiles();
+		
+		foreach (GameObject g in _cameras)
+		{
+			if (g.name.Contains ("zoom"))
+			{
+				_initZoomCameraPos = g.transform.position;
+			}
+		}
+	}
 
+	public void UpdateAvailableProfiles(){
+		foreach(GameObject button in _loadProfileButtons){
+			Destroy (button);
+		}
+		_loadProfileButtons.Clear();
 		if(!Directory.Exists(_profileDirectory))//if it doesn't, create it
 		{    
 			Directory.CreateDirectory(_profileDirectory);
@@ -53,13 +68,25 @@ public class GUIManager : MonoBehaviour {
 		DirectoryInfo dInfo = new DirectoryInfo(_profileDirectory);
 		FileInfo[] fInfo = dInfo.GetFiles();
 		float buttonOffset = 50.0f;
+		int skipped = 0;
 		for(int i = 0; i < fInfo.Length; ++i){
 			FileInfo file = fInfo[i];
+			string profileName = file.Name.Split(new string[]{"Info.dat"}, System.StringSplitOptions.None)[0];
+			bool alreadyLoaded = false;
+			foreach(PlayerComponent player in _playerManager.GetPlayers()){
+				if(player.getUserName().Equals(profileName)){
+					alreadyLoaded = true;
+				}
+			}
+			if(alreadyLoaded){
+				skipped++;
+				continue;
+			}
 			GameObject loadProfileButton = (GameObject)Instantiate(_loadProfileButtonPrefab, _loadProfileButtonPrefab.GetComponent<RectTransform>().position, Quaternion.identity);
 			loadProfileButton.transform.SetParent( _availableProfilesPanel.transform );
-			loadProfileButton.GetComponent<RectTransform>().anchoredPosition3D = _loadProfileButtonPrefab.GetComponent<RectTransform>().anchoredPosition3D - (Vector3.up * buttonOffset * i);
+			loadProfileButton.GetComponent<RectTransform>().anchoredPosition3D = _loadProfileButtonPrefab.GetComponent<RectTransform>().anchoredPosition3D - (Vector3.up * buttonOffset * (i-skipped));
 			Text t = loadProfileButton.transform.GetChild(0).GetComponent<Text>();
-			t.text = file.Name.Split(new string[]{"Info.dat"}, System.StringSplitOptions.None)[0];
+			t.text = profileName;
 			Debug.Log(t.text);
 			Button b = loadProfileButton.GetComponent<Button>();
 			string username = t.text;
