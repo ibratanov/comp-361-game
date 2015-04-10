@@ -986,6 +986,24 @@ public class GameComponent : GenericComponent
             file.Close();
         }
     }
+
+	public void checkWinningAndLosingConditions(PlayerComponent player) {
+		checkLosingConditions(player);
+		checkWinningConditions();
+	}
+
+	private void checkLosingConditions(PlayerComponent player) {
+		if (player.getVillages().Count == 0) {
+			_remainingPlayers.Remove(player);
+			_guiManager.displayLose();
+		}
+	}
+
+	private void checkWinningConditions() {
+		if (_remainingPlayers.Count == 1) {
+			_guiManager.displayWin();
+		}
+	}
 }
 
 [Serializable]
