@@ -735,6 +735,7 @@ public class UnitComponent : GenericComponent
                     foreach (var t in previousVillage.getControlledRegion())
                     {
                         t.setVillage(null);
+						t.UpdateDraw();
                     }
                 }
                 break;
