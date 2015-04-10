@@ -6769,7 +6769,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Preset 1
+  m_Text: Parallel Grid
 --- !u!114 &11408554
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7508,7 +7508,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Test Map \n(Predefined profiles)"
+  m_Text: Holy Grid
 --- !u!114 &11408600
 MonoBehaviour:
   m_ObjectHideFlags: 1
