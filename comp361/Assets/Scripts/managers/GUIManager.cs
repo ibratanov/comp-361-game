@@ -761,20 +761,24 @@ public class GUIManager : MonoBehaviour {
 	}
 
 	#region win/lose
-	public void displayWin() {
-		displayEndPanel("Win");
+	public void displayWin(string playerName) {
+		displayEndPanel("Win", playerName);
 	}
 
-	public void displayLose() {
-		displayEndPanel("Lose");
+    public void displayLose(string playerName)
+    {
+		displayEndPanel("Lose", playerName);
 	}
 
-	private void displayEndPanel(string endType) {
+	private void displayEndPanel(string endType, string playerName) {
 		for (int i = 0; i < _menus.Length; ++i) {
 			if (_menus[i].name.Contains("Menu_InGame")) {
 				foreach (GameObject panel in _inGamePanels) {
-					if (panel.name.Contains("endType")) {
+                    if (panel.name.Contains(endType))
+                    {
+                        panel.transform.GetChild(0).GetComponent<Text>().text = "You " + endType + ", " + playerName;
 						panel.SetActive(true);
+                        
 					}
 				}
 			}

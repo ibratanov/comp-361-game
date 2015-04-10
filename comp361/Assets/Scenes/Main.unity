@@ -3100,7 +3100,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: FUCK YEAH!!!
+  m_Text: YOU WIN LOL
 --- !u!222 &192057417
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5127,6 +5127,8 @@ MonoBehaviour:
   - {fileID: 1681044711}
   - {fileID: 582605325}
   - {fileID: 997916316}
+  - {fileID: 1874136209}
+  - {fileID: 1657771922}
   _actionPanels:
   - {fileID: 1649780917}
   - {fileID: 1658082189}
@@ -5134,11 +5136,7 @@ MonoBehaviour:
   - {fileID: 422938601}
   - {fileID: 582605325}
   - {fileID: 2065825965}
-  _inGameButtons:
-  - {fileID: 890220265}
-  - {fileID: 306715209}
-  - {fileID: 1162420834}
-  - {fileID: 1324206598}
+  _inGameButtons: []
   _availableProfilesPanel: {fileID: 376235115}
   _loadProfileButtonPrefab: {fileID: 163384, guid: d6897f30237bc38498591827dca69c82,
     type: 2}
@@ -22664,7 +22662,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: arrivederci, sucka'
+  m_Text: YOU LOSE LOL
 --- !u!222 &1426017902
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -28189,7 +28187,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1874136210
 RectTransform:
   m_ObjectHideFlags: 0

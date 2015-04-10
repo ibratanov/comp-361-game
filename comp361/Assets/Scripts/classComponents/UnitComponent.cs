@@ -765,6 +765,7 @@ public class UnitComponent : GenericComponent
             }
 			setCurrentAction(ActionType.EXPANDING_REGION);
             setLocation(dest);
+            
         }
 
         // if less than 3 tiles left, destroy village
@@ -773,7 +774,32 @@ public class UnitComponent : GenericComponent
             // give resources to this village
             _village.addGold(previousVillage.getGoldStock());
             _village.addWood(previousVillage.getWoodStock());
+
+            PlayerComponent[] remaining = GameObject.FindObjectOfType<GameComponent>().getRemainingPlayers().ToArray();
+            bool[] shouldRemove = new bool[remaining.Length];
+            for (int i = 0; i < remaining.Length; i++ )
+            {
+                if (remaining[i].getVillages().Count == 0)
+                {
+                    shouldRemove[i] = true;
+                }
+                else
+                {
+                    shouldRemove[i] = false;
+                }
+            }
+
+            for (int i = 0; i < shouldRemove.Length; i++)
+            {
+                if (shouldRemove[i])
+                {
+                    GameObject.FindObjectOfType<GameComponent>().removePlayer(remaining[i]);
+                }
+            }
+
             previousVillage.DestroyVillage();
+   
+            //GameObject.FindObjectOfType<GameComponent>().checkWinningConditions();
         }
         else
         {
