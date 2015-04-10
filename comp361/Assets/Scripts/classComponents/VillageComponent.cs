@@ -209,7 +209,7 @@ public class VillageComponent : GenericComponent
 		
 		return cost;
 	}
-	
+
 	public bool upgradeVillage() {
 		
 		VillageType newLevel = (VillageType)_villageType + 1;
@@ -221,10 +221,11 @@ public class VillageComponent : GenericComponent
 		uint cost = calculateCost(_villageType, newLevel);
 		if (_woodStock >= cost)
 		{
-			setVillageType(newLevel);
-			removeWood(cost);
-			SetColour(gameObject.GetComponent<TileComponent>().getPlayerIndex());
-            getOccupyingTile().Select(); //Ensure the menu button value is updated.
+			int tileID = this.GetComponent<TileComponent>().getID ();
+			if(Network.isServer || Network.isClient){
+				networkView.RPC("RPCUpgradeVillage", RPCMode.Others, tileID, (int)newLevel,(int)cost);
+			}
+			RPCUpgradeVillage(tileID, (int)newLevel,(int)cost);
 			return true;
 		}
 		else
@@ -232,6 +233,14 @@ public class VillageComponent : GenericComponent
 			ThrowError("Insufficient wood.");
 			return false;
 		}	
+	}
+	[RPC]
+	public void RPCUpgradeVillage(int tileID, int newLevel, int cost){
+		TileComponent tc = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>().GetTileByID(tileID);
+		tc.GetComponent<VillageComponent>().setVillageType((VillageType)newLevel);
+		tc.GetComponent<VillageComponent>().removeWood((uint)cost);
+		tc.GetComponent<VillageComponent>().SetColour(gameObject.GetComponent<TileComponent>().getPlayerIndex());
+		tc.Select(); //Ensure the menu button value is updated.
 	}
 
 	public void payWages(){

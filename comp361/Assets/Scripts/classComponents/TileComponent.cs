@@ -379,7 +379,14 @@ public class TileComponent : GenericComponent
 		}
 	}
 
-    public void buildWatchtower()
+	public void buildWatchtower(){
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCBuildWatchtower", RPCMode.Others);
+		}
+		RPCBuildWatchtower();
+	}
+	[RPC]
+    public void RPCBuildWatchtower()
     {
         if (_occupantType == OccupantType.NONE)
         {
@@ -403,10 +410,23 @@ public class TileComponent : GenericComponent
             ThrowError("You cannot build a watchtower here because something else is already occupying this tile.");
         }
     }
-	
-	public void createRoad() {
+
+	public void createRoad(){
+		int tileID = this.getID();
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCCreateRoad", RPCMode.Others, tileID);
+		}
+		RPCCreateRoad(tileID);
+	}
+	[RPC]
+	public void RPCCreateRoad(int tileID) {
+		TileComponent tc = _game.GetTileByID(tileID);
+		tc.ActivateRoad();
+	}
+
+	public void ActivateRoad(){
 		_hasRoad = true;
-        _road.SetActive(true);
+		_road.SetActive(true);
 	}
 	
 	public void TurnVillageToMeadow(int playerIndex)
