@@ -596,9 +596,33 @@ public class GUIManager : MonoBehaviour {
 
 	#endregion
 
-	public void DisplaySavedGames() {
+	public void DisplaySavedOfflineGames() {
 		foreach (GameObject g in _menus) {
-			if (g.name.Contains("SavedGames")) {
+			if (g.name.Contains("Offline_SavedGames")) {
+				Button[] bs = g.GetComponentsInChildren<Button>() as Button[];
+				string[] mapNames = new string[] { "Square", "Parallel", "Holy" };
+				foreach (string mapName in mapNames) {
+					foreach (Button b in bs) {
+						if (b.name.Contains(mapName)) {
+							if (File.Exists(_mapDirectory + mapName + "Info.dat")) {
+								EnableButton(b);
+								b.GetComponentInChildren<Text>().text = "Saved " + mapName + " Grid";
+							}
+							else {
+								DisableButton(b);
+								b.GetComponentInChildren<Text>().text = "No " + mapName + " Save";
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public void DisplayOnlineSavedGames() {
+		foreach (GameObject g in _menus) {
+			if (g.name.Contains("Online_SavedGames")) {
 				Button[] bs = g.GetComponentsInChildren<Button>() as Button[];
 				string[] mapNames = new string[] { "Square", "Parallel", "Holy" };
 				foreach (string mapName in mapNames) {
