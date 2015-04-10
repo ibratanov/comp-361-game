@@ -496,7 +496,7 @@ public class GUIManager : MonoBehaviour {
 				case UnitType.INFANTRY:
 					foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
 					{
-                        if (b.name.Contains("Harvest") || b.name.Contains("OpenFire"))
+                        if (b.name.Contains("Harvest") || b.name.Contains("OpenFire") || b.name.Contains("Build"))
 						{
 
 							DisableButton(b);
@@ -507,7 +507,7 @@ public class GUIManager : MonoBehaviour {
 				case UnitType.SOLDIER:
 					foreach (Button b in _inGamePanels[i].GetComponentsInChildren<Button>() as Button[])
 					{
-                        if (b.name.Contains("Harvest") || b.name.Contains("OpenFire"))
+                        if (b.name.Contains("Harvest") || b.name.Contains("OpenFire") || b.name.Contains("Build"))
 						{
 							DisableButton(b);
 						}
@@ -625,6 +625,18 @@ public class GUIManager : MonoBehaviour {
 				StartCoroutine ("DelayStartFade", panel);
 				break;
 			}
+            if (g.name.Contains("Button_End_Turn"))
+            {
+                if (currentPlayer.Equals(GameObject.FindObjectOfType<GameComponent>().getCurrentPlayer()))
+                {
+                    g.SetActive(true);
+                }
+                else
+                {
+                    g.SetActive(false);
+                }
+                
+            }
 		}
 	}
 	
