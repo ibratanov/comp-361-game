@@ -989,21 +989,36 @@ public class GameComponent : GenericComponent
     }
 
 	public void checkWinningAndLosingConditions(PlayerComponent player) {
-		checkLosingConditions(player);
-		checkWinningConditions();
+        bool win = checkWinningConditions(player);
+        if (!win)
+        {
+            checkLosingConditions(player);
+        }
+
 	}
 
-	private void checkLosingConditions(PlayerComponent player) {
+	private bool checkLosingConditions(PlayerComponent player) {
 		if (player.getVillages().Count == 0) {
 			_remainingPlayers.Remove(player);
-			_guiManager.displayLose();
+            if (_currentPlayer.Equals(player))
+            {
+                _guiManager.displayLose(player.getUserName());
+                return true;
+            }
 		}
+        return false;
 	}
 
-	private void checkWinningConditions() {
-		if (_remainingPlayers.Count == 1) {
-			_guiManager.displayWin();
+    private bool checkWinningConditions(PlayerComponent player)
+    {
+		if (_remainingPlayers.Count <= 1) {
+            if (_currentPlayer.Equals(player))
+            {
+                _guiManager.displayWin(player.getUserName());
+                return true;
+            }
 		}
+        return false;
 	}
 }
 
