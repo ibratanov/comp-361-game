@@ -10,6 +10,7 @@ public class GUIManager : MonoBehaviour {
 	public GameObject[] _menus;
 	public GameObject[] _inGamePanels;
 	public GameObject[] _actionPanels; // panels that are in the bottom-right corner
+    public GameObject[] _inGameButtons; // buttons that are updated based on in-game data
 
 	//Loading a profile
 	public GameObject _availableProfilesPanel;
@@ -179,6 +180,66 @@ public class GUIManager : MonoBehaviour {
 			}
 		}
 	}
+
+    public void setUpgradeVillageButtonCosts(VillageType village)
+    {
+        foreach (GameObject button in _inGameButtons)
+        {
+            if (button.name.Contains("Button_Upgrade_Village"))
+            {
+                switch (village)
+                {
+                    case VillageType.HOVEL:
+                        button.transform.GetChild(0).GetComponent<Text>().text = "Upgrade (8)";
+                        break;
+                    case VillageType.TOWN:
+                        button.transform.GetChild(0).GetComponent<Text>().text = "Upgrade (8)";
+                        break;
+                    case VillageType.FORT:
+                        button.transform.GetChild(0).GetComponent<Text>().text = "Upgrade (12)";
+                        break;
+                    case VillageType.CASTLE:
+                        button.transform.GetChild(0).GetComponent<Text>().text = "Upgrade";
+                        break;
+                }
+            }
+        }
+    }
+
+    public void setUpgradeUnitButtonCosts(UnitType unit) {
+        switch(unit) {
+            case UnitType.PEASANT:
+                updateButtonContents("Infantry (10 G)", "Soldier (20 G)", "Knight (30 G)");
+                break;
+            case UnitType.INFANTRY:
+                updateButtonContents("Infantry", "Soldier (10 G)", "Knight (20 G)");
+                break;
+            case UnitType.SOLDIER:
+                updateButtonContents("Infantry", "Soldier", "Knight (10 G)");
+                break;
+            case UnitType.KNIGHT:
+                updateButtonContents("Infantry", "Soldier", "Knight");
+                break;
+        }
+    }
+
+    public void updateButtonContents(string b1, string b2, string b3) {
+        foreach (GameObject button in _inGameButtons)
+        {
+            if (button.name.Contains("Button_Infantry"))
+            {
+                button.transform.GetChild(0).GetComponent<Text>().text = b1;
+            }
+            else if (button.name.Contains("Button_Soldier"))
+            {
+                button.transform.GetChild(0).GetComponent<Text>().text = b2;
+            }
+            else if (button.name.Contains("Button_Knight"))
+            {
+                button.transform.GetChild(0).GetComponent<Text>().text = b3;
+            }
+        }
+    }
 
 	public void hideResourcesPanel()
 	{

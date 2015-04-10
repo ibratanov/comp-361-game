@@ -85,7 +85,8 @@ public class VillageComponent : GenericComponent
 	
 	public TileComponent getOccupyingTile()
 	{
-		return _occupyingTile;
+        return this.GetComponent<TileComponent>();
+        //return _occupyingTile;
 	}
 	
 	public uint getGoldStock() {
@@ -219,6 +220,7 @@ public class VillageComponent : GenericComponent
 			setVillageType(newLevel);
 			removeWood(cost);
 			SetColour(gameObject.GetComponent<TileComponent>().getPlayerIndex());
+            getOccupyingTile().Select(); //Ensure the menu button value is updated.
 			return true;
 		}
 		else
@@ -491,6 +493,7 @@ public class VillageComponent : GenericComponent
 	*/
 	public void removeGold(uint amount) {
 		_goldStock -= amount;
+        _menus.setGoldStock((int)_goldStock);
 	}
 
 	/*
