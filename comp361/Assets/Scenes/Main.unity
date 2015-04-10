@@ -5146,6 +5146,7 @@ MonoBehaviour:
   - {fileID: 2016029625}
   - {fileID: 342299169}
   _initZoomCameraPos: {x: 0, y: 0, z: 0}
+  _initZoomOutCamPos: {x: 0, y: 0, z: 0}
   _fadeSpeed: .800000012
   _errorFadeSpeed: 1.5
   _standardButtonColors:
@@ -20624,11 +20625,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_mat: {fileID: 2100000, guid: bca772606137baf41aba7ff64536d94b, type: 2}
-  m_numGridsX: 6
+  m_numGridsX: 8
   m_numGridsZ: 6
-  N: 16
-  m_length: 16
-  m_waveAmp: .00079999998
+  N: 32
+  m_length: 32
+  m_waveAmp: .00159999996
   m_windSpeed: {x: 32, y: 32}
 --- !u!4 &1320487770
 Transform:
@@ -25515,7 +25516,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Parallel Grid
+  m_Text: Parallelo Grid
 --- !u!222 &1659757648
 CanvasRenderer:
   m_ObjectHideFlags: 0

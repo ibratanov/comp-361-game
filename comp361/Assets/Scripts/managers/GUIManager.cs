@@ -22,9 +22,12 @@ public class GUIManager : MonoBehaviour {
 	
 	public GameObject[] _cameras; 
 	public Vector3 _initZoomCameraPos;
+	public Vector3 _initZoomOutCamPos;
 
 	public float _fadeSpeed = 0.8f;
     public float _errorFadeSpeed = 1.5f;
+
+	string _currentMap;
 
 	public ColorBlock _standardButtonColors;
 
@@ -132,7 +135,9 @@ public class GUIManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+		if(_currentMap != null && _currentMap.Contains("Parallel")){
+			_cameras[0].transform.position = new Vector3(1.5f,50.0f,26.25f);
+		}
 	}
 
 	public bool getCanClickGame() {
@@ -614,6 +619,10 @@ public class GUIManager : MonoBehaviour {
 				_cameras[1].transform.position = _initZoomCameraPos;
 				_cameras[1].SetActive (false);
 				_cameras[0].SetActive (true);
+				_currentMap = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>()._currentMap;
+				if(_currentMap.Contains("Parallel")){
+					_cameras[0].transform.position = new Vector3(1.5f,50.0f,26.25f);
+				}
 			}
 		}
 		else 
