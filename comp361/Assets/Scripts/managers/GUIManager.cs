@@ -680,7 +680,7 @@ public class GUIManager : MonoBehaviour {
 				Text[] ts = g.GetComponentsInChildren<Text>() as Text[];
 				foreach (Text t in ts)
 				{
-					if (t.name.Contains(eliminatedIndex))
+					if (t.name.Contains(eliminatedIndex.ToString()))
 					{
 						t.color = Color.black;
 					}
