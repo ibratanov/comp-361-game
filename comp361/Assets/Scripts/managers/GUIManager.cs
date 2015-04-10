@@ -196,7 +196,7 @@ public class GUIManager : MonoBehaviour {
                         button.transform.GetChild(0).GetComponent<Text>().text = "Upgrade (8)";
                         break;
                     case VillageType.FORT:
-                        button.transform.GetChild(0).GetComponent<Text>().text = "Upgrade (12)";
+                        button.transform.GetChild(0).GetComponent<Text>().text = "Upgrade \n(12G, 12W)";
                         break;
                     case VillageType.CASTLE:
                         button.transform.GetChild(0).GetComponent<Text>().text = "Upgrade";

@@ -30,18 +30,22 @@ public class VillageComponent : GenericComponent
 	readonly public static Color[] PLAYER_COLOURS = 
 	{
 		Color.white,
-		Color.red,
-		Color.green,
-		Color.blue,
-		Color.cyan
+		new Color(1.0f,0.5f,0.5f), 
+		new Color(0.5f,1.0f,0.5f), 
+		new Color(0.5f,0.5f,1.0f), 
+		new Color(0.5f,1.0f,1.0f), 
+		new Color(1.0f,0.5f,1.0f), 
+		new Color(1.0f,1.0f,0.5f), 
 	};
 	readonly public static Color[] PLAYER_COLOURS_DARK = 
 	{
 		Color.white,
-		Color.red,
-		Color.green,
-		Color.blue,
-		Color.cyan
+		new Color(0.5f,0.1f,0.1f), 
+		new Color(0.1f,0.5f,0.1f), 
+		new Color(0.1f,0.1f,0.5f), 
+		new Color(0.1f,0.5f,0.5f), 
+		new Color(0.5f,0.1f,0.5f), 
+		new Color(0.5f,0.5f,0.1f), 
 	};
 	
 	/*********************
