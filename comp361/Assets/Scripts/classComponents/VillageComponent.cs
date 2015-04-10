@@ -300,14 +300,28 @@ public class VillageComponent : GenericComponent
 
 		tc.Highlight();
 	}
-	
+
 	public void addGold(uint amount) {
-		_goldStock += amount;
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCAddGold", RPCMode.Others, (int)amount);
+		}
+		RPCAddGold((int)amount);
+	}
+	[RPC]
+	public void RPCAddGold(int amount) {
+		_goldStock += (uint)amount;
 		_menus.setGoldStock((int)_goldStock);
 	}
-	
+
 	public void addWood(uint amount) {
-		_woodStock += amount;
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCAddWood", RPCMode.Others, (int)amount);
+		}
+		RPCAddWood((int)amount);
+	}
+	[RPC]
+	public void RPCAddWood(int amount) {
+		_woodStock += (uint)amount;
 		_menus.setWoodStock((int)_woodStock);
 	}
 	
@@ -449,14 +463,14 @@ public class VillageComponent : GenericComponent
 
 	public void removeGold(uint amount) {
 		if(Network.isServer || Network.isClient){
-			networkView.RPC("RPCRemoveGold", RPCMode.Others, amount);
+			networkView.RPC("RPCRemoveGold", RPCMode.Others, (int)amount);
 		}
-		RPCRemoveGold(amount);
+		RPCRemoveGold((int)amount);
 	}
 
 	[RPC]
-	public void RPCRemoveGold(uint amount) {
-		_goldStock -= amount;
+	public void RPCRemoveGold(int amount) {
+		_goldStock -= (uint)amount;
 	}
 	
 	public void removeWood(uint amount) {
