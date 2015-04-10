@@ -548,7 +548,7 @@ public class VillageComponent : GenericComponent
 		_menus = GameObject.FindObjectOfType<GUIManager>();
 		setVillageGameObject(vType);
         _healthLeft = getTotalHealthByType(vType);
-		SetColour(_controlledRegion [0].getPlayerIndex ());
+		SetColour(gameObject.GetComponent<TileComponent>().getPlayerIndex());
 	}
 
 	public void SetColour(int index)
