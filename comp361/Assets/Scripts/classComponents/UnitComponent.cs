@@ -506,8 +506,15 @@ public class UnitComponent : GenericComponent
 
         return false;
     }
-	
-    public void buildRoad()
+
+	public void buildRoad(){
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCBuildRoad", RPCMode.Others);
+		}
+		RPCBuildRoad();
+	}
+	[RPC]
+    public void RPCBuildRoad()
     {
         var ut = getUnitType();
         if (ut == UnitType.PEASANT)
