@@ -603,6 +603,9 @@ public class VillageComponent : GenericComponent
         // destroy village object
         _player.remove(this);
         GameObject.Destroy(_villageGameObject);
+
+		GameComponent game = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>();
+		game.checkWinningAndLosingConditions(_player);
     }
 	
 	// Use this for initialization
