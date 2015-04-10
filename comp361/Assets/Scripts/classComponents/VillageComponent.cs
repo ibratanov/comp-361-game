@@ -407,7 +407,7 @@ public class VillageComponent : GenericComponent
 	}
 
 	public void mergeWith(VillageComponent village) {
-		int villageTileID = village.getOccupyingTile().getID();
+		int villageTileID = village.GetComponent<TileComponent>().getID();
 		if(Network.isServer || Network.isClient){
 			networkView.RPC("RPCMergeWith", RPCMode.Others, villageTileID);
 		}
