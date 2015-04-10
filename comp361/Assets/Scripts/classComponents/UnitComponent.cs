@@ -486,11 +486,12 @@ public class UnitComponent : GenericComponent
             uint cost = calculateCost(_unitType, newLevel);
 
             if (_village.getGoldStock() >= cost)
-            {
-				setUnitType(newLevel, true);
-                _village.removeGold(cost);
-				SetColour(gameObject.GetComponent<TileComponent>().getPlayerIndex());
-                getLocation().Select(); //Ensure the menu button values are updated.
+            {	
+				int tileID = this.GetComponent<TileComponent>().getID ();
+				if(Network.isServer || Network.isClient){
+					networkView.RPC("RPCUpgradeUnit", RPCMode.Others, tileID, (int)newLevel,(int)cost);
+				}
+				RPCUpgradeUnit(tileID, (int)newLevel,(int)cost);
                 return true;
             }
             else
@@ -506,15 +507,23 @@ public class UnitComponent : GenericComponent
 
         return false;
     }
+	[RPC]
+	public void RPCUpgradeUnit(int tileID, int newLevel, int cost){
+		TileComponent tc = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>().GetTileByID(tileID);
+		tc.GetComponent<UnitComponent>().setUnitType((UnitType)newLevel, true);
+		tc.GetComponent<VillageComponent>().removeGold((uint)cost);
+		tc.GetComponent<UnitComponent>().SetColour(tc.getPlayerIndex());
+		tc.Select(); //Ensure the menu button values are updated.
+	}
 
-	public void buildRoad(){
+	public void buildRoad() {
 		if(Network.isServer || Network.isClient){
 			networkView.RPC("RPCBuildRoad", RPCMode.Others);
 		}
 		RPCBuildRoad();
 	}
 	[RPC]
-    public void RPCBuildRoad()
+	public void RPCBuildRoad()
     {
         var ut = getUnitType();
         if (ut == UnitType.PEASANT)
@@ -526,7 +535,7 @@ public class UnitComponent : GenericComponent
                 if (t.getLandType() == LandType.MEADOW || t.getLandType() == LandType.GRASS)
                 {
                     t.createRoad();
-                    _currentAction = ActionType.BUILDING_ROAD;
+					this.setCurrentAction(ActionType.BUILDING_ROAD);
                 }
             }
         }
@@ -575,7 +584,14 @@ public class UnitComponent : GenericComponent
         tile.setLandType(LandType.GRASS);
     }
 
-    public void die()
+	public void die(){
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCDie", RPCMode.Others);
+		}
+		RPCDie();
+	}
+	[RPC]
+    public void RPCDie()
     {
         _village.RemoveSupportingUnit(this);
         TileComponent tc = this.GetComponent<TileComponent>();
@@ -626,9 +642,10 @@ public class UnitComponent : GenericComponent
 
             if (isReachable)
             {
-                bool shouldMerge = setDestination(destination);
-				if (shouldMerge) destination.connectRegions();
-                if (shouldMerge && _unitType == UnitType.CANNON) _currentAction = ActionType.ALREADY_MOVED;
+				if(Network.isServer || Network.isClient){
+					networkView.RPC("RPCMoving", RPCMode.Others, destination.getID());
+				}
+				RPCMoving(destination.getID());
             }
             else
             {
@@ -640,6 +657,13 @@ public class UnitComponent : GenericComponent
             ThrowError("The unit cannot move any more in this turn.");
         }
     }
+
+	public void RPCMoving(int TileID){
+		TileComponent destination = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>().GetTileByID(TileID);
+		bool shouldMerge = setDestination(destination);
+		if (shouldMerge) destination.connectRegions();
+		if (shouldMerge && _unitType == UnitType.CANNON) _currentAction = ActionType.ALREADY_MOVED;
+	}
 
     public void fireOnVillage(TileComponent target)
     {
