@@ -181,7 +181,17 @@ public class GameComponent : GenericComponent
 	
 	public void upgradeLastSelectedVillage()
 	{
-		_lastSelectedTile.getVillage().upgradeVillage();
+		if(Network.isServer || Network.isClient){
+			networkView.RPC( "RPCUpgradeLastSelectedVillage", RPCMode.Others, _lastSelectedTile.getVillage().GetComponent<TileComponent>().getID() );
+		}
+		RPCUpgradeLastSelectedVillage(_lastSelectedTile.getVillage().GetComponent<TileComponent>().getID());
+	}
+	[RPC]
+	public void RPCUpgradeLastSelectedVillage(int tileID)
+	{
+		TileComponent tc = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>().GetTileByID(tileID);
+		VillageComponent vc = tc.GetComponent<VillageComponent>();
+		vc.upgradeVillage();
 	}
 
     public void upgradeLastSelectedUnit(int unitType)
@@ -433,11 +443,12 @@ public class GameComponent : GenericComponent
 	private void RPCGenerateRegions()
 	{
 		_mapTiles =_mapGenerator.getLandTiles();
+		bool firstTile = true;
 		foreach (var tile in _mapTiles)
 		{
 			int playerIndex = tile.getPlayerIndex();
 			
-			if (playerIndex > 0)
+			if (playerIndex > 0 && !firstTile)
 			{
 				var region = tile.breadthFS();
 				if (region.Count < 3)
@@ -482,6 +493,10 @@ public class GameComponent : GenericComponent
 						}
 					}
 				}
+			}
+			if(firstTile){
+				tile.setPlayerIndex(0);
+				firstTile = false;
 			}
 			tile.UpdateDraw();
 		}
