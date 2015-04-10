@@ -113,9 +113,7 @@ public class VillageComponent : GenericComponent
 		if(Network.isServer || Network.isClient){
 			networkView.RPC("RPCsetVillageType", RPCMode.Others, (int)villageType);
 		}
-		else{
 			RPCsetVillageType((int)villageType);
-		}
 	}
 	
 	[RPC]
@@ -211,8 +209,15 @@ public class VillageComponent : GenericComponent
 			return false;
 		}	
 	}
-	
-	public bool payWages() {
+
+	public void payWages(){
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCPayWages", RPCMode.Others);
+		}
+		RPCPayWages();
+	}
+	[RPC]
+	public bool RPCPayWages() {
 		uint wages = getWages();
 		
 		if (wages <= getGoldStock()) {
@@ -369,24 +374,47 @@ public class VillageComponent : GenericComponent
 		
 		unit.setVillage(this);
 	}
-	
-	void killVillagers() {
+
+	public void killVillagers() {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCKillVillagers", RPCMode.Others);
+		}
+		RPCKillVillagers();
+	}
+	[RPC]
+	void RPCKillVillagers() {
         while(_supportingUnits.Count > 0)
         {
             _supportingUnits[0].die();
         }
 		_supportingUnits = new List<UnitComponent>();
 	}
-	
+
 	public void mergeWith(VillageComponent village) {
+		int villageTileID = village.getOccupyingTile().getID();
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCMergeWith", RPCMode.Others, villageTileID);
+		}
+		RPCMergeWith(villageTileID);
+	}
+	[RPC]
+	public void RPCMergeWith(int villageTileID) {
+		VillageComponent village = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameComponent>().GetTileByID(villageTileID).GetComponent<VillageComponent>();
 		addWood(village.getWoodStock());
 		addGold(village.getGoldStock());
 		associate(village.getControlledRegion());
 		associate(village.getSupportingUnits());
 		village.getPlayer().remove(village);
 	}
-	
+
 	public void produceMeadows() {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCProduceMeadows", RPCMode.Others);
+		}
+		RPCProduceMeadows();
+	}
+	[RPC]
+	public void RPCProduceMeadows() {
             foreach (UnitComponent unit in _supportingUnits)
             {
                 ActionType currentAction = unit.getCurrentAction();
@@ -398,9 +426,16 @@ public class VillageComponent : GenericComponent
             }
 
 	}
-	
-	public void produceRoads() {
 
+	public void produceRoads() {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCProduceRoads", RPCMode.Others);
+		}
+		RPCProduceRoads();
+	}
+	[RPC]
+	public void RPCProduceRoads() 
+	{
             foreach (UnitComponent unit in _supportingUnits)
             {
                 ActionType currentAction = unit.getCurrentAction();
@@ -410,14 +445,29 @@ public class VillageComponent : GenericComponent
                     unit.buildRoad();
                 }
             }
-
 	}
-	
+
 	public void removeGold(uint amount) {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCRemoveGold", RPCMode.Others, amount);
+		}
+		RPCRemoveGold(amount);
+	}
+
+	[RPC]
+	public void RPCRemoveGold(uint amount) {
 		_goldStock -= amount;
 	}
 	
 	public void removeWood(uint amount) {
+		if(Network.isServer || Network.isClient){
+			networkView.RPC("RPCRemoveWood", RPCMode.Others, amount);
+		}
+		RPCRemoveWood(amount);
+	}
+
+	[RPC]
+	public void RPCRemoveWood(uint amount) {
 		_woodStock -= amount;
 		_menus.setWoodStock((int)_woodStock);
 	}
