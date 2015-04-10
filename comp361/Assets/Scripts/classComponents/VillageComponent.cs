@@ -26,6 +26,23 @@ public class VillageComponent : GenericComponent
 	TileComponent _occupyingTile;
 	private GUIManager _menus;
 	private int _healthLeft;
+
+	readonly public static Color[] PLAYER_COLOURS = 
+	{
+		Color.white,
+		Color.red,
+		Color.green,
+		Color.blue,
+		Color.cyan
+	};
+	readonly public static Color[] PLAYER_COLOURS_DARK = 
+	{
+		Color.white,
+		Color.red,
+		Color.green,
+		Color.blue,
+		Color.cyan
+	};
 	
 	/*********************
 	 *    CONSTRUCTOR    *
@@ -531,6 +548,25 @@ public class VillageComponent : GenericComponent
 		_menus = GameObject.FindObjectOfType<GUIManager>();
 		setVillageGameObject(vType);
         _healthLeft = getTotalHealthByType(vType);
+		SetColour(_controlledRegion [0].getPlayerIndex ());
+	}
+
+	public void SetColour(int index)
+	{
+		Renderer[] renderers = _villageGameObject.GetComponentsInChildren<Renderer>() as Renderer[];
+		for (int i = 0; i < renderers.Length; i++)
+		{
+			foreach (Material m in renderers[i].materials){
+				if(m.name.Contains("mat_dark"))
+				{
+					m.SetColor("_Color", PLAYER_COLOURS_DARK[index]);
+				}
+				else if(m.name.Contains("mat_light"))
+				{
+					m.SetColor("_Color", PLAYER_COLOURS[index]);
+				}
+			}
+		}
 	}
 	
 	public void setVillageGameObject(VillageType vType)
