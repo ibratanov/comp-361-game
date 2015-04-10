@@ -542,7 +542,7 @@ public class TileComponent : GenericComponent
 
             if (this.GetComponent<UnitComponent>())
             {
-
+                _menus.displayCurrentSelection(this.GetComponent<UnitComponent>().getUnitType().ToString());
                 if (_game.isMerging())
                 {
                     _game.startMergeLastSelectedUnit(this.GetComponent<UnitComponent>());
@@ -561,6 +561,7 @@ public class TileComponent : GenericComponent
             }
             else if (this.GetComponent<VillageComponent>())
             {
+                _menus.displayCurrentSelection(this.GetComponent<VillageComponent>().getVillageType().ToString());
                 PlayerComponent pc = this.GetComponent<VillageComponent>().getPlayer();
                 //print ("village's player " + pc.getUserName());
                 if (canSelect(pc))
@@ -574,6 +575,7 @@ public class TileComponent : GenericComponent
             }
             else if (this._occupyingStructure != null)
             {
+                _menus.displayCurrentSelection(this.GetComponent<StructureComponent>().getStructureType().ToString());
                 StructureComponent sc = this._occupyingStructure;
                 _game.setLastSelectedStructure(sc);
                 if (sc.getStructureType() == StructureType.WATCHTOWER)

@@ -751,6 +751,25 @@ public class GUIManager : MonoBehaviour {
 		}
 	}
 
+    public void displayCurrentSelection(string selection)
+    {
+        for (int i = 0; i < _menus.Length; ++i)
+        {
+            if (_menus[i].name.Contains("Menu_InGame"))
+            {
+                foreach (GameObject panel in _inGamePanels)
+                {
+                    if (panel.name.Contains("CurrentSelection"))
+                    {
+                        panel.transform.GetChild(0).GetComponent<Text>().text = selection;
+                        panel.SetActive(true);
+
+                    }
+                }
+            }
+        }
+    }
+
 	#region win/lose
 	public void displayWin(string playerName) {
 		displayEndPanel("Win", playerName);
